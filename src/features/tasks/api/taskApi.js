@@ -1,14 +1,8 @@
 import axiosClient from "../../../utils/axiosClient";
 
 const taskApi = {
-  findAllTask: axiosClient.post(
-    "/authentication-management/api/v2/auth/log-in"
-  ),
-  register: (data) => axiosClient.post("/user-management/api/v1/users", data),
-  refresh: (token) =>
-    axiosClient.post("/authentication-management/api/v2/auth/refresh", {
-      refreshToken: token,
-    }),
+  findAllTask: () => axiosClient.get("/task-management/api/v2/tasks"),
+  addTask: (data) => axiosClient.post("/task-management/api/v2/tasks", data),
 };
 
 export default taskApi;
