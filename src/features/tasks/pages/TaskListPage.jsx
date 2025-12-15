@@ -1,139 +1,117 @@
-import { useEffect, useState } from "react";
-import taskApi from "../api/taskApi";
-import userApi from "../api/userApi";
+import React from "react";
+import DashboardLayout from "../../../layouts/DashboardLayout";
+import KanbanBoard from "../components/KanbanBoard";
 
 export default function TaskListPage() {
-  const [tasks, setTasks] = useState([]);
-  const [creating, setCreating] = useState(false);
-  const [users, setUsers] = useState([]);
-
-  const [newTask, setNewTask] = useState({
-    taskName: "",
-    assigneeId: "",
-  });
-
-  const loadTasks = () => {
-    taskApi
-      .findAllTask()
-      .then((res) => {
-        const list = Array.isArray(res.data.data) ? res.data.data : [];
-        setTasks(list);
-      })
-      .catch((err) => console.error(err));
-  };
-
-  useEffect(() => {
-    loadTasks();
-  }, []);
-
-  const handleSubmitNewTask = () => {
-    taskApi
-      .addTask(newTask)
-      .then(() => {
-        setCreating(false);
-        setNewTask({ taskName: "", assigneeId: "" });
-        loadTasks();
-      })
-      .catch((err) => console.error(err));
-  };
-
-  useEffect(() => {
-    if (creating) {
-      userApi
-        .findAllUser()
-        .then((res) => {
-          const list = Array.isArray(res.data.data) ? res.data.data : [];
-          setUsers(list);
-        })
-        .catch((err) => console.error(err));
-    }
-  }, [creating]);
-
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">Danh sách công việc</h1>
+    <DashboardLayout>
+      <div className="flex flex-col h-full">
+        {/* === PROJECT HEADER SECTION === */}
+        <div className="px-8 pt-6 pb-0 border-b border-gray-200">
+          {/* Breadcrumbs */}
+          <div className="text-xs text-gray-500 mb-3">
+            Spaces / <span className="text-gray-700">My Software Team</span>
+          </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Work</th>
-            <th>Assignee</th>
-            <th>Reporter</th>
-            <th>Priority</th>
-            <th>Status</th>
-            <th>Created</th>
-            <th>Updated</th>
-          </tr>
-        </thead>
+          {/* Project Title & Actions */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 bg-yellow-400 rounded flex items-center justify-center text-lg shadow-sm">
+              📦
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800">
+              My Software Team
+            </h1>
+            <button className="p-1 hover:bg-gray-100 rounded ml-2">👤+</button>
+            <button className="p-1 hover:bg-gray-100 rounded">•••</button>
+          </div>
 
-        <tbody>
-          {tasks.map((task) => (
-            <tr key={task.taskId}>
-              <td>{task.taskName}</td>
-              <td>{task.assignee?.username || ""}</td>
-              <td>{task.assignor?.username || ""}</td>
-              <td>{task.priority}</td>
-              <td>{task.status}</td>
-              <td>{task.createdAt}</td>
-              <td>{task.updatedAt}</td>
-            </tr>
-          ))}
+          {/* Tab Navigation */}
+          <div className="flex items-center gap-6 text-sm font-medium text-gray-500">
+            <div className="pb-3 cursor-pointer hover:text-blue-600 flex items-center gap-1">
+              🌐 Summary
+            </div>
+            <div className="pb-3 cursor-pointer hover:text-blue-600 flex items-center gap-1">
+              📝 List
+            </div>
 
-          {creating && (
-            <tr className="bg-gray-100">
-              <td>
-                <input
-                  className="border p-1"
-                  value={newTask.taskName}
-                  onChange={(e) =>
-                    setNewTask({ ...newTask, taskName: e.target.value })
-                  }
-                  placeholder="Task name..."
-                />
-              </td>
+            {/* Active Tab */}
+            <div className="pb-3 text-blue-600 border-b-2 border-blue-600 cursor-pointer flex items-center gap-1">
+              📊 Board
+            </div>
 
-              <td>
-                <select
-                  className="border p-1"
-                  value={newTask.assigneeId}
-                  onChange={(e) =>
-                    setNewTask({ ...newTask, assigneeId: e.target.value })
-                  }
-                >
-                  <option value="">-- Chọn assignee --</option>
-                  {users.map((user) => (
-                    <option key={user.userId} value={user.userId}>
-                      {user.username}
-                    </option>
-                  ))}
-                </select>
-              </td>
+            <div className="pb-3 cursor-pointer hover:text-blue-600 flex items-center gap-1">
+              💻 Code
+            </div>
+            <div className="pb-3 cursor-pointer hover:text-blue-600 flex items-center gap-1">
+              📋 Forms
+            </div>
+            <div className="pb-3 cursor-pointer hover:text-blue-600 flex items-center gap-1">
+              ⏳ Timeline
+            </div>
+            <div className="pb-3 cursor-pointer hover:text-blue-600 flex items-center gap-1">
+              📄 Pages
+            </div>
+            <div className="pb-3 cursor-pointer hover:bg-gray-100 px-2 rounded">
+              +
+            </div>
+          </div>
+        </div>
 
-              <td colSpan="5">
-                <button
-                  onClick={handleSubmitNewTask}
-                  className="px-3 py-1 bg-green-500 text-white rounded mr-2"
-                >
-                  Save
-                </button>
-                <button
-                  onClick={() => setCreating(false)}
-                  className="px-3 py-1 bg-gray-400 text-white rounded"
-                >
-                  Cancel
-                </button>
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+        {/* === BOARD CONTROLS === */}
+        <div className="px-8 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {/* Search Input */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search board"
+                className="pl-8 pr-4 py-1.5 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm w-40 hover:bg-gray-50"
+              />
+              <span className="absolute left-2.5 top-1.5 text-gray-400 text-xs">
+                🔍
+              </span>
+            </div>
 
-      <button
-        onClick={() => setCreating(true)}
-        className="border px-3 py-1 mt-4"
-      >
-        Add Task
-      </button>
-    </div>
+            {/* Users Avatars */}
+            <div className="flex -space-x-1">
+              <div className="w-8 h-8 rounded-full bg-gray-200 border border-white flex items-center justify-center text-xs font-bold text-gray-500">
+                👤
+              </div>
+              <div className="w-8 h-8 rounded-full bg-red-500 border border-white flex items-center justify-center text-xs font-bold text-white">
+                AD
+              </div>
+            </div>
+
+            {/* Filter Button */}
+            <button className="flex items-center gap-1 px-3 py-1.5 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50">
+              📂 Filter
+            </button>
+          </div>
+
+          {/* Right Group Buttons */}
+          <div className="flex items-center gap-2">
+            <button className="flex items-center gap-1 px-3 py-1.5 hover:bg-gray-100 rounded text-sm font-medium text-gray-700">
+              Group ⌄
+            </button>
+            <div className="bg-gray-100 rounded p-0.5 flex">
+              <button className="p-1.5 bg-white rounded shadow-sm text-gray-600">
+                📈
+              </button>
+              <button className="p-1.5 hover:bg-gray-200 rounded text-gray-600">
+                📋
+              </button>
+            </div>
+            <button className="p-1.5 hover:bg-gray-100 rounded text-gray-600">
+              •••
+            </button>
+          </div>
+        </div>
+
+        {/* === KANBAN BOARD === */}
+        <div className="flex-1 overflow-x-auto overflow-y-hidden bg-white px-8 pb-4">
+          <KanbanBoard />
+        </div>
+      </div>
+    </DashboardLayout>
   );
 }
