@@ -6,7 +6,7 @@ const authApi = {
   register: (data) => axiosClient.post("/user-management/api/v1/users", data),
   refresh: (token) =>
     axiosClient.post("/authentication-management/api/v2/auth/refresh", {
-      refreshToken: token,
+      token,
     }),
 };
 
