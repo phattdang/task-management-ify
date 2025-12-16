@@ -1,15 +1,64 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import authApi from "../../api/authApi";
 
 export default function AuthForm() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSignUpClick = () => {
-    navigate("/verify-email", { state: { email: email } });
+  const handleSignUpClick = async () => {
+    // Validate cơ bản
+    if (!email) {
+      setErrorMsg("Vui lòng nhập email");
+      return;
+    }
+
+    setIsLoading(true);
+    setErrorMsg("");
+
+    try {
+      // BƯỚC 1: Kiểm tra email đã tồn tại chưa
+      // Request: { "credential": "..." }
+      const checkRes = await authApi.checkEmailExisted({ credential: email });
+
+      // Backend trả về: body.isExisted
+      if (checkRes.data && checkRes.data.body && checkRes.data.body.isExisted) {
+        setErrorMsg("Email này đã được đăng ký. Vui lòng đăng nhập.");
+        setIsLoading(false);
+        return;
+      }
+
+      // BƯỚC 2: Nếu chưa tồn tại -> Gửi OTP
+      // Request: { "email": "..." }
+      const otpRes = await authApi.getRegisterOtp({ email: email });
+
+      if (otpRes.data && otpRes.data.code === 200) {
+        // Lấy OTP từ response: { "otp": " 15252", ... }
+        const rawOtp = otpRes.data.body.otp;
+        // Trim() vì ví dụ bạn đưa otp có khoảng trắng ở đầu " 15252"
+        const cleanOtp = rawOtp.trim();
+
+        // BƯỚC 3: Chuyển trang và mang theo OTP + Thời gian tạo để kiểm tra
+        navigate("/verify-email", {
+          state: {
+            email: email,
+            serverOtp: cleanOtp,
+            generatedAt: Date.now(), // Lưu thời gian hiện tại
+          },
+        });
+      } else {
+        setErrorMsg("Không thể gửi mã OTP. Vui lòng thử lại.");
+      }
+    } catch (error) {
+      console.error("Sign up error:", error);
+      setErrorMsg("Đã có lỗi xảy ra. Vui lòng kiểm tra kết nối.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Hàm xử lý khi bấm nút Log in
   const handleLoginClick = () => {
     navigate("/login");
   };
@@ -30,8 +79,16 @@ export default function AuthForm() {
             placeholder="you@company.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm"
+            // Nếu đang loading thì disable input
+            disabled={isLoading}
+            className={`w-full px-4 py-3 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm ${
+              errorMsg ? "border-red-500" : "border-gray-300"
+            }`}
           />
+          {/* Hiển thị lỗi nếu có */}
+          {errorMsg && (
+            <p className="text-red-500 text-sm mt-1 ml-1">{errorMsg}</p>
+          )}
         </div>
 
         <p className="text-xs text-gray-500">
@@ -40,9 +97,14 @@ export default function AuthForm() {
 
         <button
           onClick={handleSignUpClick}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded transition-colors shadow-md"
+          disabled={isLoading}
+          className={`w-full text-white font-bold py-3 rounded transition-colors shadow-md ${
+            isLoading
+              ? "bg-blue-400 cursor-wait"
+              : "bg-blue-600 hover:bg-blue-700"
+          }`}
         >
-          Sign up
+          {isLoading ? "Checking..." : "Sign up"}
         </button>
       </div>
 
@@ -72,7 +134,6 @@ export default function AuthForm() {
       </div>
 
       <div className="mt-8 pt-4 border-t border-gray-200">
-        {/* Cập nhật sự kiện click ở đây */}
         <p
           className="text-sm text-blue-600 cursor-pointer hover:underline"
           onClick={handleLoginClick}

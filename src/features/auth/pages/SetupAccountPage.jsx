@@ -1,31 +1,80 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import authApi from "../api/authApi"; // Import api
 
 export default function SetupAccountPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email || "phatdang19032004@gmail.com";
+  // Lấy email từ trang trước, nếu mất state thì fallback (hoặc redirect về login)
+  const email = location.state?.email;
 
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (password.length < 8) {
-      alert("Mật khẩu phải dài ít nhất 8 ký tự!");
-      return;
-    }
-    // Logic: Gọi API tạo tài khoản hoàn tất
-    console.log("Setup Account:", { email, fullName, password });
+  // State quản lý lỗi từ backend trả về
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
-    // Sau khi tạo tài khoản xong -> Chuyển sang bước Tạo Site
-    navigate("/create-site", { state: { email, fullName } });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setErrors({}); // Reset lỗi cũ
+
+    // Chuẩn bị payload
+    const payload = {
+      fullName: fullName,
+      email: email,
+      password: password,
+    };
+
+    try {
+      // Gọi API tạo user
+      const res = await authApi.createUser(payload);
+
+      // Nếu thành công (Code 201)
+      if (res.data && res.data.code === 201) {
+        console.log("User created:", res.data.body);
+
+        // Chuyển hướng sang trang Tạo Project
+        // Lưu ý: Lúc này chưa có Token, nếu trang sau cần Token thì phải Login ngầm hoặc yêu cầu đăng nhập lại.
+        navigate("/create-project", {
+          state: {
+            email: email,
+            fullName: fullName,
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Setup Error:", error);
+
+      // Xử lý lỗi từ Backend (400 Bad Request)
+      if (error.response && error.response.data) {
+        const data = error.response.data;
+
+        // Nếu code là 400 và có body chứa danh sách lỗi
+        if (data.code === 400 && Array.isArray(data.body)) {
+          const newErrors = {};
+          // Duyệt qua mảng lỗi để map vào object errors
+          // Ví dụ: [{field: "password", message: "..."}] -> { password: "..." }
+          data.body.forEach((err) => {
+            newErrors[err.field] = err.message;
+          });
+          setErrors(newErrors);
+        } else {
+          // Lỗi chung chung khác
+          alert(data.message || "Có lỗi xảy ra, vui lòng thử lại.");
+        }
+      } else {
+        alert("Lỗi kết nối đến server.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-[#F9FAFB] pt-12 pb-12 font-sans text-[#172B4D]">
-      {/* Container */}
       <div className="w-full max-w-[400px] px-8 py-10 bg-white shadow-lg rounded-sm sm:border sm:border-gray-200">
         {/* Logo */}
         <div className="flex justify-center mb-6 text-[#0052CC]">
@@ -77,9 +126,17 @@ export default function SetupAccountPage() {
               placeholder="Nhập họ tên"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full px-3 py-2 border-2 border-gray-300 rounded-[3px] focus:border-blue-500 focus:outline-none transition-colors text-sm"
+              className={`w-full px-3 py-2 border-2 rounded-[3px] focus:outline-none transition-colors text-sm ${
+                errors.fullName
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-gray-300 focus:border-blue-500"
+              }`}
               required
             />
+            {/* Hiển thị lỗi field fullName nếu có */}
+            {errors.fullName && (
+              <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>
+            )}
           </div>
 
           {/* Password */}
@@ -93,10 +150,13 @@ export default function SetupAccountPage() {
                 placeholder="Tạo mật khẩu"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border-2 border-gray-300 rounded-[3px] focus:border-blue-500 focus:outline-none transition-colors text-sm pr-10"
+                className={`w-full px-3 py-2 border-2 rounded-[3px] focus:outline-none transition-colors text-sm pr-10 ${
+                  errors.password
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-gray-300 focus:border-blue-500"
+                }`}
                 required
               />
-              {/* Eye Icon */}
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -105,13 +165,16 @@ export default function SetupAccountPage() {
                 {showPassword ? "👁️" : "👁️‍🗨️"}
               </button>
             </div>
+            {/* Hiển thị lỗi field password nếu có */}
+            {errors.password && (
+              <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+            )}
           </div>
 
           <p className="text-[11px] text-[#5E6C84] mb-6">
             Mật khẩu phải dài ít nhất 8 ký tự
           </p>
 
-          {/* Terms */}
           <p className="text-xs text-[#5E6C84] mb-6 leading-relaxed">
             Bằng việc đăng ký, tôi chấp nhận{" "}
             <a href="#" className="text-[#0052CC] hover:underline">
@@ -126,13 +189,17 @@ export default function SetupAccountPage() {
 
           <button
             type="submit"
-            className="w-full bg-[#0052CC] hover:bg-blue-700 text-white font-bold py-2 rounded-[3px] transition-colors mb-4"
+            disabled={isLoading}
+            className={`w-full text-white font-bold py-2 rounded-[3px] transition-colors mb-4 ${
+              isLoading
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-[#0052CC] hover:bg-blue-700"
+            }`}
           >
-            Tiếp tục
+            {isLoading ? "Đang tạo tài khoản..." : "Tiếp tục"}
           </button>
         </form>
 
-        {/* Footer */}
         <div className="mt-6 pt-6 border-t border-gray-100 text-center">
           <div className="flex items-center justify-center gap-1 text-gray-500 font-bold text-sm mb-2">
             <span>▲ ATLASSIAN</span>
