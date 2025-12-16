@@ -19,7 +19,14 @@ export default function AppRoutes() {
       <Route path="/setup-account" element={<SetupAccountPage />} />
       <Route path="/create-site" element={<CreateSitePage />} />
       <Route path="/create-project" element={<CreateProjectPage />} />
-      <Route path="/tasks" element={<TaskListPage />} />
+      <Route
+        path="/tasks"
+        element={
+          <ProtectedRoute>
+            <TaskListPage />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
