@@ -50,7 +50,7 @@ export default function LoginPage() {
         console.log("Login success:", backendResponse.message);
 
         // 4. Chuyển hướng
-        navigate("/tasks");
+        navigate("/projects");
       } else {
         // Trường hợp backend trả về 200 HTTP nhưng code nội bộ báo lỗi (nếu có logic đó)
         setErrorMsg(backendResponse.message || "Đăng nhập thất bại.");
