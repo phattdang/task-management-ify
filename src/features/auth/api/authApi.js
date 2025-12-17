@@ -3,6 +3,8 @@ import axiosClient from "../../../utils/axiosClient";
 const authApi = {
   login: (data) =>
     axiosClient.post("/authentication-management/api/v1/auth/log-in", data),
+  logout: (token) =>
+    axiosClient.post("/authentication-management/api/v1/auth/log-out", token),
   register: (data) => axiosClient.post("/user-management/api/v1/users", data),
   introspect: (token) =>
     axiosClient.post(
@@ -21,6 +23,8 @@ const authApi = {
     axiosClient.post("/email-sending/api/v1/verify-register-otp", request),
   createUser: (request) =>
     axiosClient.post("/user-management/api/v1/users", request),
+  getInformation: () =>
+    axiosClient.get("/user-management/api/v1/users/information"),
 };
 
 export default authApi;
