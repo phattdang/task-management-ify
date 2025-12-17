@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// Import authApi từ đường dẫn thực tế trong dự án của bạn
 import authApi from "../api/authApi";
+// Import authApi từ đường dẫn thực tế trong dự án của bạn
 
 const SocialButton = ({ icon, text }) => (
   <button
@@ -27,39 +27,47 @@ export default function LoginPage() {
     setErrorMsg("");
 
     try {
-      // 1. Gọi API qua authApi
-      // Map 'email' state thành 'identifier' theo yêu cầu backend
+      // 1. Gọi API Login
       const res = await authApi.login({
         identifier: email,
         password: password,
       });
 
-      // Axios trả về object response đầy đủ, data của backend nằm trong res.data
       const backendResponse = res.data;
 
-      // 2. Kiểm tra code business logic (200)
+      // 2. Kiểm tra login thành công
       if (backendResponse.code === 200 && backendResponse.body) {
         const { accessToken, refreshToken } = backendResponse.body;
 
-        // 3. Lưu token vào localStorage
-        // LƯU Ý QUAN TRỌNG: axiosClient.js của bạn đang get key là "access_token"
-        // nên ở đây phải setItem đúng key đó.
+        // 3a. Lưu token vào localStorage
         localStorage.setItem("access_token", accessToken);
         localStorage.setItem("refresh_token", refreshToken);
+
+        // 3b. Gọi API lấy thông tin User ngay lập tức
+        // Lúc này axiosClient đã có token trong localStorage nên sẽ tự gắn vào header
+        try {
+          const userRes = await authApi.getInformation();
+          if (userRes.data && userRes.data.code === 200) {
+            const userInfo = userRes.data.body;
+            // Lưu thông tin user vào localStorage để các trang khác dùng ngay
+            localStorage.setItem("user_info", JSON.stringify(userInfo));
+            console.log("User info saved:", userInfo);
+          }
+        } catch (infoError) {
+          console.error("Failed to fetch user info:", infoError);
+          // Không block login nếu lỗi lấy info, có thể lấy lại ở DashboardLayout sau
+        }
 
         console.log("Login success:", backendResponse.message);
 
         // 4. Chuyển hướng
         navigate("/projects");
       } else {
-        // Trường hợp backend trả về 200 HTTP nhưng code nội bộ báo lỗi (nếu có logic đó)
         setErrorMsg(backendResponse.message || "Đăng nhập thất bại.");
       }
     } catch (error) {
       console.error("Login Error:", error);
-      // Xử lý lỗi từ Axios (ví dụ 400, 401, 500)
       if (error.response && error.response.data) {
-        // Lấy message lỗi từ backend trả về (nếu có)
         setErrorMsg(
           error.response.data.message || "Sai tên đăng nhập hoặc mật khẩu."
         );
@@ -93,7 +101,7 @@ export default function LoginPage() {
         <form onSubmit={handleLogin}>
           <div className="mb-4">
             <input
-              type="email" // Để type email để browser hỗ trợ validate cơ bản
+              type="email"
               placeholder="Nhập email của bạn"
               value={email}
               onChange={(e) => setEmail(e.target.value)}

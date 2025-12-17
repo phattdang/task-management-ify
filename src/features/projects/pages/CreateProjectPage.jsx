@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import projectApi from "../apis/projectApi";
 
 export default function CreateProjectPage() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const previousData = location.state || {}; // Dữ liệu từ các bước trước (email, siteName...)
 
   const [projectName, setProjectName] = useState("");
   const [projectKey, setProjectKey] = useState("KEY");
+  const [isLoading, setIsLoading] = useState(false); // Thêm loading state
 
-  // Logic tự động sinh Key từ tên Project (VD: "Demo Project" -> "DP")
+  // Logic tự động sinh Key
   useEffect(() => {
     if (!projectName) {
       setProjectKey("KEY");
@@ -29,20 +29,29 @@ export default function CreateProjectPage() {
     setProjectKey(generatedKey || "KEY");
   }, [projectName]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Tổng hợp dữ liệu cuối cùng để gửi API
-    const finalPayload = {
-      ...previousData,
-      projectName,
-      projectKey,
-      template: "Kanban",
-      type: "Team-managed",
-    };
+    if (!projectName.trim()) return;
 
-    console.log("DONE! Call API to create everything:", finalPayload);
-    // Xong hết thì vào trang chủ
-    navigate("/tasks");
+    setIsLoading(true);
+    try {
+      // Gọi API tạo project
+      const res = await projectApi.createProject({ name: projectName });
+
+      // Kiểm tra response
+      if (res.data && res.data.code === 201) {
+        console.log("Project created:", res.data.body);
+
+        // Chuyển hướng về trang danh sách dự án
+        // Layout sẽ tự động fetch lại danh sách và redirect vào project mới nhất hoặc đầu tiên
+        navigate("/projects");
+      }
+    } catch (error) {
+      console.error("Failed to create project:", error);
+      alert("Lỗi khi tạo dự án. Vui lòng thử lại.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -69,7 +78,8 @@ export default function CreateProjectPage() {
                 placeholder="Try a team name, project goal, milestone..."
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
-                className="w-full px-3 py-2 border-2 border-blue-500 rounded-[3px] focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all"
+                disabled={isLoading}
+                className="w-full px-3 py-2 border-2 border-blue-500 rounded-[3px] focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all disabled:bg-gray-100"
                 autoFocus
               />
             </div>
@@ -81,7 +91,6 @@ export default function CreateProjectPage() {
               </label>
               <div className="flex items-start gap-4 p-4 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer transition-colors">
                 <div className="w-12 h-12 bg-blue-100 rounded flex items-center justify-center shrink-0">
-                  {/* Icon Board giả lập */}
                   <div className="grid grid-cols-2 gap-0.5 w-6 h-6">
                     <div className="bg-blue-500 h-4 w-2 rounded-sm"></div>
                     <div className="bg-blue-300 h-2 w-2 rounded-sm"></div>
@@ -118,24 +127,30 @@ export default function CreateProjectPage() {
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="px-4 py-2 font-semibold text-gray-600 hover:bg-gray-100 rounded transition-colors"
+                disabled={isLoading}
+                className="px-4 py-2 font-semibold text-gray-600 hover:bg-gray-100 rounded transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-6 py-2 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-[3px] transition-colors shadow-sm"
+                disabled={isLoading || !projectName}
+                className={`px-6 py-2 text-white font-bold rounded-[3px] transition-colors shadow-sm ${
+                  isLoading || !projectName
+                    ? "bg-blue-300 cursor-not-allowed"
+                    : "bg-blue-700 hover:bg-blue-800"
+                }`}
               >
-                Create project
+                {isLoading ? "Creating..." : "Create project"}
               </button>
             </div>
           </form>
         </div>
       </div>
 
-      {/* === CỘT PHẢI: MINH HỌA (PREVIEW) === */}
+      {/* === CỘT PHẢI: MINH HỌA (PREVIEW) - Giữ nguyên === */}
       <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-50 to-indigo-50 items-center justify-center relative overflow-hidden">
-        {/* Blob Background (Giả lập hình xanh méo méo phía sau) */}
+        {/* Blob Background */}
         <div className="absolute w-[600px] h-[600px] bg-blue-500 opacity-10 rounded-full blur-3xl -top-20 -right-20"></div>
         <div className="absolute w-[400px] h-[400px] bg-indigo-400 opacity-20 rounded-full blur-2xl bottom-10 left-10"></div>
 
@@ -186,7 +201,7 @@ export default function CreateProjectPage() {
   );
 }
 
-// Component con để vẽ mấy cái thẻ nhỏ trong phần preview
+// Component con giữ nguyên
 const CardMock = ({ keyStr, num }) => (
   <div className="bg-white p-2 rounded shadow-sm border border-gray-100">
     <div className="h-1 w-full bg-gray-100 rounded mb-2"></div>
