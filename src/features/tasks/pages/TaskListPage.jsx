@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import KanbanBoard from "../components/KanbanBoard";
@@ -11,28 +11,36 @@ export default function TaskListPage() {
   const [projectInfo, setProjectInfo] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Logic Fetch dữ liệu
+  // Chuyển logic fetch thành hàm riêng để tái sử dụng
+  const fetchTasks = useCallback(async () => {
+    if (!projectId) return;
+    try {
+      const taskRes = await taskApi.getAllTaskByProjectId(projectId);
+      setTasks(taskRes.data.body || []);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  }, [projectId]);
+
   useEffect(() => {
     if (!projectId) return;
 
-    const fetchData = async () => {
+    const initData = async () => {
       setLoading(true);
       try {
-        const taskRes = await taskApi.getAllTaskByProjectId(projectId);
-        setTasks(taskRes.data.body || []);
-
-        const projRes = await projectApi.getAll();
+        await fetchTasks(); // Lấy tasks
+        const projRes = await projectApi.getAll(); // Lấy info project
         const currentProj = projRes.data.body.find((p) => p.id === projectId);
         setProjectInfo(currentProj);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error init data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, [projectId]);
+    initData();
+  }, [projectId, fetchTasks]);
 
   if (!projectId) {
     return (
@@ -165,7 +173,11 @@ export default function TaskListPage() {
               </div>
             </div>
           ) : (
-            <KanbanBoard tasks={tasks} />
+            <KanbanBoard
+              tasks={tasks}
+              projectId={projectId}
+              onTaskCreated={fetchTasks} // Truyền callback refresh
+            />
           )}
         </div>
       </div>
