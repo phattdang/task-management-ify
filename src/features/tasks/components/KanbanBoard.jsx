@@ -1,12 +1,10 @@
 import React, { useMemo, useState } from "react";
-// Import các component con đã tách
 import TaskCard from "./TaskCard";
 import CreateTaskForm from "./CreateTaskForm";
 
 export default function KanbanBoard({ tasks = [], projectId, onTaskCreated }) {
   const [isCreating, setIsCreating] = useState(false);
 
-  // Phân loại task
   const columns = useMemo(() => {
     return {
       todo: tasks.filter((t) => t.status === "TO_DO"),
@@ -17,6 +15,16 @@ export default function KanbanBoard({ tasks = [], projectId, onTaskCreated }) {
       done: tasks.filter((t) => t.status === "DONE"),
     };
   }, [tasks]);
+
+  // Hàm render Card để đỡ lặp lại code
+  const renderCard = (task) => (
+    <TaskCard
+      key={task.id}
+      task={task}
+      // QUAN TRỌNG: Truyền hàm refresh xuống đây
+      onTaskUpdated={onTaskCreated}
+    />
+  );
 
   return (
     <div className="flex h-full gap-6 items-start min-w-[1000px]">
@@ -30,18 +38,16 @@ export default function KanbanBoard({ tasks = [], projectId, onTaskCreated }) {
         </div>
 
         <div className="px-2 flex-1 overflow-y-auto">
-          {columns.todo.map((t) => (
-            <TaskCard key={t.id} task={t} />
-          ))}
+          {/* Render các task trong cột Todo */}
+          {columns.todo.map(renderCard)}
 
-          {/* Logic hiển thị Form hoặc Nút */}
           {isCreating ? (
             <CreateTaskForm
               projectId={projectId}
               onCancel={() => setIsCreating(false)}
               onSuccess={() => {
-                setIsCreating(false); // Vấn đề 3: Đóng form
-                if (onTaskCreated) onTaskCreated(); // Load lại data
+                setIsCreating(false);
+                if (onTaskCreated) onTaskCreated();
               }}
             />
           ) : (
@@ -55,7 +61,7 @@ export default function KanbanBoard({ tasks = [], projectId, onTaskCreated }) {
         </div>
       </div>
 
-      {/* === Col: IN PROGRESS (Tương tự, lược bớt cho gọn) === */}
+      {/* === Col: IN PROGRESS === */}
       <div className="w-[280px] shrink-0 bg-gray-50/50 rounded-lg flex flex-col h-full">
         <div className="px-3 py-3 text-xs font-bold text-gray-500 uppercase flex items-center gap-2">
           <span>In Progress</span>
@@ -64,9 +70,7 @@ export default function KanbanBoard({ tasks = [], projectId, onTaskCreated }) {
           </span>
         </div>
         <div className="px-2 flex-1 overflow-y-auto">
-          {columns.inProgress.map((t) => (
-            <TaskCard key={t.id} task={t} />
-          ))}
+          {columns.inProgress.map(renderCard)}
         </div>
       </div>
 
@@ -79,9 +83,7 @@ export default function KanbanBoard({ tasks = [], projectId, onTaskCreated }) {
           </span>
         </div>
         <div className="px-2 flex-1 overflow-y-auto">
-          {columns.review.map((t) => (
-            <TaskCard key={t.id} task={t} />
-          ))}
+          {columns.review.map(renderCard)}
         </div>
       </div>
 
@@ -94,13 +96,10 @@ export default function KanbanBoard({ tasks = [], projectId, onTaskCreated }) {
           </span>
         </div>
         <div className="px-2 flex-1 overflow-y-auto">
-          {columns.done.map((t) => (
-            <TaskCard key={t.id} task={t} />
-          ))}
+          {columns.done.map(renderCard)}
         </div>
       </div>
 
-      {/* Create Column Button */}
       <div className="shrink-0 pt-2">
         <button className="w-10 h-10 bg-white border border-gray-300 rounded hover:bg-gray-50 text-xl font-light shadow-sm transition-colors">
           +
