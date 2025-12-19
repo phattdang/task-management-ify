@@ -7,6 +7,8 @@ const taskApi = {
     axiosClient.post("/task-management/api/v1/tasks", request),
   updateTask: (taskId, request) =>
     axiosClient.put(`/task-management/api/v1/tasks/${taskId}`, request),
+  deleteTask: (taskId, request) =>
+    axiosClient.delete(`/task-management/api/v1/tasks/${taskId}`, request),
 };
 
 export default taskApi;
