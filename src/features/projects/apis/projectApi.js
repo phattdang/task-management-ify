@@ -6,6 +6,11 @@ const projectApi = {
     axiosClient.post("/project-management/api/v1/projects", request),
   getMembers: (projectId) =>
     axiosClient.get(`/project-management/api/v1/projects/${projectId}`),
+  deleteProject: (projectId, request) =>
+    axiosClient.delete(
+      `/project-management/api/v1/projects/${projectId}`,
+      request
+    ),
 };
 
 export default projectApi;
