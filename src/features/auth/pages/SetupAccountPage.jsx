@@ -19,9 +19,8 @@ export default function SetupAccountPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setErrors({}); // Reset lỗi cũ
+    setErrors({});
 
-    // Chuẩn bị payload
     const payload = {
       fullName: fullName,
       email: email,
@@ -29,21 +28,49 @@ export default function SetupAccountPage() {
     };
 
     try {
-      // Gọi API tạo user
+      // 1. Gọi API tạo user
       const res = await authApi.createUser(payload);
 
-      // Nếu thành công (Code 201)
       if (res.data && res.data.code === 201) {
-        console.log("User created:", res.data.body);
+        console.log("User created successfully");
 
-        // Chuyển hướng sang trang Tạo Project
-        // Lưu ý: Lúc này chưa có Token, nếu trang sau cần Token thì phải Login ngầm hoặc yêu cầu đăng nhập lại.
-        navigate("/create-project", {
-          state: {
-            email: email,
-            fullName: fullName,
-          },
-        });
+        // 2. Tự động Login ngay lập tức
+        try {
+          const loginRes = await authApi.login({
+            identifier: email,
+            password: password,
+          });
+
+          const loginData = loginRes.data;
+
+          if (loginData.code === 200 && loginData.body) {
+            const { accessToken, refreshToken } = loginData.body;
+
+            // 3. Lưu Token vào localStorage
+            localStorage.setItem("access_token", accessToken);
+            localStorage.setItem("refresh_token", refreshToken);
+
+            // 4. Lấy thông tin User để đồng bộ hóa ứng dụng
+            try {
+              const userRes = await authApi.getInformation();
+              if (userRes.data && userRes.data.code === 200) {
+                localStorage.setItem(
+                  "user_info",
+                  JSON.stringify(userRes.data.body)
+                );
+              }
+            } catch (infoError) {
+              console.error("Failed to fetch info after signup:", infoError);
+            }
+
+            // 5. Chuyển hướng đến trang Tạo Project thay vì /projects
+            navigate("/create-project");
+          }
+        } catch (loginError) {
+          console.error("Silent login failed:", loginError);
+          // Nếu login tự động lỗi, đưa về login chính thức
+          navigate("/login");
+        }
       }
     } catch (error) {
       console.error("Setup Error:", error);

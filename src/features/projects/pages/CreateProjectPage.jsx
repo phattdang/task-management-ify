@@ -35,20 +35,14 @@ export default function CreateProjectPage() {
 
     setIsLoading(true);
     try {
-      // Gọi API tạo project
       const res = await projectApi.createProject({ name: projectName });
-
-      // Kiểm tra response
       if (res.data && res.data.code === 201) {
-        console.log("Project created:", res.data.body);
-
-        // Chuyển hướng về trang danh sách dự án
-        // Layout sẽ tự động fetch lại danh sách và redirect vào project mới nhất hoặc đầu tiên
+        // Tạo xong thì về trang danh sách dự án
         navigate("/projects");
       }
     } catch (error) {
       console.error("Failed to create project:", error);
-      alert("Lỗi khi tạo dự án. Vui lòng thử lại.");
+      alert("Lỗi khi tạo dự án.");
     } finally {
       setIsLoading(false);
     }
@@ -126,7 +120,7 @@ export default function CreateProjectPage() {
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                onClick={() => navigate(-1)}
+                onClick={() => navigate("/projects")}
                 disabled={isLoading}
                 className="px-4 py-2 font-semibold text-gray-600 hover:bg-gray-100 rounded transition-colors disabled:opacity-50"
               >
