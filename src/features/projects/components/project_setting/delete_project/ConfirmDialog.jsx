@@ -1,4 +1,5 @@
-// components/ConfirmDialog.jsx
+import ReactDOM from "react-dom"; // Thêm import này
+
 export default function ConfirmDialog({
   isOpen,
   title,
@@ -8,9 +9,12 @@ export default function ConfirmDialog({
 }) {
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black/60 z-[120] flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+  const content = (
+    <div
+      className="fixed inset-0 bg-black/60 z-[120] flex items-center justify-center p-4"
+      onClick={(e) => e.stopPropagation()} // Ngăn click vào backdrop làm ảnh hưởng bên ngoài
+    >
+      <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-2xl animate-in fade-in">
         <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>
         <p className="text-sm text-gray-600 mb-6">{message}</p>
         <div className="flex justify-end gap-3">
@@ -30,4 +34,6 @@ export default function ConfirmDialog({
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body); // Đưa Dialog ra ngoài body
 }

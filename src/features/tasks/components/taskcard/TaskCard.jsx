@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import taskApi from "../../api/taskApi";
 import TaskActionsMenu from "../task_setting/TaskActionsMenu";
 import ConfirmDialog from "../../../projects/components/project_setting/delete_project/ConfirmDialog";
+import { useSearchParams } from "react-router-dom";
 
 const formatDate = (dateString) => {
   if (!dateString) return "";
@@ -31,6 +32,13 @@ export default function TaskCard({ task, onTaskUpdated }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const menuRef = useRef(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleOpenModal = () => {
+    // Thêm taskId vào URL mà không làm mất các params khác (nếu có)
+    searchParams.set("selectedIssue", task.id);
+    setSearchParams(searchParams);
+  };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -86,7 +94,10 @@ export default function TaskCard({ task, onTaskUpdated }) {
   const stopPropagation = (e) => e.stopPropagation();
 
   return (
-    <div className="bg-white p-3 rounded shadow-sm border border-gray-200 hover:shadow-md cursor-pointer mb-2 transition-all relative">
+    <div
+      onClick={handleOpenModal}
+      className="bg-white p-3 rounded shadow-sm border border-gray-200 hover:shadow-md cursor-pointer mb-2 transition-all relative"
+    >
       {/* Loading Overlay */}
       {isUpdating && (
         <div className="absolute inset-0 bg-white/50 z-[110] flex items-center justify-center rounded">

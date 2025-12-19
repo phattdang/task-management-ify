@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import KanbanBoard from "../../projects/components/KanbanBoard";
 import taskApi from "../api/taskApi";
@@ -8,6 +8,7 @@ import ProjectHeader from "../../projects/components/ProjectHeader";
 import NavigationTabs from "../../projects/components/NavigationTabs";
 import LoadingPulse from "../components/LoadingPulse";
 import BoardToolbar from "./../../projects/components/BoardToolbar";
+import TaskDetailModal from "../components/task_detail/TaskDetailModal";
 
 export default function TaskListPage() {
   const { projectId } = useParams();
@@ -15,6 +16,14 @@ export default function TaskListPage() {
   const [projectInfo, setProjectInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentTab, setCurrentTab] = useState("BOARD");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Lấy ID task từ URL
+  const selectedTaskId = searchParams.get("selectedIssue");
+  const handleCloseModal = () => {
+    searchParams.delete("selectedIssue");
+    setSearchParams(searchParams);
+  };
 
   // Chuyển logic fetch thành hàm riêng để tái sử dụng
   const fetchTasks = useCallback(async () => {
@@ -95,6 +104,15 @@ export default function TaskListPage() {
         )}
         {currentTab === "PAGES" && (
           <div className="p-8">Chức năng đang phát triển...</div>
+        )}
+
+        {/* Render Modal nếu có ID trên URL */}
+        {selectedTaskId && (
+          <TaskDetailModal
+            taskId={selectedTaskId}
+            onClose={handleCloseModal}
+            onUpdated={fetchTasks} // Refresh board khi update trong modal
+          />
         )}
       </div>
     </DashboardLayout>
