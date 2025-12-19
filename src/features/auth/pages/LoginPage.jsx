@@ -189,10 +189,7 @@ export default function LoginPage() {
             Bạn không đăng nhập được?
           </Link>
           <span className="text-gray-400">•</span>
-          <Link
-            to="/register"
-            className="text-[#0052CC] text-sm hover:underline"
-          >
+          <Link to="/" className="text-[#0052CC] text-sm hover:underline">
             Tạo tài khoản
           </Link>
         </div>

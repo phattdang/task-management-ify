@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
-import TaskCard from "./TaskCard";
-import CreateTaskForm from "./CreateTaskForm";
+import TaskCard from "../../tasks/components/taskcard/TaskCard";
+import CreateTaskForm from "../../tasks/components/CreateTaskForm";
 
 export default function KanbanBoard({ tasks = [], projectId, onTaskCreated }) {
   const [isCreating, setIsCreating] = useState(false);
