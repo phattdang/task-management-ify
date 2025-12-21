@@ -1,20 +1,46 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Thêm để điều hướng sau khi xóa
+import { useNavigate } from "react-router-dom";
 import ProjectActionsMenu from "./project_setting/ProjectActionsMenu";
 import DeleteProjectModal from "./project_setting/delete_project/DeleteProjectModal";
 import ConfirmDialog from "./project_setting/delete_project/ConfirmDialog";
 import projectApi from "../apis/projectApi";
+import AddPeopleModal from "./project_setting/add_people/AddPeopleModal";
 
 export default function ProjectHeader({ projectInfo }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showFinalConfirm, setShowFinalConfirm] = useState(false);
-  const [confirmProjectName, setConfirmProjectName] = useState(""); // Lưu tên để gọi API
+  const [confirmProjectName, setConfirmProjectName] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showAddPeopleModal, setShowAddPeopleModal] = useState(false);
+
+  // State mới: Lưu quyền quản lý
+  const [isManager, setIsManager] = useState(false);
 
   const menuRef = useRef(null);
   const navigate = useNavigate();
 
+  // Effect 1: Gọi API kiểm tra quyền Manager
+  useEffect(() => {
+    const checkManagerPermission = async () => {
+      if (!projectInfo?.id) return;
+
+      try {
+        const res = await projectApi.isProjectManager(projectInfo.id);
+        // Response format: { code: 200, body: true/false }
+        if (res.data?.code === 200) {
+          setIsManager(res.data.body);
+        }
+      } catch (error) {
+        console.error("Lỗi khi kiểm tra quyền manager:", error);
+        setIsManager(false); // Mặc định không cho phép nếu lỗi
+      }
+    };
+
+    checkManagerPermission();
+  }, [projectInfo?.id]);
+
+  // Effect 2: Xử lý click outside menu
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target))
@@ -24,32 +50,27 @@ export default function ProjectHeader({ projectInfo }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Bước 1: Nhận tên dự án từ Modal và mở Dialog xác nhận cuối cùng
   const handleProceedToDelete = (projectName) => {
-    setConfirmProjectName(projectName); // Lưu lại tên để dùng cho API ở bước sau
+    setConfirmProjectName(projectName);
     setShowDeleteModal(false);
     setShowFinalConfirm(true);
   };
 
-  // Bước 2: Gọi API thực tế
   const handleActualDelete = async () => {
     if (isDeleting) return;
 
     try {
       setIsDeleting(true);
-
-      // Request body theo yêu cầu: { "projectName": "..." }
       const requestBody = {
-        data: { projectName: confirmProjectName }, // Axios delete thường yêu cầu body nằm trong key 'data'
+        data: { projectName: confirmProjectName },
       };
 
-      // Gọi API: deleteProject(projectId, config)
       const res = await projectApi.deleteProject(projectInfo.id, requestBody);
 
       if (res.data?.code === 200 && res.data?.body?.isDeleted) {
         setShowFinalConfirm(false);
         alert("Dự án đã được xóa thành công!");
-        navigate("/projects"); // Điều hướng về trang danh sách dự án
+        navigate("/projects");
       } else {
         alert(
           "Xóa dự án thất bại: " + (res.data?.message || "Lỗi không xác định")
@@ -73,26 +94,35 @@ export default function ProjectHeader({ projectInfo }) {
           {projectInfo?.name || "..."}
         </h1>
 
-        <div className="relative">
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`p-1 rounded ${
-              isMenuOpen
-                ? "bg-blue-100 text-blue-600"
-                : "hover:bg-gray-100 text-gray-500"
-            }`}
-          >
-            •••
-          </button>
+        {/* Chỉ hiển thị nút menu nếu là Manager */}
+        {isManager && (
+          <div className="relative">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className={`p-1 rounded ${
+                isMenuOpen
+                  ? "bg-blue-100 text-blue-600"
+                  : "hover:bg-gray-100 text-gray-500"
+              }`}
+            >
+              •••
+            </button>
 
-          {isMenuOpen && (
-            <ProjectActionsMenu
-              onClose={() => setIsMenuOpen(false)}
-              onDeleteClick={() => setShowDeleteModal(true)}
-            />
-          )}
-        </div>
+            {isMenuOpen && (
+              <ProjectActionsMenu
+                onClose={() => setIsMenuOpen(false)}
+                onDeleteClick={() => setShowDeleteModal(true)}
+                onAddPeopleClick={() => setShowAddPeopleModal(true)}
+              />
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Các Modal vẫn giữ nguyên logic hiển thị dựa trên state local */}
+      {showAddPeopleModal && (
+        <AddPeopleModal onClose={() => setShowAddPeopleModal(false)} />
+      )}
 
       {showDeleteModal && (
         <DeleteProjectModal
@@ -108,7 +138,7 @@ export default function ProjectHeader({ projectInfo }) {
         message={`This action is irreversible. The project "${projectInfo?.name}" and all its tasks will be permanently removed.`}
         onCancel={() => setShowFinalConfirm(false)}
         onConfirm={handleActualDelete}
-        isLoading={isDeleting} // Bạn có thể thêm prop này vào ConfirmDialog để hiện loading
+        isLoading={isDeleting}
       />
     </div>
   );

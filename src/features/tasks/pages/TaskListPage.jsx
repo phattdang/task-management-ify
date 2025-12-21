@@ -45,6 +45,7 @@ export default function TaskListPage() {
         await fetchTasks(); // Lấy tasks
         const projRes = await projectApi.getAll(); // Lấy info project
         const currentProj = projRes.data.body.find((p) => p.id === projectId);
+        // console.log(currentProj);
         setProjectInfo(currentProj);
       } catch (error) {
         console.error("Error init data:", error);

@@ -1,7 +1,11 @@
 // components/ProjectActionsMenu.jsx
 import React from "react";
 
-export default function ProjectActionsMenu({ onClose, onDeleteClick }) {
+export default function ProjectActionsMenu({
+  onClose,
+  onDeleteClick,
+  onAddPeopleClick,
+}) {
   // Cấu hình Menu: Tách riêng để dễ quản lý và đọc
   const menuGroups = [
     [
@@ -13,7 +17,7 @@ export default function ProjectActionsMenu({ onClose, onDeleteClick }) {
       {
         icon: "👤",
         label: "Add people",
-        onClick: () => console.log("Add people"),
+        onClick: onAddPeopleClick,
       },
       { icon: "📋", label: "Save as template", badge: "ENTERPRISE" },
       { icon: "🖼️", label: "Set space background", hasSubmenu: true },
