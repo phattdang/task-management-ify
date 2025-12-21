@@ -121,7 +121,10 @@ export default function ProjectHeader({ projectInfo }) {
 
       {/* Các Modal vẫn giữ nguyên logic hiển thị dựa trên state local */}
       {showAddPeopleModal && (
-        <AddPeopleModal onClose={() => setShowAddPeopleModal(false)} />
+        <AddPeopleModal
+          onClose={() => setShowAddPeopleModal(false)}
+          projectInfo={projectInfo}
+        />
       )}
 
       {showDeleteModal && (
