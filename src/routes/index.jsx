@@ -8,11 +8,12 @@ import CreateSitePage from "../features/auth/pages/CreateSitePage";
 import CreateProjectPage from "../features/projects/pages/CreateProjectPage";
 import TaskListPage from "../features/tasks/pages/TaskListPage";
 import ProtectedRoute from "../components/common/ProtectedRoute";
+import InvitationConfirmPage from "./../features/project_invitations/pages/InvitationConfirmPage";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* Public Routes */}
+      {/* ... Public Routes cũ ... */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
@@ -23,8 +24,7 @@ export default function AppRoutes() {
       <Route path="/create-site" element={<CreateSitePage />} />
       <Route path="/create-project" element={<CreateProjectPage />} />
 
-      {/* CORE ROUTES: Logic mới */}
-      {/* 1. Vào /projects -> Layout tự chuyển hướng vào project đầu tiên */}
+      {/* CORE ROUTES */}
       <Route
         path="/projects"
         element={
@@ -33,7 +33,6 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      {/* 2. Vào /projects/:id -> Load tasks của project đó */}
       <Route
         path="/projects/:projectId"
         element={
@@ -41,6 +40,15 @@ export default function AppRoutes() {
             <TaskListPage />
           </ProtectedRoute>
         }
+      />
+
+      {/* --- ROUTE MỚI CHO INVITATION --- */}
+      {/* Route này không cần bọc ProtectedRoute nếu bạn muốn user chưa login cũng xem được (tùy logic), 
+          nhưng thường user phải login rồi mới accept được. 
+          Tạm thời mình để ngoài để bạn test giao diện cho dễ. */}
+      <Route
+        path="/projects/:projectId/invitations/confirm"
+        element={<InvitationConfirmPage />}
       />
     </Routes>
   );

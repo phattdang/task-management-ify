@@ -1,8 +1,8 @@
 // features/projects/components/project_setting/add_people/AddPeopleModal.jsx
 import React, { useState, useEffect } from "react";
-import projectInvitationsApi from "../../../apis/projectInvitationApi";
 import ManageAccessView from "./ManageAccessView";
 import AddPeopleView from "./AddPeopleView";
+import projectInvitationsApi from "../../../../project_invitations/apis/projectInvitationApi";
 
 export default function AddPeopleModal({ onClose, projectInfo }) {
   const [currentView, setCurrentView] = useState("list");

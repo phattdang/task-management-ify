@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import projectInvitationsApi from "../../../apis/projectInvitationApi";
+import projectInvitationsApi from "../../../../project_invitations/apis/projectInvitationApi";
 
 export default function AddPeopleView({
   projectName,
