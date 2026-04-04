@@ -85,11 +85,8 @@ export default function LoginPage() {
         {/* Logo Section */}
         <div className="flex flex-col items-center mb-6">
           <div className="flex items-center gap-2 text-[#0052CC] mb-4">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12.6 19.48l5.37 5.37a.89.89 0 001.27 0l4.57-4.57a.89.89 0 000-1.27l-5.37-5.37a.89.89 0 00-1.27 0l-4.57 4.57a.89.89 0 000 1.27zM6.3 13.18l5.37 5.37a.89.89 0 001.27 0l4.57-4.57a.89.89 0 000-1.27L12.14 7.34a.89.89 0 00-1.27 0L6.3 11.91a.89.89 0 000 1.27z" />
-            </svg>
             <span className="text-2xl font-bold tracking-tight text-[#253858]">
-              ATLASSIAN
+              UNEMPLOYED TEAM
             </span>
           </div>
           <h2 className="text-base font-bold text-[#5E6C84]">
@@ -156,14 +153,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="text-center text-xs text-[#5E6C84] mb-4">
-          Hoặc đăng nhập bằng:
-        </div>
-
-        <div>
-          <SocialButton icon="🔑" text="Passkey" />
-        </div>
-
         <div className="text-center text-xs text-[#5E6C84] mb-3 mt-4">
           Hoặc tiếp tục với:
         </div>
@@ -176,11 +165,6 @@ export default function LoginPage() {
           <SocialButton
             icon={<span className="text-blue-500">⊞</span>}
             text="Microsoft"
-          />
-          <SocialButton icon="🍎" text="Apple" />
-          <SocialButton
-            icon={<span className="text-purple-600">#</span>}
-            text="Slack"
           />
         </div>
 
@@ -197,15 +181,8 @@ export default function LoginPage() {
 
       <footer className="mt-8 text-center">
         <div className="flex items-center justify-center gap-2 mb-2 text-gray-400 font-bold text-lg">
-          <span className="tracking-tighter">▲ ATLASSIAN</span>
+          <span className="tracking-tighter">UNEMPLOYED TEAM</span>
         </div>
-        <p className="text-[10px] text-gray-500 max-w-lg mx-auto leading-normal px-4">
-          Một tài khoản cho Jira, Confluence, Trello và{" "}
-          <a href="#" className="text-blue-600 hover:underline">
-            sản phẩm khác
-          </a>
-          .
-        </p>
       </footer>
     </div>
   );
