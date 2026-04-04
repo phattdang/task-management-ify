@@ -34,9 +34,9 @@ export default function MockBoard() {
       <div className="flex items-center justify-between mb-6 border-b border-gray-100 pb-3">
         <div className="flex items-center gap-2 text-blue-900 font-bold text-lg">
           <span className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center text-white text-xs">
-            J
+            UT
           </span>{" "}
-          Jira
+          UNEMPLOYED TEAM
         </div>
         <div className="flex gap-3 items-center">
           <div className="bg-gray-100 text-gray-400 text-sm px-3 py-1.5 rounded w-48 hidden sm:block">
