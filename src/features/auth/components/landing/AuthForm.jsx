@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authApi from "../../api/authApi";
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const REDIRECT_URL = import.meta.env.VITE_REDIRECT_URL;
+
 export default function AuthForm() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -63,20 +66,33 @@ export default function AuthForm() {
     navigate("/login");
   };
 
+  const handleGoogleLogin = () => {
+    const url =
+      `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${GOOGLE_CLIENT_ID}&` +
+      `redirect_uri=${REDIRECT_URL}&` +
+      `response_type=code&` +
+      `scope=openid profile email&` +
+      `access_type=offline&` +
+      `prompt=consent`;
+
+    window.location.href = url;
+  };
+
   return (
-    <div className="max-w-md w-full">
+    <div className="max-w-lg w-full">
       <h1 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight mb-6">
-        Connect every team, task, and project together with Jira
+        Kết nối, chia sẻ công việc, quản lý mọi thứ với Unemployed Team!
       </h1>
 
       <div className="space-y-4">
         <div>
           <label className="block text-xs font-bold text-gray-500 mb-1 ml-1 uppercase">
-            Work email
+            Email
           </label>
           <input
             type="email"
-            placeholder="you@company.com"
+            placeholder="you@gmail.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             // Nếu đang loading thì disable input
@@ -91,10 +107,6 @@ export default function AuthForm() {
           )}
         </div>
 
-        <p className="text-xs text-gray-500">
-          Using a work email helps find teammates and boost collaboration.
-        </p>
-
         <button
           onClick={handleSignUpClick}
           disabled={isLoading}
@@ -104,7 +116,7 @@ export default function AuthForm() {
               : "bg-blue-600 hover:bg-blue-700"
           }`}
         >
-          {isLoading ? "Checking..." : "Sign up"}
+          {isLoading ? "Đang xác thực tài khoản..." : "Đăng ký"}
         </button>
       </div>
 
@@ -113,12 +125,15 @@ export default function AuthForm() {
           <div className="w-full border-t border-gray-300"></div>
         </div>
         <span className="relative bg-transparent px-2 text-sm text-gray-500 bg-gradient-to-br from-[#DEEBFF] to-[#E6FCFF]">
-          Or continue with
+          Hoặc tiếp tục với
         </span>
       </div>
 
       <div className="flex gap-4 mb-8">
-        <button className="flex-1 py-2.5 px-4 bg-white border border-gray-300 rounded font-bold text-gray-600 shadow-sm hover:bg-gray-50 flex items-center justify-center gap-2 text-sm transition-colors">
+        <button
+          onClick={handleGoogleLogin}
+          className="flex-1 py-2.5 px-4 bg-white border border-gray-300 rounded font-bold text-gray-600 shadow-sm hover:bg-gray-50 flex items-center justify-center gap-2 text-sm transition-colors"
+        >
           <span className="text-lg">G</span> Google
         </button>
         <button className="flex-1 py-2.5 px-4 bg-white border border-gray-300 rounded font-bold text-gray-600 shadow-sm hover:bg-gray-50 flex items-center justify-center gap-2 text-sm transition-colors">
@@ -126,19 +141,13 @@ export default function AuthForm() {
         </button>
       </div>
 
-      <div className="flex items-center justify-between opacity-60 grayscale mt-8">
-        <span className="font-bold text-lg italic font-serif">Ford</span>
-        <span className="font-bold text-lg">PayPal</span>
-        <span className="font-bold text-lg tracking-widest">NASA</span>
-        <span className="font-bold text-xl">🎲</span>
-      </div>
-
       <div className="mt-8 pt-4 border-t border-gray-200">
+        <p>Nếu bạn đã có tài khoản Unemployed Team? </p>
         <p
           className="text-sm text-blue-600 cursor-pointer hover:underline"
           onClick={handleLoginClick}
         >
-          Trying to access Jira? Log in
+          Đăng nhập ngay!
         </p>
       </div>
     </div>
