@@ -1,17 +1,91 @@
-import React from "react";
-// Import các components con
+import React, { useEffect, useState } from "react";
 import ProductNav from "../components/landing/ProductNav";
 import AuthForm from "../components/landing/AuthForm";
 import MockBoard from "../components/landing/MockBoard";
+import logoImg from "../../../assets/logo.png";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isProcessingGoogle, setIsProcessingGoogle] = useState(false);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const authCode = queryParams.get("code");
+
+    // Nếu tìm thấy code trên URL -> Bắt đầu xử lý
+    if (authCode) {
+      handleGoogleCallback(authCode);
+    }
+  }, [location]);
+
+  const handleGoogleCallback = async (code) => {
+    setIsProcessingGoogle(true);
+    try {
+      console.log("Đang xử lý Google Code:", code);
+
+      const url = `http://localhost:8080/authentication-management/api/v1/auth/google?code=${encodeURIComponent(
+        code,
+      )}`;
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await res.json();
+
+      if (data.code === 200) {
+        console.log("Login Google thành công:", data);
+        const { accessToken, refreshToken } = data.body;
+
+        // 1. Lưu token
+        localStorage.setItem("access_token", accessToken);
+        localStorage.setItem("refresh_token", refreshToken);
+
+        // 3. Dispatch event để Header cập nhật lại avatar/tên user
+        window.dispatchEvent(new Event("storage"));
+
+        // 4. Dọn dẹp URL (Xóa ?code=... đi nhìn cho đẹp)
+        navigate("/", { replace: true });
+
+        // Reload nhẹ một cái để đảm bảo mọi state (Header, Auth) được cập nhật mới nhất
+        window.location.reload();
+      } else {
+        alert("Đăng nhập Google thất bại: " + data.message);
+        navigate("/", { replace: true }); // Xóa code lỗi đi
+      }
+    } catch (err) {
+      console.error("Lỗi kết nối Google Login:", err);
+      alert("Có lỗi xảy ra khi kết nối tới server.");
+    } finally {
+      setIsProcessingGoogle(false);
+    }
+  };
+
   return (
     // Background gradient toàn màn hình
     <div className="min-h-screen bg-gradient-to-br from-[#DEEBFF] via-[#E6FCFF] to-[#DEEBFF] font-sans overflow-x-hidden">
+      {/* Loading Overlay khi đang xử lý Google Login */}
+      {isProcessingGoogle && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-amber-200 border-t-amber-600"></div>
+          <p className="mt-4 font-semibold text-amber-800">
+            Đang đăng nhập với Google...
+          </p>
+        </div>
+      )}
+
       {/* Top Navigation Bar (Logo) */}
       <nav className="p-6">
         <div className="flex items-center gap-2 text-blue-700 font-bold text-2xl">
-          <span className="text-3xl">✈️</span> Jira
+          <img
+            src={logoImg}
+            alt="Logo"
+            className="h-15 w-auto object-contain"
+          />
+          <span className="text-3xl"></span> Unemployed Team
         </div>
       </nav>
 
@@ -21,7 +95,6 @@ export default function LandingPage() {
         <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-20">
           {/* Cột trái: Nội dung & Form */}
           <div className="flex-1 w-full lg:pt-10">
-            <ProductNav />
             <AuthForm />
           </div>
 
