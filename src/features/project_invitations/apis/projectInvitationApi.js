@@ -1,6 +1,6 @@
 import axiosClient from "../../../utils/axiosClient";
 
-const URL = "/project-invitations/api/v1/invitations";
+const URL = "/api/v1/invitations";
 
 const projectInvitationsApi = {
   inviteMember: (projectId, request) =>

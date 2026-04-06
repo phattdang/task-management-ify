@@ -1,6 +1,6 @@
 import axiosClient from "../../../utils/axiosClient";
 
-const URL = "/task-management/api/v1/tasks";
+const URL = "/api/v1/tasks";
 
 const taskApi = {
   getAllTaskByProjectId: (projectId) =>

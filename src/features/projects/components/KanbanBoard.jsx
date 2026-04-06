@@ -10,7 +10,7 @@ export default function KanbanBoard({ tasks = [], projectId, onTaskCreated }) {
       todo: tasks.filter((t) => t.status === "TO_DO"),
       inProgress: tasks.filter((t) => t.status === "IN_PROGRESS"),
       review: tasks.filter(
-        (t) => t.status === "IN_REVIEW" || t.status === "REVIEW"
+        (t) => t.status === "IN_REVIEW" || t.status === "REVIEW",
       ),
       done: tasks.filter((t) => t.status === "DONE"),
     };

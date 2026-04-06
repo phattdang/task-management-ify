@@ -1,6 +1,6 @@
 import axiosClient from "../../../utils/axiosClient";
 
-const URL = "/project-management/api/v1/projects";
+const URL = "/api/v1/projects";
 
 const projectApi = {
   getAll: () => axiosClient.get(URL),
