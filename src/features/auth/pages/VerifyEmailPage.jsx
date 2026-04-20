@@ -107,32 +107,29 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 pt-12 pb-12 font-sans relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-cyan-500/10 blur-3xl rounded-full opacity-40 animate-softGlow"></div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 pt-12 pb-12 font-sans relative overflow-hidden transition-colors duration-200">
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-100 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"></div>
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-500/10 dark:bg-cyan-500/10 blur-3xl rounded-full opacity-50 dark:opacity-40 animate-softGlow"></div>
 
-      <div className="w-full max-w-[420px] px-6 py-10 rounded-2xl border relative z-10 text-center" style={{
-        backgroundColor: 'rgba(15, 23, 42, 0.5)',
-        backdropFilter: 'blur(16px)',
-        borderColor: 'rgba(71, 85, 105, 0.3)',
-        boxShadow: '0 20px 50px rgba(6, 182, 212, 0.1)',
-      }}>
+      <div className="w-full max-w-[420px] px-6 py-10 rounded-2xl border border-slate-200 dark:border-slate-700/50 relative z-10 text-center bg-white/90 dark:bg-slate-900/50 backdrop-blur-xl shadow-xl dark:shadow-[0_20px_50px_rgba(6,182,212,0.1)]">
         {/* Logo Section */}
         <div className="flex justify-center mb-6">
-          <span className="flex items-center gap-2 text-2xl font-bold text-cyan-400">
+          <span className="flex items-center gap-2 text-2xl font-bold text-blue-600 dark:text-cyan-400">
             <span className="text-3xl">⚡</span>
             TaskMgmt
           </span>
         </div>
 
-        <h1 className="text-lg font-bold text-slate-100 mb-4">
+        <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">
           Verify your email address
         </h1>
 
-        <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
           We sent a verification code to:
           <br />
-          <span className="font-semibold text-slate-200">{email}</span>
+          <span className="font-semibold text-slate-800 dark:text-slate-200">
+            {email}
+          </span>
         </p>
 
         <form onSubmit={handleVerify}>
@@ -146,20 +143,20 @@ export default function VerifyEmailPage() {
                 value={digit}
                 onChange={(e) => handleChange(index, e)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-12 h-12 bg-slate-800/50 border border-slate-700/50 rounded-lg text-center text-xl font-bold text-slate-100 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/30 transition-all"
+                className="w-12 h-12 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-center text-xl font-bold text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-600 dark:focus:border-cyan-500/50 focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 transition-all"
               />
             ))}
           </div>
 
           {errorMsg && (
-            <div className="text-red-400 text-sm mb-4 bg-red-500/10 p-3 rounded-lg border border-red-500/30">
+            <div className="text-red-600 dark:text-red-400 text-sm mb-4 bg-red-50 dark:bg-red-500/10 p-3 rounded-lg border border-red-200 dark:border-red-500/30">
               {errorMsg}
             </div>
           )}
 
           <button
             type="submit"
-            className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-semibold py-2.5 rounded-lg transition-all duration-200 mb-4 shadow-lg shadow-cyan-500/30"
+            className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white font-semibold py-2.5 rounded-lg transition-all duration-200 mb-4 shadow-md dark:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500/50"
           >
             Verify Code
           </button>
@@ -167,19 +164,18 @@ export default function VerifyEmailPage() {
 
         <div className="text-sm">
           <button
+            type="button"
             onClick={handleResendOtp}
             disabled={isResending}
-            className="text-cyan-400 hover:text-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
+            className="text-blue-600 dark:text-cyan-400 hover:text-blue-700 dark:hover:text-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
           >
-            {isResending
-              ? "Sending..."
-              : "Didn't receive code? Resend"}
+            {isResending ? "Sending..." : "Didn't receive code? Resend"}
           </button>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-slate-700/30">
-          <p className="text-[12px] text-slate-600">
-            TaskMgmt © 2025 • Secure task management
+        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700/40">
+          <p className="text-[12px] text-slate-500 dark:text-slate-600">
+            TaskMgmt © 2026 • Secure task management
           </p>
         </div>
       </div>

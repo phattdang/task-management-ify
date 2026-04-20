@@ -20,15 +20,17 @@ export default function ProductNav() {
           className="flex flex-col items-center gap-2 cursor-pointer group"
         >
           <div
-            className={`w-10 h-10 rounded-lg flex items-center justify-center text-white shadow-sm transition-transform group-hover:-translate-y-1 ${
-              item.active ? "scale-125 shadow-md" : "opacity-80"
+            className={`w-10 h-10 rounded-lg flex items-center justify-center text-white shadow-sm transition-transform duration-300 group-hover:-translate-y-1 ${
+              item.active ? "scale-125 shadow-md" : "opacity-90 dark:opacity-85"
             } ${item.color}`}
           >
             <span className="text-sm">{item.icon}</span>
           </div>
           <span
             className={`text-xs font-semibold ${
-              item.active ? "text-blue-700" : "text-gray-500"
+              item.active
+                ? "text-blue-600 dark:text-cyan-400"
+                : "text-slate-500 dark:text-slate-400"
             }`}
           >
             {item.name}

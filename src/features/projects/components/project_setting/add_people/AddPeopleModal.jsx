@@ -40,16 +40,8 @@ export default function AddPeopleModal({ onClose, projectInfo }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-[999] flex items-center justify-center font-sans backdrop-blur-sm">
-      <div 
-        className="w-[600px] rounded-2xl shadow-2xl p-8 relative animate-slideUp border"
-        style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.6)',
-          backdropFilter: 'blur(16px)',
-          borderColor: 'rgba(71, 85, 105, 0.3)',
-          boxShadow: '0 25px 50px rgba(6, 182, 212, 0.15)',
-        }}
-      >
+    <div className="fixed inset-0 bg-black/50 dark:bg-black/60 z-[999] flex items-center justify-center font-sans backdrop-blur-sm">
+      <div className="w-[600px] rounded-2xl shadow-2xl p-8 relative animate-slideUp border border-slate-200 dark:border-slate-700/50 bg-white/95 dark:bg-slate-900/60 dark:backdrop-blur-xl dark:shadow-[0_25px_50px_rgba(6,182,212,0.15)]">
         {currentView === "list" ? (
           <ManageAccessView
             invitations={invitations}
@@ -65,8 +57,9 @@ export default function AddPeopleModal({ onClose, projectInfo }) {
         )}
 
         <button
+          type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-500 hover:text-slate-300 text-xl font-bold transition-colors"
+          className="absolute top-4 right-4 text-slate-500 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 text-xl font-bold transition-colors"
         >
           &times;
         </button>
