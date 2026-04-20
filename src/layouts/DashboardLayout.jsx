@@ -47,25 +47,25 @@ export default function DashboardLayout({ children }) {
   }, [location.pathname, navigate]);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-950 flex flex-col font-sans">
       {/* 1. Navbar */}
       <TopNavbar userInfo={userInfo} />
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
         {/* 2. Sidebar */}
         <LeftSidebar projects={projects} currentProjectId={projectId} />
 
         {/* 3. Main Content */}
-        <main className="flex-1 bg-white min-w-0 overflow-y-auto h-[calc(100vh-56px)]">
+        <main className="flex-1 min-w-0 overflow-y-auto h-[calc(100vh-56px)] bg-slate-950">
           {children}
         </main>
       </div>
 
-      {/* 4. Quickstart Button */}
+      {/* 4. Quickstart Button - Glassmorphic */}
       <div className="fixed bottom-6 right-6 z-50">
-        <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full shadow-lg font-bold flex items-center gap-2 transition-transform hover:scale-105">
-          💡 Quickstart
-          <span className="bg-purple-500 rounded-full w-5 h-5 flex items-center justify-center text-xs">
+        <button className="glass rounded-full px-4 py-2 font-bold flex items-center gap-2 transition-all duration-200 hover:bg-slate-800/50 hover:border-cyan-500/50 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/30">
+          <span>✨</span> Quickstart
+          <span className="bg-slate-700/60 rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-slate-600/80 transition-all">
             ×
           </span>
         </button>
