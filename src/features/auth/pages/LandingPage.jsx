@@ -40,46 +40,38 @@ export default function LandingPage() {
   };
 
   return (
-    // Background gradient toàn màn hình
-    <div className="min-h-screen bg-gradient-to-br from-[#DEEBFF] via-[#E6FCFF] to-[#DEEBFF] font-sans overflow-x-hidden">
-      {/* Loading Overlay khi đang xử lý Google Login */}
+    <div className="min-h-screen bg-slate-950 font-sans overflow-x-hidden relative">
+      {/* Animated Background Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 opacity-60"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-cyan-500/10 blur-3xl rounded-full opacity-40 animate-softGlow"></div>
+
+      {/* Loading Overlay */}
       {isProcessingGoogle && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-amber-200 border-t-amber-600"></div>
-          <p className="mt-4 font-semibold text-amber-800">
-            Đang đăng nhập với Google...
-          </p>
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950/80 backdrop-blur-sm">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-cyan-500 border-t-transparent"></div>
+          <p className="mt-4 font-semibold text-cyan-400">Signing in with Google...</p>
         </div>
       )}
 
-      {/* Top Navigation Bar (Logo) */}
-      <nav className="p-6">
-        <div className="flex items-center gap-2 text-blue-700 font-bold text-2xl">
-          <img
-            src={logoImg}
-            alt="Logo"
-            className="h-15 w-auto object-contain"
-          />
-          <span className="text-3xl"></span> Unemployed Team
+      {/* Top Navigation */}
+      <nav className="relative z-10 p-6">
+        <div className="flex items-center gap-2 text-cyan-400 font-bold text-2xl hover:text-cyan-300 transition-colors cursor-pointer">
+          <span className="text-3xl">⚡</span> TaskMgmt
         </div>
       </nav>
 
-      {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-6 pt-4 pb-20">
-        {/* Layout 2 cột */}
-        <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-20">
-          {/* Cột trái: Nội dung & Form */}
-          <div className="flex-1 w-full lg:pt-10">
+      {/* Main Content */}
+      <main className="relative z-10 max-w-7xl mx-auto px-6 pt-8 pb-20">
+        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+          {/* Left Column - Hero Text & Form */}
+          <div className="flex-1 w-full lg:pt-12">
             <AuthForm />
           </div>
 
-          {/* Cột phải: Hình ảnh minh họa (Ẩn trên mobile nhỏ nếu muốn, hoặc để nguyên) */}
+          {/* Right Column - Illustration */}
           <div className="flex-1 w-full relative hidden lg:block">
-            {/* Hiệu ứng nền mờ phía sau Board */}
-            <div className="absolute top-10 left-10 w-full h-full bg-blue-400 opacity-10 blur-3xl rounded-full pointer-events-none"></div>
-
-            {/* Mockup Board */}
-            <div className="relative mt-10">
+            <div className="absolute -top-10 -right-10 w-80 h-80 bg-cyan-500/5 blur-3xl rounded-full pointer-events-none"></div>
+            <div className="relative">
               <MockBoard />
             </div>
           </div>

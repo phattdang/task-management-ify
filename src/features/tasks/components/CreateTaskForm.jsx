@@ -93,14 +93,19 @@ export default function CreateTaskForm({ projectId, onCancel, onSuccess }) {
   const selectedMember = members.find((m) => m.id === assigneeId);
 
   return (
-    <div ref={formRef} className="mb-2">
+    <div ref={formRef} className="mb-3">
       <form
         onSubmit={handleSubmit}
-        className="bg-white border-2 border-blue-600 rounded p-2 shadow-md"
+        className="rounded-lg p-3 border"
+        style={{
+          backgroundColor: 'rgba(15, 23, 42, 0.4)',
+          backdropFilter: 'blur(8px)',
+          borderColor: 'rgba(6, 182, 212, 0.4)',
+        }}
       >
         <textarea
           placeholder="What needs to be done?"
-          className="w-full text-sm resize-none outline-none text-gray-800 placeholder-gray-400 mb-2"
+          className="w-full text-sm resize-none outline-none bg-slate-800/50 text-slate-100 placeholder-slate-600 mb-3 p-2 rounded border border-slate-700/50 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/30 transition-all"
           rows={3}
           autoFocus
           value={taskName}
@@ -113,7 +118,7 @@ export default function CreateTaskForm({ projectId, onCancel, onSuccess }) {
           }}
         />
 
-        <div className="flex items-center gap-2 relative">
+        <div className="flex items-center gap-2 relative flex-wrap">
           {/* Date Picker */}
           <div className="relative group">
             <input
@@ -123,12 +128,12 @@ export default function CreateTaskForm({ projectId, onCancel, onSuccess }) {
               className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10"
             />
             {dueDate ? (
-              <div className="flex items-center gap-1 bg-red-50 text-red-600 border border-red-200 px-2 py-1 rounded-[3px] text-xs font-bold">
-                <span>📅 {formatDateDisplay(dueDate)}</span>
+              <div className="flex items-center gap-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 px-2 py-1 rounded-md text-xs font-bold">
+                📅 {formatDateDisplay(dueDate)}
               </div>
             ) : (
-              <div className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-gray-500">
-                <span className="text-lg">📅</span>
+              <div className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-700/50 text-slate-500 hover:text-cyan-400 transition-colors">
+                📅
               </div>
             )}
           </div>
@@ -138,59 +143,66 @@ export default function CreateTaskForm({ projectId, onCancel, onSuccess }) {
             <button
               type="button"
               onClick={() => setIsMemberOpen(!isMemberOpen)}
-              className={`flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors ${
-                assigneeId ? "" : "w-7 h-7"
+              className={`flex items-center justify-center rounded-lg hover:bg-slate-700/50 transition-colors ${
+                assigneeId ? "" : "w-8 h-8"
               }`}
             >
               {assigneeId && selectedMember ? (
-                <div className="flex items-center gap-1 bg-blue-50 text-blue-600 px-2 py-1 rounded-[3px] border border-blue-200">
-                  <div className="w-4 h-4 bg-blue-600 text-white rounded-full flex items-center justify-center text-[8px] font-bold">
+                <div className="flex items-center gap-1 bg-slate-700/50 text-slate-300 px-2 py-1 rounded-md border border-slate-600/50">
+                  <div className="w-4 h-4 bg-gradient-to-br from-cyan-500 to-blue-600 text-white rounded-full flex items-center justify-center text-[8px] font-bold">
                     {getInitials(selectedMember.fullName)}
                   </div>
-                  <span className="text-xs font-bold whitespace-nowrap max-w-[80px] truncate">
+                  <span className="text-xs font-medium whitespace-nowrap max-w-[80px] truncate">
                     {selectedMember.fullName}
                   </span>
                 </div>
               ) : (
-                <span className="text-gray-500 text-lg">👤</span>
+                <span className="text-slate-500 text-lg hover:text-cyan-400 transition-colors">👤</span>
               )}
             </button>
 
             {isMemberOpen && (
-              <div className="absolute top-8 left-0 w-60 bg-white shadow-xl border border-gray-200 rounded z-50">
-                <div className="p-2 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase">
-                  Assignee
+              <div 
+                className="absolute top-10 left-0 w-60 rounded-lg z-50 border"
+                style={{
+                  backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                  backdropFilter: 'blur(12px)',
+                  borderColor: 'rgba(71, 85, 105, 0.3)',
+                }}
+              >
+                <div className="p-3 border-b" style={{ borderColor: 'rgba(71, 85, 105, 0.2)' }}>
+                  <span className="text-xs font-bold text-slate-500 uppercase">Assign to</span>
                 </div>
-                <div className="max-h-48 overflow-y-auto py-1">
+                <div className="max-h-56 overflow-y-auto py-1">
                   <div
-                    className="px-3 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2"
+                    className="px-3 py-2 hover:bg-slate-800/40 cursor-pointer flex items-center gap-2 transition-colors"
                     onClick={() => {
                       setAssigneeId(null);
                       setIsMemberOpen(false);
                     }}
                   >
-                    <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                    <div className="w-6 h-6 rounded-lg bg-slate-700/50 flex items-center justify-center text-slate-500 text-xs">
                       ?
                     </div>
-                    <span className="text-sm text-gray-700">Unassigned</span>
+                    <span className="text-sm text-slate-300">Unassigned</span>
                   </div>
                   {members.map((mem) => (
                     <div
                       key={mem.id}
-                      className="px-3 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2"
+                      className="px-3 py-2 hover:bg-slate-800/40 cursor-pointer flex items-center gap-2 transition-colors"
                       onClick={() => {
                         setAssigneeId(mem.id);
                         setIsMemberOpen(false);
                       }}
                     >
-                      <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-cyan-500/50 to-blue-600/50 text-slate-100 flex items-center justify-center text-xs font-bold">
                         {getInitials(mem.fullName)}
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-sm text-gray-700 font-medium">
+                        <span className="text-sm text-slate-200 font-medium">
                           {mem.fullName}
                         </span>
-                        <span className="text-[10px] text-gray-400">
+                        <span className="text-[10px] text-slate-600">
                           {mem.email}
                         </span>
                       </div>
@@ -203,17 +215,21 @@ export default function CreateTaskForm({ projectId, onCancel, onSuccess }) {
         </div>
       </form>
 
-      <div className="flex items-center gap-2 mt-2 px-1">
+      <div className="flex items-center gap-2 mt-3 px-0">
         <button
           onClick={handleSubmit}
           disabled={isSubmitting}
-          className="bg-blue-600 text-white text-sm font-bold px-3 py-1.5 rounded hover:bg-blue-700 disabled:bg-blue-400"
+          className={`text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition-all ${
+            isSubmitting
+              ? "bg-cyan-600/50 cursor-not-allowed opacity-70"
+              : "bg-cyan-600 hover:bg-cyan-500 shadow-lg shadow-cyan-500/30"
+          }`}
         >
           {isSubmitting ? "Adding..." : "Add"}
         </button>
         <button
           onClick={onCancel}
-          className="text-gray-600 text-sm font-medium px-3 py-1.5 rounded hover:bg-gray-200"
+          className="text-slate-400 hover:text-slate-300 text-sm font-medium px-4 py-1.5 rounded-lg hover:bg-slate-800/40 transition-colors"
         >
           Cancel
         </button>

@@ -12,33 +12,32 @@ export default function ManageAccessView({
     return name.charAt(0).toUpperCase();
   };
 
-  // --- HELPER: Xử lý màu sắc và text cho từng Status ---
   const getStatusConfig = (status) => {
     switch (status) {
       case "ACCEPTED":
         return {
           label: "Member",
-          style: "bg-green-100 text-green-700 border border-green-200",
+          style: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
         };
       case "PENDING":
         return {
-          label: "Pending Invite",
-          style: "bg-yellow-50 text-yellow-700 border border-yellow-200",
+          label: "Pending",
+          style: "bg-amber-500/20 text-amber-400 border border-amber-500/30",
         };
       case "REJECTED":
         return {
           label: "Rejected",
-          style: "bg-red-50 text-red-700 border border-red-200",
+          style: "bg-red-500/20 text-red-400 border border-red-500/30",
         };
       case "EXPIRED":
         return {
           label: "Expired",
-          style: "bg-gray-100 text-gray-500 border border-gray-200",
+          style: "bg-slate-600/20 text-slate-400 border border-slate-600/30",
         };
       default:
         return {
           label: "Unknown",
-          style: "bg-gray-50 text-gray-500",
+          style: "bg-slate-700/20 text-slate-400",
         };
     }
   };
@@ -46,82 +45,80 @@ export default function ManageAccessView({
   return (
     <>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-medium text-gray-800">Manage access</h2>
+        <h2 className="text-lg font-semibold text-slate-100">Members & Access</h2>
         <button
           onClick={onSwitchToAddView}
-          className="px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-50 text-sm font-medium text-gray-700 transition-colors"
+          className="px-4 py-1.5 border border-slate-700/50 rounded-lg hover:bg-slate-800/40 text-sm font-medium text-slate-300 hover:text-slate-100 transition-all"
         >
-          Add people
+          + Add people
         </button>
       </div>
 
-      <div className="border border-gray-200 rounded-md p-4 min-h-[300px] max-h-[400px] overflow-y-auto">
+      <div className="border border-slate-700/30 rounded-lg p-4 min-h-[300px] max-h-[400px] overflow-y-auto bg-slate-800/30">
         {/* Controls */}
-        <div className="flex justify-between items-center mb-4 sticky top-0 bg-white z-10 pb-2 border-b border-gray-50">
+        <div className="flex justify-between items-center mb-4 sticky top-0 bg-slate-800/50 z-10 pb-2 border-b border-slate-700/30">
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
-              className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+              className="w-4 h-4 rounded border-slate-600 text-cyan-500 focus:ring-cyan-500 cursor-pointer"
             />
-            <span className="text-sm text-gray-600">Select all</span>
+            <span className="text-sm text-slate-400">Select all</span>
           </div>
-          <div className="flex items-center gap-1 text-sm text-gray-600 cursor-pointer hover:text-gray-900">
-            <span>Type</span> <span className="text-xs">▼</span>
+          <div className="flex items-center gap-1 text-sm text-slate-400 cursor-pointer hover:text-slate-300 transition-colors">
+            <span>Filter</span> <span className="text-xs">▼</span>
           </div>
         </div>
 
         {/* Search Bar */}
-        <div className="relative mb-4">
-          <span className="absolute left-3 top-2.5 text-gray-400 text-lg">
+        <div className="relative mb-4 group">
+          <span className="absolute left-3 top-2.5 text-slate-600 group-focus-within:text-cyan-400 transition-colors text-lg">
             🔍
           </span>
           <input
             type="text"
-            placeholder="Filter by name..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:border-blue-500 text-sm transition-all"
+            placeholder="Search members..."
+            className="w-full pl-10 pr-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg focus:outline-none focus:border-cyan-500/50 text-sm text-slate-100 placeholder-slate-600 transition-all"
           />
         </div>
 
-        {/* --- LIST RENDERING --- */}
+        {/* LIST */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-10 text-gray-400">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mb-2"></div>
-            <span className="text-sm">Loading members...</span>
+          <div className="flex flex-col items-center justify-center py-10 text-slate-400">
+            <div className="animate-spin rounded-full h-6 w-6 border-4 border-slate-700 border-t-cyan-500 mb-2"></div>
+            <span className="text-sm font-medium animate-pulse">Loading members...</span>
           </div>
         ) : invitations.length === 0 ? (
-          <div className="text-center text-gray-500 py-10 bg-gray-50 rounded border border-dashed border-gray-200">
-            No members found.
+          <div className="text-center text-slate-500 py-10 bg-slate-700/20 rounded-lg border border-dashed border-slate-700/50">
+            <p className="text-sm font-medium">No members yet</p>
+            <p className="text-xs text-slate-600 mt-1">Add people to start collaborating</p>
           </div>
         ) : (
           invitations.map((item) => {
-            // Lấy config hiển thị dựa trên status
             const statusConfig = getStatusConfig(item.status);
 
             return (
               <div
                 key={item.id}
-                className="flex items-center justify-between p-3 hover:bg-blue-50/50 rounded group border border-transparent hover:border-blue-100 transition-all mb-1"
+                className="flex items-center justify-between p-3 hover:bg-slate-700/30 rounded-lg group border border-transparent hover:border-slate-700/50 transition-all mb-1"
               >
                 <div className="flex items-center gap-3 overflow-hidden">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    className="w-4 h-4 rounded border-slate-600 text-cyan-500 focus:ring-cyan-500 cursor-pointer"
                   />
 
-                  {/* Avatar */}
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center shrink-0 border border-blue-200">
-                    <span className="text-xs font-bold text-blue-700">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500/50 to-blue-600/50 flex items-center justify-center shrink-0 border border-slate-600/50">
+                    <span className="text-xs font-bold text-slate-100">
                       {getInitials(item.invitedMember?.fullName)}
                     </span>
                   </div>
 
-                  {/* Info */}
                   <div className="flex flex-col truncate">
-                    <span className="text-sm font-semibold text-gray-700 cursor-pointer hover:text-blue-600 hover:underline truncate">
+                    <span className="text-sm font-semibold text-slate-200 cursor-pointer hover:text-cyan-400 hover:underline truncate transition-colors">
                       {item.invitedMember?.fullName || "Unknown User"}
                     </span>
                     <span
-                      className="text-xs text-gray-500 truncate"
+                      className="text-xs text-slate-600 truncate"
                       title={item.invitedMember?.email}
                     >
                       {item.invitedMember?.email}
@@ -129,26 +126,23 @@ export default function ManageAccessView({
                   </div>
                 </div>
 
-                {/* Status & Actions */}
                 <div className="flex items-center gap-3 shrink-0 ml-4">
-                  {/* Status Badge */}
                   <span
-                    className={`text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wide ${statusConfig.style}`}
+                    className={`text-[10px] px-2.5 py-1 rounded-lg font-bold uppercase tracking-wide ${statusConfig.style}`}
                   >
                     {statusConfig.label}
                   </span>
 
-                  {/* Remove Button */}
                   <button
-                    className="text-gray-400 hover:text-red-600 p-1.5 rounded-md hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100"
-                    title="Remove access"
+                    className="text-slate-600 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
+                    title="Remove member"
                     onClick={() => {
                       if (
                         window.confirm(
-                          "Are you sure you want to remove this member?"
+                          "Remove this member from the project?"
                         )
                       ) {
-                        console.log("Call API remove invitation ID:", item.id);
+                        console.log("Remove invitation ID:", item.id);
                       }
                     }}
                   >
@@ -161,11 +155,11 @@ export default function ManageAccessView({
         )}
       </div>
 
-      <div className="flex justify-center items-center gap-4 mt-6 text-sm text-gray-600 font-medium select-none">
-        <button className="hover:text-gray-900 text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed">
+      <div className="flex justify-center items-center gap-4 mt-6 text-sm text-slate-500 font-medium select-none">
+        <button className="hover:text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
           ‹ Previous
         </button>
-        <button className="hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed">
+        <button className="hover:text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
           Next ›
         </button>
       </div>

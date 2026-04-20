@@ -46,68 +46,68 @@ export default function TaskDetailContent({ task, onUpdate }) {
   return (
     <div className="flex-1 lg:pr-10 py-2">
       {/* --- TASK NAME (EDITABLE) --- */}
-      <div className="mb-4">
+      <div className="mb-6">
         {isEditingTitle ? (
           <textarea
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            onBlur={handleUpdateTitle} // Click ra ngoài tự save
+            onBlur={handleUpdateTitle}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 handleUpdateTitle();
               }
             }}
-            className="w-full text-2xl font-semibold p-2 border-2 border-blue-600 rounded-md outline-none resize-none bg-white"
+            className="w-full text-2xl font-semibold p-3 bg-slate-800/50 border-2 border-cyan-500/50 rounded-lg outline-none resize-none text-slate-100 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 transition-all"
             rows={1}
             autoFocus
           />
         ) : (
           <h1
             onClick={() => setIsEditingTitle(true)}
-            className="text-2xl font-semibold p-2 -ml-2 rounded-md hover:bg-gray-100 cursor-pointer text-[#172B4D] transition-colors"
+            className="text-3xl font-bold p-2 -ml-2 rounded-lg hover:bg-slate-800/40 cursor-pointer text-slate-100 transition-colors"
           >
             {task?.taskName}
           </h1>
         )}
       </div>
 
-      {/* Quick Actions (Giữ nguyên) */}
+      {/* Quick Actions */}
       <div className="flex gap-2 mb-8">
-        <button className="bg-[#EBECF0] hover:bg-gray-200 px-3 py-1.5 rounded-md text-sm font-medium text-[#42526E]">
+        <button className="bg-slate-800/50 hover:bg-slate-700/50 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-slate-100 border border-slate-700/30 transition-all">
           ➕ Attach
         </button>
-        <button className="bg-[#EBECF0] hover:bg-gray-200 px-3 py-1.5 rounded-md text-sm font-medium text-[#42526E]">
-          ⚙️ Add child
+        <button className="bg-slate-800/50 hover:bg-slate-700/50 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-slate-100 border border-slate-700/30 transition-all">
+          ⚙️ Subtask
         </button>
       </div>
 
       {/* --- DESCRIPTION (EDITABLE) --- */}
       <div className="mb-8">
-        <h3 className="text-sm font-bold mb-2 text-[#5E6C84]">Description</h3>
+        <h3 className="text-sm font-bold mb-3 text-slate-400 uppercase tracking-wider">Description</h3>
 
         {isEditingDesc ? (
-          <div className="bg-white border border-gray-300 rounded-md">
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg overflow-hidden">
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-3 min-h-[120px] text-sm outline-none resize-y rounded-t-md"
-              placeholder="Add a description..."
+              className="w-full p-3 min-h-[120px] text-sm outline-none resize-y bg-slate-800/50 text-slate-100 placeholder-slate-600 border-none rounded-t-lg"
+              placeholder="Add task description..."
               autoFocus
             />
-            <div className="flex items-center gap-2 p-2 bg-gray-50 border-t border-gray-200 rounded-b-md justify-end">
+            <div className="flex items-center gap-2 p-3 bg-slate-700/20 border-t border-slate-700/30 rounded-b-lg justify-end">
               <button
                 onClick={() => {
                   setDescription(task?.description || "");
                   setIsEditingDesc(false);
                 }}
-                className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-200 rounded"
+                className="px-3 py-1.5 text-sm font-medium text-slate-400 hover:text-slate-300 hover:bg-slate-800/40 rounded-lg transition-all"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdateDesc}
-                className="px-3 py-1.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded"
+                className="px-3 py-1.5 text-sm font-bold text-white bg-cyan-600 hover:bg-cyan-500 rounded-lg shadow-lg shadow-cyan-500/30 transition-all"
               >
                 Save
               </button>
@@ -116,10 +116,10 @@ export default function TaskDetailContent({ task, onUpdate }) {
         ) : (
           <div
             onClick={() => setIsEditingDesc(true)}
-            className="text-sm text-gray-800 hover:bg-gray-100 p-3 -ml-2 rounded-md cursor-pointer min-h-[60px] whitespace-pre-wrap transition-colors"
+            className="text-sm text-slate-300 hover:bg-slate-800/40 p-3 -ml-2 rounded-lg cursor-pointer min-h-[80px] whitespace-pre-wrap transition-colors border border-transparent hover:border-slate-700/50"
           >
             {task?.description || (
-              <span className="text-gray-400 italic">Add a description...</span>
+              <span className="text-slate-500 italic">Click to add description...</span>
             )}
           </div>
         )}

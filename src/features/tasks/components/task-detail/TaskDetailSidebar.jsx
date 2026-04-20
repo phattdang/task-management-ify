@@ -41,12 +41,11 @@ export default function TaskDetailSidebar({ task, onUpdate }) {
 
   // --- SUB-COMPONENTS CHO DROPDOWN ---
 
-  // 1. Status Dropdown
   const StatusSelector = () => (
     <select
       value={task?.status}
       onChange={(e) => handleUpdate("status", e.target.value)}
-      className="bg-[#DEEBFF] text-[#0747A6] font-bold px-3 py-1.5 rounded-md text-xs uppercase cursor-pointer border-none outline-none hover:bg-[#B3D4FF]"
+      className="bg-cyan-500/20 text-cyan-400 font-bold px-3 py-1.5 rounded-lg text-xs uppercase cursor-pointer border border-cyan-500/30 outline-none hover:bg-cyan-500/30 transition-all"
     >
       <option value="TO_DO">TO DO</option>
       <option value="IN_PROGRESS">IN PROGRESS</option>
@@ -55,12 +54,11 @@ export default function TaskDetailSidebar({ task, onUpdate }) {
     </select>
   );
 
-  // 2. Priority Dropdown
   const PrioritySelector = () => (
     <select
       value={task?.priority}
       onChange={(e) => handleUpdate("priority", e.target.value)}
-      className="bg-transparent text-sm text-[#172B4D] cursor-pointer outline-none hover:bg-gray-100 px-2 py-1 rounded"
+      className="bg-slate-800/50 text-sm text-slate-300 cursor-pointer outline-none hover:bg-slate-700/50 px-2 py-1 rounded-lg border border-slate-700/30 transition-all"
     >
       <option value="HIGHEST">Highest</option>
       <option value="HIGH">High</option>
@@ -94,43 +92,51 @@ export default function TaskDetailSidebar({ task, onUpdate }) {
       <div className="relative" ref={dropdownRef}>
         <div
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 group cursor-pointer hover:bg-gray-100 p-1.5 rounded -ml-1.5 transition-colors"
+          className="flex items-center gap-2 group cursor-pointer hover:bg-slate-800/40 p-1.5 rounded-lg -ml-1.5 transition-colors"
         >
-          <div className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px] font-bold">
+          <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 text-white flex items-center justify-center text-[10px] font-bold">
             {getInitials(task?.assignee?.fullName)}
           </div>
-          <span className="text-[#172B4D] text-sm">
+          <span className="text-slate-300 text-sm">
             {task?.assignee?.fullName || "Unassigned"}
           </span>
         </div>
 
         {isOpen && (
-          <div className="absolute top-full left-0 mt-1 w-60 bg-white shadow-xl border border-gray-200 rounded-md z-50 py-1">
+          <div 
+            className="absolute top-full left-0 mt-2 w-56 rounded-lg z-50 py-2 border"
+            style={{
+              backgroundColor: 'rgba(15, 23, 42, 0.5)',
+              backdropFilter: 'blur(12px)',
+              borderColor: 'rgba(71, 85, 105, 0.3)',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
+            }}
+          >
             <div
-              className="px-3 py-2 hover:bg-gray-50 cursor-pointer flex items-center gap-2"
+              className="px-3 py-2 hover:bg-slate-800/40 cursor-pointer flex items-center gap-2 transition-colors"
               onClick={() => {
                 handleUpdate("assigneeId", null);
                 setIsOpen(false);
               }}
             >
-              <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+              <div className="w-6 h-6 rounded-lg bg-slate-700/50 flex items-center justify-center text-slate-500">
                 ?
               </div>
-              <span className="text-sm">Unassigned</span>
+              <span className="text-sm text-slate-300">Unassigned</span>
             </div>
             {members.map((mem) => (
               <div
                 key={mem.id}
-                className="px-3 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2"
+                className="px-3 py-2 hover:bg-slate-800/40 cursor-pointer flex items-center gap-2 transition-colors"
                 onClick={() => {
                   handleUpdate("assigneeId", mem.id);
                   setIsOpen(false);
                 }}
               >
-                <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">
+                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-cyan-500/50 to-blue-600/50 text-slate-100 flex items-center justify-center text-xs font-bold">
                   {getInitials(mem.fullName)}
                 </div>
-                <span className="text-sm">{mem.fullName}</span>
+                <span className="text-sm text-slate-300">{mem.fullName}</span>
               </div>
             ))}
           </div>
@@ -151,53 +157,52 @@ export default function TaskDetailSidebar({ task, onUpdate }) {
       </div>
 
       {/* Details Box */}
-      <div className="border border-gray-200 rounded-md overflow-hidden mb-6">
-        <div className="px-4 py-3 bg-white border-b border-gray-100 flex justify-between items-center">
-          <span className="text-sm font-semibold text-[#172B4D]">Details</span>
-          <button className="text-gray-400 hover:text-gray-600 text-lg">
+      <div className="border border-slate-700/30 rounded-lg overflow-hidden mb-6 bg-slate-800/30">
+        <div className="px-4 py-3 bg-slate-800/50 border-b border-slate-700/30 flex justify-between items-center">
+          <span className="text-sm font-semibold text-slate-100">Details</span>
+          <button className="text-slate-500 hover:text-slate-300 text-lg transition-colors">
             ›
           </button>
         </div>
 
-        <div className="p-4 space-y-4 text-sm bg-white">
+        <div className="p-4 space-y-4 text-sm">
           {/* Assignee */}
           <div className="grid grid-cols-[100px_1fr] items-center">
-            <span className="text-[#5E6C84] font-medium">Assignee</span>
+            <span className="text-slate-400 font-medium">Assignee</span>
             <AssigneeSelector />
           </div>
 
           {/* Priority */}
           <div className="grid grid-cols-[100px_1fr] items-center">
-            <span className="text-[#5E6C84] font-medium">Priority</span>
+            <span className="text-slate-400 font-medium">Priority</span>
             <div className="flex items-center gap-2 -ml-2">
-              {/* Icon Priority màu mè */}
               <span
                 className={`ml-2 font-bold ${
                   task?.priority === "HIGHEST"
-                    ? "text-red-600"
-                    : "text-orange-500"
+                    ? "text-red-500"
+                    : "text-amber-500"
                 }`}
               >
-                {task?.priority === "HIGHEST" ? "↑" : "〓"}
+                {task?.priority === "HIGHEST" ? "↑" : "●"}
               </span>
               <PrioritySelector />
             </div>
           </div>
 
-          {/* Reporter (Read-only) */}
+          {/* Reporter */}
           <div className="grid grid-cols-[100px_1fr] items-center">
-            <span className="text-[#5E6C84] font-medium">Reporter</span>
+            <span className="text-slate-400 font-medium">Reporter</span>
             <div className="flex items-center gap-2 p-1.5 -ml-1.5">
-              <div className="w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center text-[10px] font-bold">
+              <div className="w-6 h-6 rounded-lg bg-slate-700/50 text-slate-300 flex items-center justify-center text-[10px] font-bold">
                 {getInitials(task?.assignor?.fullName)}
               </div>
-              <span className="text-[#172B4D]">{task?.assignor?.fullName}</span>
+              <span className="text-slate-300">{task?.assignor?.fullName}</span>
             </div>
           </div>
 
           {/* Due Date */}
           <div className="grid grid-cols-[100px_1fr] items-center">
-            <span className="text-[#5E6C84] font-medium">Due date</span>
+            <span className="text-slate-400 font-medium">Due date</span>
             <input
               type="date"
               value={task?.dueDate ? task.dueDate.split("T")[0] : ""}
@@ -207,14 +212,14 @@ export default function TaskDetailSidebar({ task, onUpdate }) {
                   e.target.value ? `${e.target.value}T00:00:00` : null
                 )
               }
-              className="text-sm text-[#172B4D] p-1 -ml-1 hover:bg-gray-100 rounded cursor-pointer border-none outline-none"
+              className="text-sm text-slate-300 bg-slate-800/50 p-1.5 -ml-1 hover:bg-slate-700/50 rounded-lg cursor-pointer border border-slate-700/30 outline-none focus:border-cyan-500/50 transition-all"
             />
           </div>
         </div>
       </div>
 
       {/* Timestamps */}
-      <div className="text-[11px] text-[#5E6C84] space-y-1 ml-1 border-t pt-4 border-gray-100">
+      <div className="text-[11px] text-slate-600 space-y-1 ml-1 border-t border-slate-700/30 pt-4">
         <p>Created {formatFullDateTime(task?.createdAt)}</p>
         <p>Updated {formatFullDateTime(task?.updatedAt)}</p>
       </div>

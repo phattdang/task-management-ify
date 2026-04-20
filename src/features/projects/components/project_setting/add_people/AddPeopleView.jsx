@@ -57,22 +57,22 @@ export default function AddPeopleView({
 
   return (
     <>
-      <h2 className="text-lg font-medium text-gray-800 mb-4">
-        Add people to {projectName}
+      <h2 className="text-lg font-semibold text-slate-100 mb-6">
+        Invite people to {projectName}
       </h2>
 
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Search by username, full name, or email
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-slate-300 mb-2">
+          Email address
         </label>
-        <div className="relative">
-          <span className="absolute left-3 top-2.5 text-gray-400 text-lg">
+        <div className="relative group">
+          <span className="absolute left-3 top-3 text-slate-600 group-focus-within:text-cyan-400 transition-colors text-lg">
             🔍
           </span>
           <input
-            type="text"
-            placeholder="Enter email to invite..."
-            className="w-full pl-10 pr-4 py-2 border border-blue-500 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm shadow-sm"
+            type="email"
+            placeholder="example@domain.com"
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-lg focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/30 text-sm text-slate-100 placeholder-slate-600 shadow-sm transition-all"
             autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -81,22 +81,27 @@ export default function AddPeopleView({
             }}
           />
         </div>
+        <p className="text-xs text-slate-500 mt-2">Enter the email address of the person to invite</p>
       </div>
 
       <div className="flex justify-end gap-3 mt-8">
         <button
           onClick={onBackToList}
           disabled={isInviting}
-          className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm font-medium text-gray-700 disabled:opacity-50"
+          className="px-4 py-2 border border-slate-700/50 rounded-lg hover:bg-slate-800/40 text-sm font-medium text-slate-400 hover:text-slate-300 disabled:opacity-50 transition-all"
         >
           Cancel
         </button>
         <button
-          className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded text-sm font-medium shadow-sm flex items-center gap-2 disabled:opacity-50"
+          className={`px-4 py-2 rounded-lg text-white text-sm font-semibold flex items-center gap-2 transition-all disabled:opacity-50 ${
+            isInviting
+              ? "bg-cyan-600/50 cursor-not-allowed"
+              : "bg-cyan-600 hover:bg-cyan-500 shadow-lg shadow-cyan-500/30"
+          }`}
           onClick={handleInvite}
           disabled={isInviting}
         >
-          {isInviting ? "Sending..." : "Add to repository"}
+          {isInviting ? "Sending..." : "Send Invite"}
         </button>
       </div>
     </>

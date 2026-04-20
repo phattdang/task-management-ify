@@ -67,74 +67,83 @@ export default function AuthForm() {
 
   return (
     <div className="max-w-lg w-full">
-      <h1 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight mb-6">
-        Kết nối, chia sẻ công việc, quản lý mọi thứ với Unemployed Team!
+      {/* Hero Headline */}
+      <h1 className="text-5xl md:text-6xl font-bold text-slate-100 leading-tight mb-4">
+        Connect, collaborate, and manage{' '}
+        <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+          everything
+        </span>
       </h1>
+      <p className="text-lg text-slate-400 mb-8 leading-relaxed">
+        Bring your team together with TaskMgmt. Organize tasks, boost productivity, and ship better work.
+      </p>
 
-      <div className="space-y-4">
+      {/* Email Signup Form */}
+      <div className="space-y-4 mb-6">
         <div>
-          <label className="block text-xs font-bold text-gray-500 mb-1 ml-1 uppercase">
-            Email
+          <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">
+            Email Address
           </label>
           <input
             type="email"
-            placeholder="you@gmail.com"
+            placeholder="you@company.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            // Nếu đang loading thì disable input
             disabled={isLoading}
-            className={`w-full px-4 py-3 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm ${
-              errorMsg ? "border-red-500" : "border-gray-300"
+            className={`w-full px-4 py-3 bg-slate-800/50 border rounded-lg outline-none transition-all text-slate-100 placeholder-slate-600 text-sm ${
+              errorMsg
+                ? "border-red-500/50 focus:border-red-500/70"
+                : "border-slate-700/50 focus:border-cyan-500/50 focus:bg-slate-800/80"
             }`}
           />
-          {/* Hiển thị lỗi nếu có */}
           {errorMsg && (
-            <p className="text-red-500 text-sm mt-1 ml-1">{errorMsg}</p>
+            <p className="text-red-400 text-sm mt-2">{errorMsg}</p>
           )}
         </div>
 
         <button
           onClick={handleSignUpClick}
           disabled={isLoading}
-          className={`w-full text-white font-bold py-3 rounded transition-colors shadow-md ${
+          className={`w-full text-white font-semibold py-3 rounded-lg transition-all ${
             isLoading
-              ? "bg-blue-400 cursor-wait"
-              : "bg-blue-600 hover:bg-blue-700"
+              ? "bg-cyan-600/50 cursor-not-allowed opacity-70"
+              : "bg-cyan-600 hover:bg-cyan-500 shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50"
           }`}
         >
-          {isLoading ? "Đang xác thực tài khoản..." : "Đăng ký"}
+          {isLoading ? "Creating account..." : "Get Started"}
         </button>
       </div>
 
-      <div className="relative my-6 text-center">
+      {/* Divider */}
+      <div className="relative my-8">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300"></div>
+          <div className="w-full border-t border-slate-700/30"></div>
         </div>
-        <span className="relative bg-transparent px-2 text-sm text-gray-500 bg-gradient-to-br from-[#DEEBFF] to-[#E6FCFF]">
-          Hoặc tiếp tục với
-        </span>
+        <span className="relative bg-slate-950 px-2 text-xs text-slate-500">Or continue with</span>
       </div>
 
-      <div className="flex gap-4 mb-8">
+      {/* Social Login */}
+      <div className="grid grid-cols-2 gap-3 mb-8">
         <button
           onClick={handleGoogleLogin}
-          className="flex-1 py-2.5 px-4 bg-white border border-gray-300 rounded font-bold text-gray-600 shadow-sm hover:bg-gray-50 flex items-center justify-center gap-2 text-sm transition-colors"
+          className="py-2.5 px-4 bg-slate-800/40 border border-slate-700/50 rounded-lg font-semibold text-slate-300 hover:text-cyan-400 hover:border-slate-700/80 hover:bg-slate-800/60 flex items-center justify-center gap-2 text-sm transition-all"
         >
           <span className="text-lg">G</span> Google
         </button>
-        <button className="flex-1 py-2.5 px-4 bg-white border border-gray-300 rounded font-bold text-gray-600 shadow-sm hover:bg-gray-50 flex items-center justify-center gap-2 text-sm transition-colors">
+        <button className="py-2.5 px-4 bg-slate-800/40 border border-slate-700/50 rounded-lg font-semibold text-slate-300 hover:text-cyan-400 hover:border-slate-700/80 hover:bg-slate-800/60 flex items-center justify-center gap-2 text-sm transition-all">
           <span className="text-lg">⊞</span> Microsoft
         </button>
       </div>
 
-      <div className="mt-8 pt-4 border-t border-gray-200">
-        <p>Nếu bạn đã có tài khoản Unemployed Team? </p>
-        <p
-          className="text-sm text-blue-600 cursor-pointer hover:underline"
+      {/* Sign In Link */}
+      <div className="pt-4 border-t border-slate-700/30 text-center text-sm text-slate-400">
+        <span>Already have an account? </span>
+        <button
           onClick={handleLoginClick}
+          className="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors cursor-pointer"
         >
-          Đăng nhập ngay!
-        </p>
+          Sign in
+        </button>
       </div>
     </div>
   );

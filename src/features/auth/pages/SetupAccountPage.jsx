@@ -101,115 +101,112 @@ export default function SetupAccountPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-[#F9FAFB] pt-12 pb-12 font-sans text-[#172B4D]">
-      <div className="w-full max-w-[400px] px-8 py-10 bg-white shadow-lg rounded-sm sm:border sm:border-gray-200">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 pt-12 pb-12 font-sans relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
+      <div className="absolute top-1/3 right-0 w-96 h-96 bg-cyan-500/10 blur-3xl rounded-full opacity-30 animate-softGlow"></div>
+
+      <div className="w-full max-w-[420px] px-6 py-10 rounded-2xl border relative z-10" style={{
+        backgroundColor: 'rgba(15, 23, 42, 0.5)',
+        backdropFilter: 'blur(16px)',
+        borderColor: 'rgba(71, 85, 105, 0.3)',
+        boxShadow: '0 20px 50px rgba(6, 182, 212, 0.1)',
+      }}>
         {/* Logo */}
-        <div className="flex justify-center mb-6 text-[#0052CC]">
-          <span className="flex items-center gap-2 text-2xl font-bold tracking-tight text-[#253858]">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12.6 19.48l5.37 5.37a.89.89 0 001.27 0l4.57-4.57a.89.89 0 000-1.27l-5.37-5.37a.89.89 0 00-1.27 0l-4.57 4.57a.89.89 0 000 1.27zM6.3 13.18l5.37 5.37a.89.89 0 001.27 0l4.57-4.57a.89.89 0 000-1.27L12.14 7.34a.89.89 0 00-1.27 0L6.3 11.91a.89.89 0 000 1.27z" />
-            </svg>
-            ATLASSIAN
+        <div className="flex justify-center mb-6">
+          <span className="flex items-center gap-2 text-2xl font-bold text-cyan-400">
+            <span className="text-3xl">⚡</span>
+            TaskMgmt
           </span>
         </div>
 
         {/* Header Success */}
-        <div className="text-center mb-6">
-          <h2 className="text-base font-bold text-[#172B4D] flex items-center justify-center gap-2">
-            Đã xác minh địa chỉ email
-            <span className="text-green-600">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-              </svg>
-            </span>
+        <div className="text-center mb-8">
+          <h2 className="text-lg font-bold text-slate-100 flex items-center justify-center gap-2">
+            Email verified
+            <span className="text-emerald-400 text-xl">✓</span>
           </h2>
-          <p className="text-xs text-[#5E6C84] mt-1 font-semibold">
-            Finish setting up your account
+          <p className="text-xs text-slate-400 mt-2 font-medium">
+            Complete your account setup
           </p>
         </div>
 
         {/* Email Read-only */}
-        <div className="mb-4">
-          <label className="block text-xs font-bold text-[#5E6C84] mb-1">
-            Địa chỉ email
+        <div className="mb-6">
+          <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">
+            Email Address
           </label>
-          <div className="text-sm font-bold text-[#172B4D]">{email}</div>
+          <div className="text-sm font-semibold text-slate-100 bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
+            {email}
+          </div>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Full Name */}
-          <div className="mb-4">
-            <label className="block text-xs font-bold text-[#5E6C84] mb-1">
-              Họ tên
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">
+              Full Name
             </label>
             <input
               type="text"
-              placeholder="Nhập họ tên"
+              placeholder="John Doe"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className={`w-full px-3 py-2 border-2 rounded-[3px] focus:outline-none transition-colors text-sm ${
+              className={`w-full px-4 py-2.5 bg-slate-800/50 border rounded-lg focus:outline-none transition-all text-sm text-slate-100 placeholder-slate-600 ${
                 errors.fullName
-                  ? "border-red-500 focus:border-red-500"
-                  : "border-gray-300 focus:border-blue-500"
+                  ? "border-red-500/50 focus:border-red-500/70"
+                  : "border-slate-700/50 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/30"
               }`}
               required
             />
-            {/* Hiển thị lỗi field fullName nếu có */}
             {errors.fullName && (
-              <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>
+              <p className="text-red-400 text-xs mt-2">{errors.fullName}</p>
             )}
           </div>
 
           {/* Password */}
-          <div className="mb-2">
-            <label className="block text-xs font-bold text-[#5E6C84] mb-1">
-              Mật khẩu
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">
+              Password
             </label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="Tạo mật khẩu"
+                placeholder="Create a strong password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`w-full px-3 py-2 border-2 rounded-[3px] focus:outline-none transition-colors text-sm pr-10 ${
+                className={`w-full px-4 py-2.5 bg-slate-800/50 border rounded-lg focus:outline-none transition-all text-sm text-slate-100 placeholder-slate-600 pr-10 ${
                   errors.password
-                    ? "border-red-500 focus:border-red-500"
-                    : "border-gray-300 focus:border-blue-500"
+                    ? "border-red-500/50 focus:border-red-500/70"
+                    : "border-slate-700/50 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/30"
                 }`}
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-400 text-lg transition-colors"
               >
                 {showPassword ? "👁️" : "👁️‍🗨️"}
               </button>
             </div>
-            {/* Hiển thị lỗi field password nếu có */}
             {errors.password && (
-              <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+              <p className="text-red-400 text-xs mt-2">{errors.password}</p>
             )}
           </div>
 
-          <p className="text-[11px] text-[#5E6C84] mb-6">
-            Mật khẩu phải dài ít nhất 8 ký tự
+          <p className="text-xs text-slate-500">
+            Password must be at least 8 characters long
           </p>
 
-          <p className="text-xs text-[#5E6C84] mb-6 leading-relaxed">
-            Bằng việc đăng ký, tôi chấp nhận{" "}
-            <a href="#" className="text-[#0052CC] hover:underline">
-              Điều khoản dịch vụ của Atlassian Cloud
+          <p className="text-xs text-slate-400 leading-relaxed">
+            By signing up, you agree to our{" "}
+            <a href="#" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+              Terms of Service
             </a>{" "}
-            và công nhận{" "}
-            <a href="#" className="text-[#0052CC] hover:underline">
-              Chính sách quyền riêng tư
+            and acknowledge our{" "}
+            <a href="#" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+              Privacy Policy
             </a>
             .
           </p>
@@ -217,26 +214,19 @@ export default function SetupAccountPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full text-white font-bold py-2 rounded-[3px] transition-colors mb-4 ${
+            className={`w-full text-white font-semibold py-2.5 rounded-lg transition-all mt-6 ${
               isLoading
-                ? "bg-blue-400 cursor-not-allowed"
-                : "bg-[#0052CC] hover:bg-blue-700"
+                ? "bg-cyan-600/50 cursor-not-allowed opacity-70"
+                : "bg-cyan-600 hover:bg-cyan-500 shadow-lg shadow-cyan-500/30"
             }`}
           >
-            {isLoading ? "Đang tạo tài khoản..." : "Tiếp tục"}
+            {isLoading ? "Creating account..." : "Continue"}
           </button>
         </form>
 
-        <div className="mt-6 pt-6 border-t border-gray-100 text-center">
-          <div className="flex items-center justify-center gap-1 text-gray-500 font-bold text-sm mb-2">
-            <span>▲ ATLASSIAN</span>
-          </div>
-          <p className="text-[10px] text-gray-500 px-4">
-            Một tài khoản cho Jira, Confluence, Trello và{" "}
-            <a href="#" className="text-blue-600">
-              sản phẩm khác
-            </a>
-            .
+        <div className="mt-6 pt-6 border-t border-slate-700/30 text-center">
+          <p className="text-xs text-slate-600">
+            TaskMgmt © 2025
           </p>
         </div>
       </div>

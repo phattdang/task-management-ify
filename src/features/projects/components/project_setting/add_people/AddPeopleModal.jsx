@@ -40,8 +40,16 @@ export default function AddPeopleModal({ onClose, projectInfo }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-[999] flex items-center justify-center font-sans">
-      <div className="bg-white w-[600px] rounded-lg shadow-lg p-6 relative animate-fade-in-down">
+    <div className="fixed inset-0 bg-black/60 z-[999] flex items-center justify-center font-sans backdrop-blur-sm">
+      <div 
+        className="w-[600px] rounded-2xl shadow-2xl p-8 relative animate-slideUp border"
+        style={{
+          backgroundColor: 'rgba(15, 23, 42, 0.6)',
+          backdropFilter: 'blur(16px)',
+          borderColor: 'rgba(71, 85, 105, 0.3)',
+          boxShadow: '0 25px 50px rgba(6, 182, 212, 0.15)',
+        }}
+      >
         {currentView === "list" ? (
           <ManageAccessView
             invitations={invitations}
@@ -51,14 +59,14 @@ export default function AddPeopleModal({ onClose, projectInfo }) {
         ) : (
           <AddPeopleView
             projectName={projectName}
-            projectId={projectId} //
+            projectId={projectId}
             onBackToList={handleBackToList}
           />
         )}
 
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold"
+          className="absolute top-4 right-4 text-slate-500 hover:text-slate-300 text-xl font-bold transition-colors"
         >
           &times;
         </button>

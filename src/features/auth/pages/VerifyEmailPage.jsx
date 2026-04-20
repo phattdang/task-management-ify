@@ -107,27 +107,32 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-[#F9FAFB] pt-12 pb-12 font-sans text-[#172B4D]">
-      <div className="w-full max-w-[400px] px-8 py-10 bg-white shadow-lg rounded-sm sm:border sm:border-gray-200 text-center">
-        {/* Logo Section (Giữ nguyên) */}
-        <div className="flex justify-center mb-6 text-[#0052CC]">
-          <span className="flex items-center gap-2 text-2xl font-bold tracking-tight text-[#253858]">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12.6 19.48l5.37 5.37a.89.89 0 001.27 0l4.57-4.57a.89.89 0 000-1.27l-5.37-5.37a.89.89 0 00-1.27 0l-4.57 4.57a.89.89 0 000 1.27zM6.3 13.18l5.37 5.37a.89.89 0 001.27 0l4.57-4.57a.89.89 0 000-1.27L12.14 7.34a.89.89 0 00-1.27 0L6.3 11.91a.89.89 0 000 1.27z" />
-            </svg>
-            ATLASSIAN
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 pt-12 pb-12 font-sans relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-cyan-500/10 blur-3xl rounded-full opacity-40 animate-softGlow"></div>
+
+      <div className="w-full max-w-[420px] px-6 py-10 rounded-2xl border relative z-10 text-center" style={{
+        backgroundColor: 'rgba(15, 23, 42, 0.5)',
+        backdropFilter: 'blur(16px)',
+        borderColor: 'rgba(71, 85, 105, 0.3)',
+        boxShadow: '0 20px 50px rgba(6, 182, 212, 0.1)',
+      }}>
+        {/* Logo Section */}
+        <div className="flex justify-center mb-6">
+          <span className="flex items-center gap-2 text-2xl font-bold text-cyan-400">
+            <span className="text-3xl">⚡</span>
+            TaskMgmt
           </span>
         </div>
 
-        <h1 className="text-base font-bold text-[#172B4D] mb-4">
-          Chúng tôi đã gửi cho bạn một mã qua email
+        <h1 className="text-lg font-bold text-slate-100 mb-4">
+          Verify your email address
         </h1>
 
-        <p className="text-sm text-[#5E6C84] mb-6">
-          Để hoàn tất quá trình thiết lập tài khoản, hãy nhập mã chúng tôi đã
-          gửi đến:
+        <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+          We sent a verification code to:
           <br />
-          <span className="font-bold text-[#172B4D]">{email}</span>
+          <span className="font-semibold text-slate-200">{email}</span>
         </p>
 
         <form onSubmit={handleVerify}>
@@ -141,21 +146,22 @@ export default function VerifyEmailPage() {
                 value={digit}
                 onChange={(e) => handleChange(index, e)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-10 h-10 border border-gray-300 rounded-[3px] text-center text-lg font-bold focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
+                className="w-12 h-12 bg-slate-800/50 border border-slate-700/50 rounded-lg text-center text-xl font-bold text-slate-100 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/30 transition-all"
               />
             ))}
           </div>
 
-          {/* Hiển thị lỗi */}
           {errorMsg && (
-            <div className="text-red-600 text-sm mb-4">{errorMsg}</div>
+            <div className="text-red-400 text-sm mb-4 bg-red-500/10 p-3 rounded-lg border border-red-500/30">
+              {errorMsg}
+            </div>
           )}
 
           <button
             type="submit"
-            className="w-full bg-[#0052CC] hover:bg-blue-700 text-white font-bold py-2 rounded-[3px] transition-colors mb-4"
+            className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-semibold py-2.5 rounded-lg transition-all duration-200 mb-4 shadow-lg shadow-cyan-500/30"
           >
-            Xác minh
+            Verify Code
           </button>
         </form>
 
@@ -163,25 +169,17 @@ export default function VerifyEmailPage() {
           <button
             onClick={handleResendOtp}
             disabled={isResending}
-            className="text-[#0052CC] hover:underline disabled:opacity-50"
+            className="text-cyan-400 hover:text-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
           >
             {isResending
-              ? "Đang gửi..."
-              : "Bạn không nhận được email? Gửi lại email"}
+              ? "Sending..."
+              : "Didn't receive code? Resend"}
           </button>
         </div>
 
-        {/* Footer (Giữ nguyên) */}
-        <div className="mt-8 pt-6 border-t border-gray-100">
-          <div className="flex items-center justify-center gap-1 text-gray-500 font-bold text-sm mb-2">
-            <span>▲ ATLASSIAN</span>
-          </div>
-          <p className="text-[10px] text-gray-500">
-            Một tài khoản cho Jira, Confluence, Trello và{" "}
-            <a href="#" className="text-blue-600">
-              sản phẩm khác
-            </a>
-            .
+        <div className="mt-8 pt-6 border-t border-slate-700/30">
+          <p className="text-[12px] text-slate-600">
+            TaskMgmt © 2025 • Secure task management
           </p>
         </div>
       </div>

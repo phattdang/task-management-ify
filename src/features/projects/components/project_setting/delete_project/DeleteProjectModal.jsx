@@ -12,16 +12,24 @@ export default function DeleteProjectModal({
   const isMatch = confirmName === targetName;
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-[110] flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+    <div className="fixed inset-0 bg-black/60 z-[110] flex items-center justify-center p-4 backdrop-blur-sm">
+      <div 
+        className="rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-slideUp border"
+        style={{
+          backgroundColor: 'rgba(15, 23, 42, 0.6)',
+          backdropFilter: 'blur(16px)',
+          borderColor: 'rgba(71, 85, 105, 0.3)',
+          boxShadow: '0 25px 50px rgba(6, 182, 212, 0.15)',
+        }}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-          <h3 className="text-sm font-bold text-gray-700">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700/30">
+          <h3 className="text-sm font-bold text-slate-100">
             Delete {targetName}
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-xl"
+            className="text-slate-500 hover:text-slate-300 text-2xl transition-colors"
           >
             &times;
           </button>
@@ -29,44 +37,42 @@ export default function DeleteProjectModal({
 
         {/* Content */}
         <div className="p-6 flex flex-col items-center text-center">
-          <div className="mb-4 text-gray-400">
-            <span className="text-4xl">📄</span>
-            <span className="absolute mt-6 -ml-2 text-xs">🔒</span>
+          <div className="mb-4 text-slate-400">
+            <span className="text-5xl">📦</span>
           </div>
 
-          <h2 className="text-xl font-bold text-gray-800 mb-1">{targetName}</h2>
-          <div className="flex gap-4 text-xs text-gray-500 mb-6">
-            <span>⭐ 0 stars</span>
-            <span>👁️ 0 watchers</span>
+          <h2 className="text-lg font-bold text-slate-100 mb-2">{targetName}</h2>
+          <div className="flex gap-4 text-xs text-slate-500 mb-6">
+            <span>📊 Tasks: {Math.floor(Math.random() * 100)}</span>
+            <span>👥 Members: 0</span>
           </div>
 
           <div className="w-full text-left">
-            <p className="text-sm text-gray-700 mb-2">
-              To confirm, type <span className="font-bold">"{targetName}"</span>{" "}
-              in the box below
+            <p className="text-sm text-slate-300 mb-3">
+              This action cannot be undone. To confirm, type <span className="font-bold text-cyan-400">"{targetName}"</span> in the box below
             </p>
             <input
               type="text"
               value={confirmName}
               onChange={(e) => setConfirmName(e.target.value)}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-red-100 outline-none mb-4"
-              placeholder="Enter project name"
-            />{" "}
+              className="w-full bg-slate-800/50 border border-slate-700/50 rounded-lg px-4 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-red-500/50 focus:ring-2 focus:ring-red-500/30 transition-all mb-4"
+              placeholder="Type project name to confirm"
+            />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-gray-50 flex flex-col gap-2">
+        <div className="p-4 bg-slate-900/50 border-t border-slate-700/30 flex flex-col gap-2">
           <button
             disabled={!isMatch}
             onClick={() => onConfirm(confirmName)}
-            className={`w-full py-2 rounded font-medium text-sm transition-colors ${
+            className={`w-full py-2.5 rounded-lg font-semibold text-sm transition-all ${
               isMatch
-                ? "bg-white text-red-600 border border-red-200 hover:bg-red-50"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                ? "bg-red-600 text-white hover:bg-red-500 shadow-lg shadow-red-500/30"
+                : "bg-slate-800/50 text-slate-600 cursor-not-allowed opacity-50"
             }`}
           >
-            Delete this repository
+            {isMatch ? "Delete project permanently" : "Enter project name to delete"}
           </button>
         </div>
       </div>

@@ -21,56 +21,66 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white font-sans text-[#172B4D]">
-      <div className="w-full max-w-[400px] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-slate-950 font-sans relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
+      <div className="absolute top-1/3 right-0 w-96 h-96 bg-cyan-500/10 blur-3xl rounded-full opacity-30 animate-softGlow"></div>
+
+      <div className="w-full max-w-[420px] px-6 relative z-10">
         {/* Logo & Title */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4 text-blue-600 font-bold text-3xl">
-            <span className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white text-xl">
-              J
+        <div className="text-center mb-10">
+          <div className="flex items-center justify-center gap-3 mb-6 text-cyan-400 font-bold text-3xl">
+            <span className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center text-white text-xl font-bold">
+              T
             </span>
-            <span className="text-[#172B4D]">Jira</span>
+            <span>TaskMgmt</span>
           </div>
-          <h1 className="text-3xl font-bold">Tạo tài khoản</h1>
+          <h1 className="text-4xl font-bold text-slate-100">Create Account</h1>
+          <p className="text-slate-400 mt-2">Join us and manage tasks better</p>
         </div>
 
         {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="bg-white shadow-xl rounded-md p-8 border border-gray-100"
+          className="rounded-2xl p-8 border"
+          style={{
+            backgroundColor: 'rgba(15, 23, 42, 0.5)',
+            backdropFilter: 'blur(16px)',
+            borderColor: 'rgba(71, 85, 105, 0.3)',
+            boxShadow: '0 20px 50px rgba(6, 182, 212, 0.1)',
+          }}
         >
           {/* Email Section (Read only) */}
           <div className="mb-6">
-            <label className="block text-sm text-gray-500 mb-1">
-              Địa chỉ email
+            <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">
+              Email Address
             </label>
-            <div className="font-bold text-base text-[#172B4D]">
+            <div className="font-semibold text-base text-slate-100 bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
               {initialEmail}
             </div>
           </div>
 
           {/* Full Name Input */}
           <div className="mb-6">
-            <label className="block text-sm text-gray-500 mb-1">Họ tên</label>
+            <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Full Name</label>
             <input
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Nhập họ tên đầy đủ"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-sm"
+              placeholder="John Doe"
+              className="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-lg focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/30 text-slate-100 placeholder-slate-600 text-sm transition-all"
               autoFocus
             />
           </div>
 
           {/* Terms */}
-          <p className="text-xs text-gray-500 mb-6 leading-relaxed">
-            Bằng việc tạo tài khoản, tôi chấp nhận{" "}
-            <a href="#" className="text-blue-600 hover:underline">
-              Điều khoản dịch vụ Atlassian Cloud
+          <p className="text-xs text-slate-400 mb-6 leading-relaxed">
+            By creating an account, you agree to our{" "}
+            <a href="#" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+              Terms of Service
             </a>{" "}
-            và công nhận{" "}
-            <a href="#" className="text-blue-600 hover:underline">
-              Chính sách quyền riêng tư
+            and acknowledge our{" "}
+            <a href="#" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+              Privacy Policy
             </a>
             .
           </p>
@@ -78,18 +88,16 @@ export default function RegisterPage() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-[#0052CC] hover:bg-blue-700 text-white font-bold py-2.5 rounded-[3px] transition-colors mb-6"
+            className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-semibold py-2.5 rounded-lg transition-all duration-200 mb-6 shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50"
           >
-            Tiếp tục
+            Continue
           </button>
 
           {/* Footer Link */}
-          <div className="text-center text-sm">
-            <span className="text-gray-600">
-              Bạn đã có tài khoản Atlassian?{" "}
-            </span>
-            <Link to="/login" className="text-blue-600 hover:underline">
-              Đăng nhập
+          <div className="text-center text-sm text-slate-400">
+            <span>Already have an account? </span>
+            <Link to="/login" className="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
+              Sign in
             </Link>
           </div>
         </form>
