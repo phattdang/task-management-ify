@@ -47,16 +47,16 @@ export default function DashboardLayout({ children }) {
   }, [location.pathname, navigate]);
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col font-sans">
+    <div className="min-h-screen bg-white dark:bg-slate-950 flex flex-col font-sans transition-colors duration-200">
       {/* 1. Navbar */}
       <TopNavbar userInfo={userInfo} />
 
-      <div className="flex flex-1 overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      <div className="flex flex-1 overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors duration-200">
         {/* 2. Sidebar */}
         <LeftSidebar projects={projects} currentProjectId={projectId} />
 
         {/* 3. Main Content */}
-        <main className="flex-1 min-w-0 overflow-y-auto h-[calc(100vh-56px)] bg-slate-950">
+        <main className="flex-1 min-w-0 overflow-y-auto h-[calc(100vh-56px)] bg-white dark:bg-slate-950 transition-colors duration-200">
           {children}
         </main>
       </div>
@@ -64,15 +64,15 @@ export default function DashboardLayout({ children }) {
       {/* 4. Quickstart Button - Glassmorphic */}
       <div className="fixed bottom-6 right-6 z-50">
         <button 
+          className="rounded-full px-4 py-2 font-bold flex items-center gap-2 transition-all duration-200 hover:scale-105 hover:shadow-lg"
           style={{
             backgroundColor: 'rgba(15, 23, 42, 0.4)',
             backdropFilter: 'blur(12px)',
             border: '1px solid rgba(71, 85, 105, 0.3)',
           }}
-          className="rounded-full px-4 py-2 font-bold flex items-center gap-2 transition-all duration-200 hover:bg-slate-800/50 hover:border-cyan-500/50 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/30"
         >
           <span>✨</span> Quickstart
-          <span className="bg-slate-700/60 rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-slate-600/80 transition-all">
+          <span className="bg-slate-700/60 dark:bg-slate-700/60 rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-slate-600/80 transition-all">
             ×
           </span>
         </button>
