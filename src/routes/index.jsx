@@ -1,10 +1,12 @@
 import { Routes, Route } from "react-router-dom";
-import LandingPage from "../features/auth/pages/LandingPage";
-import LoginPage from "../features/auth/pages/LoginPage";
-import RegisterPage from "../features/auth/pages/RegisterPage";
-import VerifyEmailPage from "../features/auth/pages/VerifyEmailPage";
-import SetupAccountPage from "../features/auth/pages/SetupAccountPage";
-import CreateSitePage from "../features/auth/pages/CreateSitePage";
+import {
+  LandingPage,
+  LoginPage,
+  RegisterPage,
+  VerifyEmailPage,
+  SetupAccountPage,
+  CreateSitePage,
+} from "../features/auth";
 import CreateProjectPage from "../features/projects/pages/CreateProjectPage";
 import TaskListPage from "../features/tasks/pages/TaskListPage";
 import ProtectedRoute from "../components/common/ProtectedRoute";

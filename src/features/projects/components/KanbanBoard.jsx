@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import TaskCard from "../../tasks/components/taskcard/TaskCard";
+import TaskCard from "../../tasks/components/task-card/TaskCard";
 import CreateTaskForm from "../../tasks/components/CreateTaskForm";
 
 export default function KanbanBoard({ tasks = [], projectId, onTaskCreated }) {

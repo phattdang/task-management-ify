@@ -8,7 +8,7 @@ import ProjectHeader from "../../projects/components/ProjectHeader";
 import NavigationTabs from "../../projects/components/NavigationTabs";
 import LoadingPulse from "../components/LoadingPulse";
 import BoardToolbar from "./../../projects/components/BoardToolbar";
-import TaskDetailModal from "../components/task_detail/TaskDetailModal";
+import TaskDetailModal from "../components/task-detail/TaskDetailModal";
 
 export default function TaskListPage() {
   const { projectId } = useParams();

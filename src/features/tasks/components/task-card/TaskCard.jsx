@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import taskApi from "../../api/taskApi";
-import TaskActionsMenu from "../task_setting/TaskActionsMenu";
+import TaskActionsMenu from "../task-setting/TaskActionsMenu";
 import ConfirmDialog from "../../../projects/components/project_setting/delete_project/ConfirmDialog";
 import { useSearchParams } from "react-router-dom";
 
