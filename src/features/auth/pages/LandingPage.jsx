@@ -1,21 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react"; // 1. NHỚ IMPORT THÊM useRef
 import ProductNav from "../components/landing/ProductNav";
 import AuthForm from "../components/landing/AuthForm";
 import MockBoard from "../components/landing/MockBoard";
 import logoImg from "../../../assets/logo.png";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setAuth } from "../../../store/authSlice";
+import authApi from "../api/authApi";
 
 export default function LandingPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isProcessingGoogle, setIsProcessingGoogle] = useState(false);
+
+  // 2. TẠO CÁI CỜ ĐỂ CHẶN REACT GỌI API 2 LẦN
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const authCode = queryParams.get("code");
 
-    // Nếu tìm thấy code trên URL -> Bắt đầu xử lý
-    if (authCode) {
+    // 3. CHỈ GỌI API KHI CÓ CODE VÀ CỜ CHƯA BỊ LẬT
+    if (authCode && !hasFetched.current) {
+      hasFetched.current = true; // Lật cờ ngay lập tức để chặn lần gọi thứ 2
       handleGoogleCallback(authCode);
     }
   }, [location]);
@@ -25,40 +33,50 @@ export default function LandingPage() {
     try {
       console.log("Đang xử lý Google Code:", code);
 
-      const url = `http://localhost:8080/authentication-management/api/v1/auth/google?code=${encodeURIComponent(
-        code,
-      )}`;
-
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      const data = await res.json();
+      const res = await authApi.loginGoogle(code);
+      const data = res.data || res; 
 
       if (data.code === 200) {
         console.log("Login Google thành công:", data);
-        const { accessToken, refreshToken } = data.body;
+        
+        // Móc thêm thằng isExisted ra từ data.body
+        const { accessToken, refreshToken, isExisted } = data.body;
 
-        // 1. Lưu token
         localStorage.setItem("access_token", accessToken);
         localStorage.setItem("refresh_token", refreshToken);
 
-        // 3. Dispatch event để Header cập nhật lại avatar/tên user
+        let userInfo = null;
+        try {
+          const userRes = await authApi.getInformation();
+          if (userRes.data && userRes.data.code === 200) {
+            userInfo = userRes.data.body;
+            localStorage.setItem("user_info", JSON.stringify(userInfo));
+          }
+        } catch (infoError) {
+          console.error("Failed to fetch user info:", infoError);
+        }
+
+        dispatch(setAuth(userInfo));
         window.dispatchEvent(new Event("storage"));
+        
+        // Phân luồng User ở đây
+        if (isExisted) {
+          // Khách quen -> Vào thẳng chỗ làm việc
+          navigate("/projects", { replace: true });
+        } else {
+          // Khách mới -> Đi qua bước setup (Onboarding)
+          navigate("/create-site", { replace: true });
+        }
 
-        // 4. Dọn dẹp URL (Xóa ?code=... đi nhìn cho đẹp)
-        navigate("/", { replace: true });
-
-        // Reload nhẹ một cái để đảm bảo mọi state (Header, Auth) được cập nhật mới nhất
-        window.location.reload();
       } else {
         alert("Đăng nhập Google thất bại: " + data.message);
-        navigate("/", { replace: true }); // Xóa code lỗi đi
+        navigate("/", { replace: true });
       }
     } catch (err) {
       console.error("Lỗi kết nối Google Login:", err);
-      alert("Có lỗi xảy ra khi kết nối tới server.");
+      const errorMsg = err.response?.data?.message || "Có lỗi xảy ra khi kết nối tới server.";
+      alert(errorMsg);
+      navigate("/", { replace: true });
     } finally {
       setIsProcessingGoogle(false);
     }

@@ -10,13 +10,16 @@ const authApi = {
       token,
     }),
   checkEmailExisted: (email) =>
-    axiosClient.get("/api/v1/accounts/existence", email),
-  getRegisterOtp: (request) =>
-    axiosClient.post("/api/v1/email/send-register-otp", request),
+    axiosClient.post("/api/v1/accounts/existence", email),
+  requestRegisterOtp: (request) =>
+    axiosClient.post("/api/v1/auth/request-register-otp", request),
   verifyRegisterOtp: (request) =>
-    axiosClient.post("/api/v1/email/verify-register-otp", request),
+    axiosClient.post("/api/v1/auth/verify-register-otp", request),
   createUser: (request) => axiosClient.post("/api/v1/users", request),
   getInformation: () => axiosClient.get("/api/v1/users/information"),
+
+  loginGoogle: (code) => 
+    axiosClient.post(`/api/v1/auth/google?code=${encodeURIComponent(code)}`),
 };
 
 export default authApi;

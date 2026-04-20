@@ -25,13 +25,25 @@ const processQueue = (error, token = null) => {
 
 axiosClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // 1. Khai báo danh sách các API không cần token (để tránh bị backend chặn)
+    const publicEndpoints = ["/auth/login", "/auth/register", "/auth/refresh"];
+
+    // 2. Kiểm tra xem URL hiện tại có nằm trong danh sách miễn trừ không
+    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
+      config.url.includes(endpoint),
+    );
+
+    // 3. Nếu KHÔNG PHẢI api public thì mới nhét token vào
+    if (!isPublicEndpoint) {
+      const token = localStorage.getItem("access_token");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
+
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 axiosClient.interceptors.response.use(
@@ -70,8 +82,8 @@ axiosClient.interceptors.response.use(
 
         // Gọi refreshClient (KHÔNG dùng axiosClient ở đây)
         const rs = await refreshClient.post(
-          "/authentication-management/api/v1/auth/refresh",
-          { refreshToken: refreshToken } // Đảm bảo key này khớp với @RequestBody của Java
+          "/api/v1/auth/refresh",
+          { refreshToken: refreshToken }, // Đảm bảo key này khớp với @RequestBody của Java
         );
 
         console.log(rs);
@@ -86,9 +98,8 @@ axiosClient.interceptors.response.use(
         }
 
         // Cập nhật token cho các request tiếp theo
-        axiosClient.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${accessToken}`;
+        axiosClient.defaults.headers.common["Authorization"] =
+          `Bearer ${accessToken}`;
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 
         processQueue(null, accessToken);
@@ -106,7 +117,7 @@ axiosClient.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosClient;

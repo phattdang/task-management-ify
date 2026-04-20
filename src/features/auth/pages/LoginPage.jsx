@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setAuth } from "../../../store/authSlice";
 import authApi from "../api/authApi";
 // Import authApi từ đường dẫn thực tế trong dự án của bạn
 
@@ -15,6 +17,7 @@ const SocialButton = ({ icon, text }) => (
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,10 +48,11 @@ export default function LoginPage() {
 
         // 3b. Gọi API lấy thông tin User ngay lập tức
         // Lúc này axiosClient đã có token trong localStorage nên sẽ tự gắn vào header
+        let userInfo = null;
         try {
           const userRes = await authApi.getInformation();
           if (userRes.data && userRes.data.code === 200) {
-            const userInfo = userRes.data.body;
+            userInfo = userRes.data.body;
             // Lưu thông tin user vào localStorage để các trang khác dùng ngay
             localStorage.setItem("user_info", JSON.stringify(userInfo));
             console.log("User info saved:", userInfo);
@@ -57,6 +61,9 @@ export default function LoginPage() {
           console.error("Failed to fetch user info:", infoError);
           // Không block login nếu lỗi lấy info, có thể lấy lại ở DashboardLayout sau
         }
+
+        // Lưu auth state vào Redux
+        dispatch(setAuth(userInfo));
 
         console.log("Login success:", backendResponse.message);
 

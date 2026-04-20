@@ -12,7 +12,6 @@ export default function AuthForm() {
   const [errorMsg, setErrorMsg] = useState("");
 
   const handleSignUpClick = async () => {
-    // Validate cơ bản
     if (!email) {
       setErrorMsg("Vui lòng nhập email");
       return;
@@ -22,41 +21,28 @@ export default function AuthForm() {
     setErrorMsg("");
 
     try {
-      // BƯỚC 1: Kiểm tra email đã tồn tại chưa
-      // Request: { "credential": "..." }
-      const checkRes = await authApi.checkEmailExisted({ credential: email });
+      // CHỈ GỌI 1 API ĐẾN MODULE AUTH
+      // API này sẽ tự check trùng, tự lưu Redis và tự ném lệnh cho Kafka
+      const res = await authApi.requestRegisterOtp({ email: email });
 
-      // Backend trả về: body.isExisted
-      if (checkRes.data && checkRes.data.body && checkRes.data.body.isExisted) {
-        setErrorMsg("Email này đã được đăng ký. Vui lòng đăng nhập.");
-        setIsLoading(false);
-        return;
-      }
-
-      // BƯỚC 2: Nếu chưa tồn tại -> Gửi OTP
-      // Request: { "email": "..." }
-      const otpRes = await authApi.getRegisterOtp({ email: email });
-
-      if (otpRes.data && otpRes.data.code === 200) {
-        // Lấy OTP từ response: { "otp": " 15252", ... }
-        const rawOtp = otpRes.data.body.otp;
-        // Trim() vì ví dụ bạn đưa otp có khoảng trắng ở đầu " 15252"
-        const cleanOtp = rawOtp.trim();
-
-        // BƯỚC 3: Chuyển trang và mang theo OTP + Thời gian tạo để kiểm tra
+      if (res.data && res.data.code === 200) {
+        // Auth trả về OK, tức là mail hợp lệ và đã ra lệnh gửi OTP
         navigate("/verify-email", {
           state: {
             email: email,
-            serverOtp: cleanOtp,
-            generatedAt: Date.now(), // Lưu thời gian hiện tại
+            generatedAt: Date.now(),
           },
         });
-      } else {
-        setErrorMsg("Không thể gửi mã OTP. Vui lòng thử lại.");
       }
     } catch (error) {
       console.error("Sign up error:", error);
-      setErrorMsg("Đã có lỗi xảy ra. Vui lòng kiểm tra kết nối.");
+      // Bắt lỗi HTTP 400 từ Backend nếu email đã tồn tại
+      if (error.response?.data?.code === 1010) {
+        // Giả sử 1010 là mã EMAIL_EXISTED
+        setErrorMsg("Email này đã được đăng ký. Vui lòng đăng nhập.");
+      } else {
+        setErrorMsg("Đã có lỗi xảy ra. Vui lòng kiểm tra kết nối.");
+      }
     } finally {
       setIsLoading(false);
     }
