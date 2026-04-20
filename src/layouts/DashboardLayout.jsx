@@ -63,7 +63,14 @@ export default function DashboardLayout({ children }) {
 
       {/* 4. Quickstart Button - Glassmorphic */}
       <div className="fixed bottom-6 right-6 z-50">
-        <button className="glass rounded-full px-4 py-2 font-bold flex items-center gap-2 transition-all duration-200 hover:bg-slate-800/50 hover:border-cyan-500/50 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/30">
+        <button 
+          style={{
+            backgroundColor: 'rgba(15, 23, 42, 0.4)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(71, 85, 105, 0.3)',
+          }}
+          className="rounded-full px-4 py-2 font-bold flex items-center gap-2 transition-all duration-200 hover:bg-slate-800/50 hover:border-cyan-500/50 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/30"
+        >
           <span>✨</span> Quickstart
           <span className="bg-slate-700/60 rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-slate-600/80 transition-all">
             ×

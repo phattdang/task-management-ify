@@ -5,7 +5,16 @@ export default function LeftSidebar({ projects, currentProjectId }) {
   const navigate = useNavigate();
 
   return (
-    <aside className="w-[260px] glass-card m-4 rounded-xl border-slate-700/50 h-[calc(100vh-88px)] overflow-y-auto flex flex-col py-6 px-4 hidden lg:flex sticky top-20">
+    <aside 
+      className="w-[260px] m-4 rounded-xl h-[calc(100vh-88px)] overflow-y-auto flex flex-col py-6 px-4 hidden lg:flex sticky top-20"
+      style={{
+        backgroundColor: 'rgba(15, 23, 42, 0.4)',
+        backdropFilter: 'blur(12px)',
+        border: '1px solid rgba(71, 85, 105, 0.3)',
+        borderRadius: '0.75rem',
+        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+      }}
+    >
       {/* Navigation Section */}
       <div className="mb-8">
         <div className="flex items-center gap-3 text-slate-300 font-semibold mb-3 cursor-pointer hover:text-cyan-400 p-2 rounded-lg hover:bg-slate-800/40 transition-all group">

@@ -93,34 +93,49 @@ export default function TaskCard({ task, onTaskUpdated }) {
 
   const stopPropagation = (e) => e.stopPropagation();
 
+  const STATUS_COLORS = {
+    TO_DO: { bg: 'bg-slate-700/30', text: 'text-slate-300', border: 'border-slate-600/50' },
+    IN_PROGRESS: { bg: 'bg-blue-700/30', text: 'text-blue-300', border: 'border-blue-600/50' },
+    IN_REVIEW: { bg: 'bg-purple-700/30', text: 'text-purple-300', border: 'border-purple-600/50' },
+    DONE: { bg: 'bg-emerald-700/30', text: 'text-emerald-300', border: 'border-emerald-600/50' },
+  };
+
+  const statusColor = STATUS_COLORS[task.status] || STATUS_COLORS.TO_DO;
+
   return (
     <div
       onClick={handleOpenModal}
-      className="bg-white p-3 rounded shadow-sm border border-gray-200 hover:shadow-md cursor-pointer mb-2 transition-all relative"
+      className="group relative rounded-lg p-3 cursor-pointer transition-all duration-200 hover:scale-105"
+      style={{
+        backgroundColor: 'rgba(15, 23, 42, 0.5)',
+        backdropFilter: 'blur(8px)',
+        border: '1px solid rgba(71, 85, 105, 0.3)',
+        boxShadow: 'group-hover:0 0 12px rgba(6, 182, 212, 0.2)',
+      }}
     >
       {/* Loading Overlay */}
       {isUpdating && (
-        <div className="absolute inset-0 bg-white/50 z-[110] flex items-center justify-center rounded">
-          <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="absolute inset-0 bg-slate-900/50 z-[110] flex items-center justify-center rounded-lg">
+          <div className="w-4 h-4 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
 
-      <div className="flex justify-between items-start mb-2">
-        <p className="text-sm text-gray-800 font-medium line-clamp-2">
+      {/* Task Title & Menu */}
+      <div className="flex justify-between items-start mb-2 gap-2">
+        <p className="text-sm text-slate-100 font-semibold line-clamp-2 flex-1">
           {task.taskName}
         </p>
 
-        {/* Nút Menu ••• - Đã chỉnh sửa luôn hiện và đổi màu khi active */}
-        <div className="relative" ref={menuRef}>
+        <div className="relative shrink-0" ref={menuRef}>
           <button
             onClick={(e) => {
               e.stopPropagation();
               setIsMenuOpen(!isMenuOpen);
             }}
-            className={`p-1 rounded transition-colors ${
+            className={`p-1 rounded-lg transition-all text-sm font-bold ${
               isMenuOpen
-                ? "bg-blue-100 text-blue-600"
-                : "text-gray-400 hover:bg-gray-100"
+                ? "bg-cyan-500/30 text-cyan-400"
+                : "text-slate-500 hover:text-cyan-400 hover:bg-slate-700/40"
             }`}
           >
             •••
@@ -136,10 +151,11 @@ export default function TaskCard({ task, onTaskUpdated }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 mb-3">
+      {/* Due Date & Status */}
+      <div className="flex items-center gap-2 mb-3 flex-wrap">
         {task.dueDate && (
-          <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-gray-100 text-xs text-gray-600 font-semibold">
-            <span>📅</span> {formatDate(task.dueDate)}
+          <div className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold text-slate-400 bg-slate-800/50 border border-slate-700/50">
+            📅 {formatDate(task.dueDate)}
           </div>
         )}
 
@@ -148,9 +164,8 @@ export default function TaskCard({ task, onTaskUpdated }) {
             value={task.status}
             onChange={handleStatusChange}
             disabled={isUpdating}
-            className={`appearance-none cursor-pointer text-[10px] font-bold px-2 py-0.5 rounded border border-transparent 
-                    hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all
-                    ${STATUS_CONFIG[task.status]?.className || "bg-gray-100"}`}
+            className={`appearance-none cursor-pointer text-[11px] font-bold px-2 py-0.5 rounded-md border transition-all focus:outline-none focus:ring-2 focus:ring-cyan-500/50
+                    ${statusColor.bg} ${statusColor.text} ${statusColor.border} border`}
           >
             <option value="TO_DO">To Do</option>
             <option value="IN_PROGRESS">In Progress</option>
@@ -160,25 +175,26 @@ export default function TaskCard({ task, onTaskUpdated }) {
         </div>
       </div>
 
-      <div className="flex justify-between items-center mt-1">
+      {/* Footer: Checkbox, ID, Priority, Assignee */}
+      <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
-            className="rounded text-blue-600 focus:ring-0 w-4 h-4 cursor-pointer"
+            className="rounded text-cyan-500 focus:ring-cyan-400 w-4 h-4 cursor-pointer bg-slate-800/50 border-slate-600/50"
             onClick={stopPropagation}
           />
-          <span className="text-xs text-gray-500 font-bold">
-            #{task.id?.split("-")[0]}...
+          <span className="text-xs text-slate-500 font-semibold">
+            #{task.id?.split("-")[0]}
           </span>
         </div>
+
         <div className="flex items-center gap-2">
-          {task.priority === "HIGH" && <span className="text-red-500">🚩</span>}
-          {task.priority === "MEDIUM" && (
-            <span className="text-yellow-500">🏳️</span>
-          )}
+          {task.priority === "HIGH" && <span className="text-red-500 text-sm">🚩</span>}
+          {task.priority === "MEDIUM" && <span className="text-amber-500 text-sm">🏳️</span>}
+          {task.priority === "LOW" && <span className="text-green-500 text-sm">✓</span>}
 
           <div
-            className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[10px] font-bold border border-white shadow-sm"
+            className="w-6 h-6 rounded-lg text-white flex items-center justify-center text-[10px] font-bold border border-slate-600/50 shadow-sm bg-gradient-to-br from-cyan-500 to-blue-600"
             title={task.assignee?.fullName}
           >
             {getInitials(task.assignee?.fullName)}

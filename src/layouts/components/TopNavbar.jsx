@@ -31,7 +31,14 @@ export default function TopNavbar({ userInfo }) {
   };
 
   return (
-    <header className="h-14 glass sticky top-0 z-30 flex items-center justify-between px-6 border-b border-slate-700/50">
+    <header 
+      className="h-14 sticky top-0 z-30 flex items-center justify-between px-6 border-b"
+      style={{
+        backgroundColor: 'rgba(15, 23, 42, 0.4)',
+        backdropFilter: 'blur(12px)',
+        borderColor: 'rgba(71, 85, 105, 0.3)',
+      }}
+    >
       {/* Left: App Switcher & Logo */}
       <div className="flex items-center gap-4">
         <button className="p-1.5 rounded-lg hover:bg-slate-700/50 transition-colors group">
@@ -63,7 +70,14 @@ export default function TopNavbar({ userInfo }) {
         <button className="bg-cyan-600 hover:bg-cyan-500 text-white font-semibold px-4 py-1.5 rounded-lg text-sm transition-all duration-200 shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50">
           + Create
         </button>
-        <button className="hidden lg:flex items-center gap-1 glass rounded-lg px-3 py-1.5 text-sm font-semibold text-cyan-400 hover:text-cyan-300 hover:bg-slate-800/50 transition-all">
+        <button 
+          className="hidden lg:flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-semibold text-cyan-400 hover:text-cyan-300 hover:bg-slate-800/50 transition-all"
+          style={{
+            backgroundColor: 'rgba(15, 23, 42, 0.4)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(71, 85, 105, 0.3)',
+          }}
+        >
           ✨ Premium
         </button>
         <div className="h-6 w-px bg-slate-700/30 mx-1 hidden sm:block"></div>
