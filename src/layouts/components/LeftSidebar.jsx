@@ -6,23 +6,16 @@ export default function LeftSidebar({ projects, currentProjectId }) {
 
   return (
     <aside 
-      className="w-[260px] m-4 rounded-xl h-[calc(100vh-88px)] overflow-y-auto flex flex-col py-6 px-4 hidden lg:flex sticky top-20"
-      style={{
-        backgroundColor: 'rgba(15, 23, 42, 0.4)',
-        backdropFilter: 'blur(12px)',
-        border: '1px solid rgba(71, 85, 105, 0.3)',
-        borderRadius: '0.75rem',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-      }}
+      className="w-[260px] m-4 rounded-xl h-[calc(100vh-88px)] overflow-y-auto flex flex-col py-6 px-4 hidden lg:flex sticky top-20 bg-white/40 dark:bg-slate-900/40 border border-gray-200/50 dark:border-slate-700/30 backdrop-blur-md transition-colors duration-200"
     >
       {/* Navigation Section */}
       <div className="mb-8">
-        <div className="flex items-center gap-3 text-slate-300 font-semibold mb-3 cursor-pointer hover:text-cyan-400 p-2 rounded-lg hover:bg-slate-800/40 transition-all group">
+        <div className="flex items-center gap-3 text-gray-700 dark:text-slate-300 font-semibold mb-3 cursor-pointer hover:text-blue-600 dark:hover:text-cyan-400 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-800/40 transition-all group">
           <span className="text-lg group-hover:scale-110 transition-transform">🌍</span> For you
         </div>
-        <div className="flex items-center gap-3 text-slate-300 font-semibold mb-4 cursor-pointer hover:text-cyan-400 p-2 rounded-lg hover:bg-slate-800/40 transition-all group">
+        <div className="flex items-center gap-3 text-gray-700 dark:text-slate-300 font-semibold mb-4 cursor-pointer hover:text-blue-600 dark:hover:text-cyan-400 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-800/40 transition-all group">
           <span className="text-lg group-hover:scale-110 transition-transform">📂</span> Spaces
-          <span className="ml-auto text-xs text-slate-500 hover:text-cyan-400 hover:bg-slate-700/50 p-1 rounded-lg transition-all">
+          <span className="ml-auto text-xs text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-gray-300 dark:hover:bg-slate-700/50 p-1 rounded-lg transition-all">
             +
           </span>
         </div>
@@ -56,7 +49,7 @@ export default function LeftSidebar({ projects, currentProjectId }) {
         </div>
 
         {projects.length === 0 ? (
-          <div className="px-2 text-sm text-slate-500 italic mb-4">
+          <div className="px-2 text-sm text-gray-600 dark:text-slate-500 italic mb-4">
             No projects yet
           </div>
         ) : (
@@ -66,8 +59,8 @@ export default function LeftSidebar({ projects, currentProjectId }) {
               onClick={() => navigate(`/projects/${proj.id}`)}
               className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer mb-2 transition-all group ${
                 currentProjectId === proj.id
-                  ? "bg-slate-800/60 border border-cyan-500/50 text-cyan-400"
-                  : "hover:bg-slate-800/40 text-slate-300 hover:text-slate-100"
+                  ? "bg-blue-100 dark:bg-slate-800/60 border border-blue-300 dark:border-cyan-500/50 text-blue-600 dark:text-cyan-400"
+                  : "hover:bg-gray-200 dark:hover:bg-slate-800/40 text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100"
               }`}
             >
               <div className="w-5 h-5 bg-gradient-to-br from-amber-400 to-orange-500 rounded-md flex items-center justify-center text-[10px] shadow-md text-white group-hover:scale-110 transition-transform">
@@ -80,9 +73,9 @@ export default function LeftSidebar({ projects, currentProjectId }) {
 
         <div
           onClick={() => navigate("/create-project")}
-          className="flex items-center gap-3 p-2 rounded-lg cursor-pointer mt-4 hover:bg-slate-800/40 text-slate-500 hover:text-cyan-400 transition-all group"
+          className="flex items-center gap-3 p-2 rounded-lg cursor-pointer mt-4 hover:bg-gray-200 dark:hover:bg-slate-800/40 text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-cyan-400 transition-all group"
         >
-          <div className="w-5 h-5 border-2 border-dashed border-slate-600 rounded-md flex items-center justify-center text-xs group-hover:border-cyan-500/50 transition-colors">
+          <div className="w-5 h-5 border-2 border-dashed border-gray-400 dark:border-slate-600 rounded-md flex items-center justify-center text-xs group-hover:border-blue-500 dark:group-hover:border-cyan-500/50 transition-colors">
             +
           </div>
           <span className="text-sm font-medium">New project</span>
@@ -90,15 +83,15 @@ export default function LeftSidebar({ projects, currentProjectId }) {
       </div>
 
       {/* Footer Links */}
-      <div className="mt-auto pt-6 border-t border-slate-700/30">
-        <h3 className="text-label px-2 mb-3">
+      <div className="mt-auto pt-6 border-t border-gray-300 dark:border-slate-700/30">
+        <h3 className="text-label px-2 mb-3 text-gray-700 dark:text-slate-400">
           Quick Links
         </h3>
         <div className="space-y-2">
-          <div className="flex items-center gap-3 p-2 rounded-lg cursor-pointer text-slate-400 hover:text-cyan-400 hover:bg-slate-800/40 transition-all text-sm">
+          <div className="flex items-center gap-3 p-2 rounded-lg cursor-pointer text-gray-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-gray-200 dark:hover:bg-slate-800/40 transition-all text-sm">
             ⭐ Favorites
           </div>
-          <div className="flex items-center gap-3 p-2 rounded-lg cursor-pointer text-slate-400 hover:text-cyan-400 hover:bg-slate-800/40 transition-all text-sm">
+          <div className="flex items-center gap-3 p-2 rounded-lg cursor-pointer text-gray-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-gray-200 dark:hover:bg-slate-800/40 transition-all text-sm">
             📋 Templates
           </div>
         </div>
