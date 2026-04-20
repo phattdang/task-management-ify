@@ -1,5 +1,6 @@
 // components/DeleteProjectModal.jsx
 import React, { useState } from "react";
+import ReactDOM from "react-dom";
 
 export default function DeleteProjectModal({
   projectInfo,
@@ -11,8 +12,8 @@ export default function DeleteProjectModal({
   const targetName = projectInfo?.name || "phattdang/task-management-api";
   const isMatch = confirmName === targetName;
 
-  return (
-    <div className="fixed inset-0 bg-black/50 dark:bg-black/60 z-[110] flex items-center justify-center p-4 backdrop-blur-sm">
+  return ReactDOM.createPortal(
+    <div className="fixed inset-0 bg-black/50 dark:bg-black/60 z-[1000] flex items-center justify-center p-4 backdrop-blur-sm">
       <div className="rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-slideUp border border-slate-200 dark:border-slate-700/50 bg-white/95 dark:bg-slate-900/60 dark:backdrop-blur-xl dark:shadow-[0_25px_50px_rgba(6,182,212,0.15)]">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700/40">
@@ -78,6 +79,7 @@ export default function DeleteProjectModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -32,7 +32,7 @@ export default function TopNavbar({ userInfo }) {
   };
 
   return (
-    <header className="h-14 sticky top-0 z-30 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800/50 bg-white dark:bg-slate-900/40 dark:backdrop-blur-md shadow-sm transition-colors duration-200">
+    <header className="h-14 sticky top-0 z-50 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800/50 bg-white dark:bg-slate-900/40 dark:backdrop-blur-md shadow-sm transition-colors duration-200">
       {/* Left: App Switcher & Logo */}
       <div className="flex items-center gap-4">
         <button

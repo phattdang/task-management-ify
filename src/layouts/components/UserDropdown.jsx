@@ -40,7 +40,7 @@ export default function UserDropdown({ isOpen, userInfo }) {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute right-0 top-12 w-[340px] rounded-xl z-50 animate-in fade-in zoom-in-95 duration-100 origin-top-right border border-slate-200 dark:border-slate-800/50 bg-white/95 dark:bg-slate-900/50 backdrop-blur-xl shadow-2xl dark:shadow-[0_20px_50px_rgba(6,182,212,0.12)]">
+    <div className="absolute right-0 top-12 w-[340px] rounded-xl z-[100] animate-in fade-in zoom-in-95 duration-100 origin-top-right border border-slate-200 dark:border-slate-800/50 bg-white/95 dark:bg-slate-900/50 backdrop-blur-xl shadow-2xl dark:shadow-[0_20px_50px_rgba(6,182,212,0.12)]">
       {/* Header Info */}
       <div className="p-4 border-b border-slate-200 dark:border-slate-700/40">
         <div className="flex items-center gap-3">

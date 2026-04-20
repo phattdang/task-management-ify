@@ -70,8 +70,8 @@ export default function TaskListPage() {
   return (
     <DashboardLayout>
       <div className="flex flex-col h-full">
-        {/* HEADER SECTION - Tách thành khối riêng để scannable */}
-        <div className="px-8 pt-6 border-b border-slate-200 dark:border-slate-800/50 bg-white dark:bg-slate-900/30 backdrop-blur-sm transition-colors duration-200">
+        {/* HEADER SECTION: z-40 so project menu (absolute) stacks above board/toolbar (siblings paint later by default and would cover it) */}
+        <div className="relative z-40 px-8 pt-6 border-b border-slate-200 dark:border-slate-800/50 bg-white dark:bg-slate-900/30 backdrop-blur-sm transition-colors duration-200">
           <ProjectHeader projectInfo={projectInfo} />
           <NavigationTabs activeTab={currentTab} onTabChange={setCurrentTab} />
         </div>
@@ -80,7 +80,7 @@ export default function TaskListPage() {
         {currentTab === "BOARD" && (
           <>
             <BoardToolbar members={projectInfo?.members || []} />
-            <div className="flex-1 overflow-x-auto overflow-y-hidden bg-slate-50 dark:bg-slate-950 px-8 pb-4 transition-colors duration-200">
+            <div className="relative z-0 flex-1 overflow-x-auto overflow-y-hidden bg-slate-50 dark:bg-slate-950 px-8 pb-4 transition-colors duration-200">
               {loading ? (
                 <LoadingPulse />
               ) : (

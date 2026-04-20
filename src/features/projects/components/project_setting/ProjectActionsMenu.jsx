@@ -36,7 +36,7 @@ export default function ProjectActionsMenu({
   ];
 
   return (
-    <div className="absolute top-10 left-0 w-64 bg-white dark:bg-slate-900/95 backdrop-blur-md shadow-xl border border-slate-200 dark:border-slate-700 rounded-lg z-[100] py-2">
+    <div className="absolute top-0 left-full ml-2 w-64 bg-white dark:bg-slate-900/95 backdrop-blur-md shadow-xl border border-slate-200 dark:border-slate-700 rounded-lg z-[200] py-2">
       {menuGroups.map((group, gIndex) => (
         <React.Fragment key={gIndex}>
           {gIndex > 0 && (

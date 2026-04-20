@@ -1,5 +1,6 @@
 // features/projects/components/project_setting/add_people/AddPeopleModal.jsx
 import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
 import ManageAccessView from "./ManageAccessView";
 import AddPeopleView from "./AddPeopleView";
 import projectInvitationsApi from "../../../../project_invitations/apis/projectInvitationApi";
@@ -39,9 +40,9 @@ export default function AddPeopleModal({ onClose, projectInfo }) {
     fetchInvitations(); // Reload lại danh sách để thấy thành viên mới mời
   };
 
-  return (
-    <div className="fixed inset-0 bg-black/50 dark:bg-black/60 z-[999] flex items-center justify-center font-sans backdrop-blur-sm">
-      <div className="w-[600px] rounded-2xl shadow-2xl p-8 relative animate-slideUp border border-slate-200 dark:border-slate-700/50 bg-white/95 dark:bg-slate-900/60 dark:backdrop-blur-xl dark:shadow-[0_25px_50px_rgba(6,182,212,0.15)]">
+  return ReactDOM.createPortal(
+    <div className="fixed inset-0 bg-black/50 dark:bg-black/60 z-[1000] flex items-center justify-center font-sans backdrop-blur-sm">
+      <div className="w-[600px] max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl p-8 relative animate-slideUp border border-slate-200 dark:border-slate-700/50 bg-white/95 dark:bg-slate-900/60 dark:backdrop-blur-xl dark:shadow-[0_25px_50px_rgba(6,182,212,0.15)]">
         {currentView === "list" ? (
           <ManageAccessView
             invitations={invitations}
@@ -64,6 +65,7 @@ export default function AddPeopleModal({ onClose, projectInfo }) {
           &times;
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
