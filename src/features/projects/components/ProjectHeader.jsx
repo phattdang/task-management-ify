@@ -85,24 +85,23 @@ export default function ProjectHeader({ projectInfo }) {
   };
 
   return (
-    <div className="flex flex-col gap-3 mb-6 relative">
-      <div className="flex items-center gap-3 relative" ref={menuRef}>
-        <div className="w-8 h-8 bg-yellow-400 rounded flex items-center justify-center text-lg shadow-sm text-black">
+    <div className="flex flex-col gap-4 mb-6 relative">
+      <div className="flex items-center gap-4 relative" ref={menuRef}>
+        <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center text-xl shadow-lg">
           📦
         </div>
-        <h1 className="text-2xl font-bold text-gray-800">
-          {projectInfo?.name || "..."}
+        <h1 className="text-3xl font-bold text-slate-100">
+          {projectInfo?.name || "Loading..."}
         </h1>
 
-        {/* Chỉ hiển thị nút menu nếu là Manager */}
         {isManager && (
-          <div className="relative">
+          <div className="relative ml-auto">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`p-1 rounded ${
+              className={`p-2 rounded-lg transition-all text-sm font-bold ${
                 isMenuOpen
-                  ? "bg-blue-100 text-blue-600"
-                  : "hover:bg-gray-100 text-gray-500"
+                  ? "bg-cyan-500/30 text-cyan-400"
+                  : "hover:bg-slate-800/40 text-slate-500 hover:text-cyan-400"
               }`}
             >
               •••
