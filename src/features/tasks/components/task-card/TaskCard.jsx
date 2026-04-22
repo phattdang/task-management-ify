@@ -20,11 +20,22 @@ const getInitials = (name) => {
     .toUpperCase();
 };
 
+const getHtmlDate = (dateString) => {
+  if (!dateString) return "";
+  const d = new Date(dateString);
+  if (isNaN(d.getTime())) return "";
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 export default function TaskCard({ task, onTaskUpdated }) {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const menuRef = useRef(null);
+  const dateInputRef = useRef(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handleOpenModal = () => {
@@ -56,6 +67,26 @@ export default function TaskCard({ task, onTaskUpdated }) {
     } catch (error) {
       console.error("Update status failed:", error);
       alert("Không thể cập nhật trạng thái.");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleDateChange = async (e) => {
+    const newDate = e.target.value;
+    
+    // Nếu newDate có giá trị, định dạng thành ISO string hoặc string tuỳ theo BE yêu cầu
+    const datePayload = newDate ? `${newDate}T00:00:00` : null;
+
+    setIsUpdating(true);
+    try {
+      const res = await taskApi.updateTask(task.id, { dueDate: datePayload });
+      if (res.data && res.data.code === 200) {
+        if (onTaskUpdated) onTaskUpdated();
+      }
+    } catch (error) {
+      console.error("Update date failed:", error);
+      alert("Không thể cập nhật ngày.");
     } finally {
       setIsUpdating(false);
     }
@@ -111,6 +142,17 @@ export default function TaskCard({ task, onTaskUpdated }) {
 
   const statusColor = STATUS_COLORS[task.status] || STATUS_COLORS.TO_DO;
 
+  const handleDateClick = (e) => {
+    e.stopPropagation();
+    if (dateInputRef.current && dateInputRef.current.showPicker) {
+      try {
+        dateInputRef.current.showPicker();
+      } catch (err) {
+        // Fallback for older browsers
+      }
+    }
+  };
+
   return (
     <div
       onClick={handleOpenModal}
@@ -159,11 +201,21 @@ export default function TaskCard({ task, onTaskUpdated }) {
 
       {/* Due Date & Status */}
       <div className="flex items-center gap-2 mb-3 flex-wrap">
-        {task.dueDate && (
-          <div className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50">
-            📅 {formatDate(task.dueDate)}
-          </div>
-        )}
+        <div 
+          className="relative inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-700/80 transition-colors cursor-pointer overflow-hidden" 
+          onClick={handleDateClick}
+          title="Change Due Date"
+        >
+          📅 {task.dueDate ? formatDate(task.dueDate) : "Set date"}
+          <input
+            ref={dateInputRef}
+            type="date"
+            value={getHtmlDate(task.dueDate)}
+            onChange={handleDateChange}
+            disabled={isUpdating}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer pointer-events-none"
+          />
+        </div>
 
         <div className="relative" onClick={stopPropagation}>
           <select
