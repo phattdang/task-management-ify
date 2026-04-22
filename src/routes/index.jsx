@@ -11,6 +11,7 @@ import {
   ResetPasswordPage,
 } from "../features/auth";
 import CreateProjectPage from "../features/projects/pages/CreateProjectPage";
+import SpaceSettingsPage from "../features/projects/pages/SpaceSettingsPage";
 import TaskListPage from "../features/tasks/pages/TaskListPage";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import InvitationConfirmPage from "./../features/project_invitations/pages/InvitationConfirmPage";
@@ -49,6 +50,14 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute>
             <TaskListPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/projects/:projectId/settings"
+        element={
+          <ProtectedRoute>
+            <SpaceSettingsPage />
           </ProtectedRoute>
         }
       />
