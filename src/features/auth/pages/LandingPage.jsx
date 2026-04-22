@@ -56,7 +56,12 @@ export default function LandingPage() {
       {/* Top Navigation */}
       <nav className="relative z-10 p-6 border-b border-slate-200/80 dark:border-slate-800/50 bg-white/60 dark:bg-slate-900/30 backdrop-blur-md">
         <div className="flex items-center gap-2 text-blue-600 dark:text-cyan-400 font-bold text-2xl hover:text-blue-700 dark:hover:text-cyan-300 transition-colors cursor-pointer">
-          <span className="text-3xl">⚡</span> TaskMgmt
+          <img 
+      src="https://res.cloudinary.com/dkrrib3mb/image/upload/v1775490962/logo_remove_background_fl6k7i.png" 
+      alt="Unemployed Team Logo" 
+      className="w-10 h-10 object-contain" 
+    />
+     Unemployed Team
         </div>
       </nav>
 

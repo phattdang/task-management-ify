@@ -114,7 +114,9 @@ export default function TaskCard({ task, onTaskUpdated }) {
   return (
     <div
       onClick={handleOpenModal}
-      className="group relative rounded-lg p-3 cursor-pointer transition-all duration-300 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/50 shadow-sm hover:-translate-y-1 hover:shadow-lg dark:hover:border-cyan-500/30 hover:dark:shadow-[0_0_15px_rgba(6,182,212,0.15)]"
+      className={`group relative rounded-lg p-3 cursor-pointer transition-all duration-300 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/50 shadow-sm hover:-translate-y-1 hover:shadow-lg dark:hover:border-cyan-500/30 hover:dark:shadow-[0_0_15px_rgba(6,182,212,0.15)] ${
+        isMenuOpen ? "z-50" : ""
+      }`}
     >
       {/* Loading Overlay */}
       {isUpdating && (

@@ -3,11 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../../store/authSlice";
 import authApi from "../api/authApi";
+import { EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
 // Import authApi từ đường dẫn thực tế trong dự án của bạn
 
-const SocialButton = ({ icon, text }) => (
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const REDIRECT_URL = import.meta.env.VITE_REDIRECT_URL;
+
+const SocialButton = ({ icon, text, onClick }) => (
   <button
     type="button"
+    onClick={onClick}
     className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:border-slate-400 dark:hover:border-slate-600 transition-all bg-white dark:bg-slate-800/40 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 font-semibold text-sm"
   >
     <span className="text-lg">{icon}</span>
@@ -21,8 +26,22 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  const handleGoogleLogin = () => {
+    const url =
+      `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${GOOGLE_CLIENT_ID}&` +
+      `redirect_uri=${REDIRECT_URL}&` +
+      `response_type=code&` +
+      `scope=openid profile email&` +
+      `access_type=offline&` +
+      `prompt=consent`;
+
+    window.location.href = url;
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -97,7 +116,11 @@ export default function LoginPage() {
         {/* Logo & Title */}
         <div className="flex flex-col items-center mb-8">
           <div className="flex items-center gap-2 text-blue-600 dark:text-cyan-400 font-bold text-2xl mb-4">
-            <span className="text-3xl">⚡</span> TaskMgmt
+            <img 
+      src="https://res.cloudinary.com/dkrrib3mb/image/upload/v1775490962/logo_remove_background_fl6k7i.png" 
+      alt="Unemployed Team Logo" 
+      className="w-10 h-10 object-contain" 
+    /> Unemployed Team
           </div>
           <h2 className="text-base font-semibold text-slate-600 dark:text-slate-300">
             Sign in to continue
@@ -120,15 +143,26 @@ export default function LoginPage() {
           </div>
 
           {/* Password Input */}
-          <div>
+          <div className="relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:border-blue-600 dark:focus:border-cyan-500/50 focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-500 text-sm transition-all"
+              className="w-full px-4 py-2 pr-10 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:border-blue-600 dark:focus:border-cyan-500/50 focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-500 text-sm transition-all"
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+            >
+              {showPassword ? (
+                <EyeOpenIcon className="w-5 h-5" />
+              ) : (
+                <EyeClosedIcon className="w-5 h-5" />
+              )}
+            </button>
           </div>
 
           {/* Error Message */}
@@ -137,22 +171,6 @@ export default function LoginPage() {
               {errorMsg}
             </div>
           )}
-
-          {/* Remember Me */}
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="remember"
-              className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-blue-600 dark:text-cyan-500 focus:ring-blue-500 dark:focus:ring-cyan-500/50 cursor-pointer"
-            />
-            <label
-              htmlFor="remember"
-              className="ml-2 text-sm text-slate-600 dark:text-slate-400 cursor-pointer"
-            >
-              Remember me
-            </label>
-          </div>
-
           {/* Sign In Button */}
           <button
             type="submit"
@@ -182,6 +200,7 @@ export default function LoginPage() {
           <SocialButton
             icon={<span className="text-lg">G</span>}
             text="Google"
+            onClick={handleGoogleLogin}
           />
           <SocialButton
             icon={<span className="text-lg">⊞</span>}

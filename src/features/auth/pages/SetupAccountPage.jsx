@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import authApi from "../api/authApi"; // Import api
+import { useDispatch } from "react-redux";
+import { setAuth } from "../../../store/authSlice";
+import authApi from "../api/authApi";
 
 export default function SetupAccountPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   // Lấy email từ trang trước, nếu mất state thì fallback (hoặc redirect về login)
   const email = location.state?.email;
+  const validToken = location.state?.validToken;
 
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
@@ -25,6 +29,7 @@ export default function SetupAccountPage() {
       fullName: fullName,
       email: email,
       password: password,
+      validToken: validToken,
     };
 
     try {
@@ -50,20 +55,22 @@ export default function SetupAccountPage() {
             localStorage.setItem("access_token", accessToken);
             localStorage.setItem("refresh_token", refreshToken);
 
-            // 4. Lấy thông tin User để đồng bộ hóa ứng dụng
+            // 4. Lấy thông tin User và đồng bộ Redux store
+            let userInfo = null;
             try {
               const userRes = await authApi.getInformation();
               if (userRes.data && userRes.data.code === 200) {
-                localStorage.setItem(
-                  "user_info",
-                  JSON.stringify(userRes.data.body)
-                );
+                userInfo = userRes.data.body;
+                localStorage.setItem("user_info", JSON.stringify(userInfo));
               }
             } catch (infoError) {
               console.error("Failed to fetch info after signup:", infoError);
             }
 
-            // 5. Chuyển hướng đến trang Tạo Project thay vì /projects
+            // 5. Dispatch vào Redux để ProtectedRoute nhận ra user đã đăng nhập
+            dispatch(setAuth(userInfo));
+
+            // 6. Chuyển hướng đến trang Tạo Project
             navigate("/create-project");
           }
         } catch (loginError) {

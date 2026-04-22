@@ -7,21 +7,13 @@ export default function VerifyEmailPage() {
   const location = useLocation();
 
   // Lấy dữ liệu truyền từ AuthForm
-  const {
-    email,
-    serverOtp: initialServerOtp,
-    generatedAt: initialGeneratedAt,
-  } = location.state || {};
-
-  // State quản lý OTP server và thời gian tạo (để cập nhật khi bấm gửi lại)
-  const [currentServerOtp, setCurrentServerOtp] = useState(initialServerOtp);
-  const [currentGeneratedAt, setCurrentGeneratedAt] =
-    useState(initialGeneratedAt);
+  const { email } = location.state || {};
 
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef([]);
   const [errorMsg, setErrorMsg] = useState("");
   const [isResending, setIsResending] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   // Nếu không có email trong state (người dùng vào thẳng link), đẩy về register
   useEffect(() => {
@@ -50,31 +42,38 @@ export default function VerifyEmailPage() {
     }
   };
 
-  // Hàm xử lý Verify
-  const handleVerify = (e) => {
+  // Hàm xử lý Verify — gọi API backend
+  const handleVerify = async (e) => {
     e.preventDefault();
     const fullCode = code.join("");
 
-    // 1. Kiểm tra độ dài
     if (fullCode.length < 6) {
       setErrorMsg("Vui lòng nhập đủ 6 số!");
       return;
     }
 
-    // 2. Kiểm tra thời gian hết hạn (5 phút = 300,000 ms)
-    const now = Date.now();
-    if (now - currentGeneratedAt > 5 * 60 * 1000) {
-      setErrorMsg("Mã OTP đã hết hạn. Vui lòng gửi lại mã mới.");
-      return;
-    }
+    setIsVerifying(true);
+    setErrorMsg("");
 
-    // 3. So sánh OTP
-    if (fullCode === currentServerOtp || fullCode === "999999") {
-      console.log("Verify Success!");
-      // Chuyển sang trang setup account
-      navigate("/setup-account", { state: { email } });
-    } else {
-      setErrorMsg("Mã OTP không chính xác.");
+    try {
+      const res = await authApi.verifyRegisterOtp({ otp: fullCode, email });
+      if (res.data?.code === 200 && res.data?.body?.valid) {
+        const { validToken } = res.data.body;
+        navigate("/setup-account", { state: { email, validToken } });
+      } else {
+        setErrorMsg("Mã OTP không chính xác.");
+      }
+    } catch (error) {
+      const code = error.response?.data?.code;
+      if (code === 1014) {
+        setErrorMsg("Mã OTP đã hết hạn. Vui lòng gửi lại mã mới.");
+      } else if (code === 1013) {
+        setErrorMsg("Mã OTP không chính xác.");
+      } else {
+        setErrorMsg("Xác thực thất bại. Vui lòng thử lại.");
+      }
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -82,25 +81,21 @@ export default function VerifyEmailPage() {
   const handleResendOtp = async () => {
     setIsResending(true);
     setErrorMsg("");
-    setCode(["", "", "", "", "", ""]); // Reset ô nhập
+    setCode(["", "", "", "", "", ""]);
     try {
-      const otpRes = await authApi.getRegisterOtp({ email: email });
-      if (otpRes.data && otpRes.data.code === 200) {
-        const rawOtp = otpRes.data.body.otp;
-        const cleanOtp = rawOtp.trim();
-
-        // Cập nhật OTP mới và thời gian mới
-        setCurrentServerOtp(cleanOtp);
-        setCurrentGeneratedAt(Date.now());
-
-        alert(`Đã gửi lại mã OTP tới ${email}`);
-        inputRefs.current[0].focus();
+      const res = await authApi.requestRegisterOtp({ email });
+      if (res.data?.code === 200) {
+        inputRefs.current[0]?.focus();
       } else {
         setErrorMsg("Không thể gửi lại mã. Vui lòng thử lại sau.");
       }
     } catch (error) {
-      console.error(error);
-      setErrorMsg("Lỗi kết nối khi gửi lại mã.");
+      const errCode = error.response?.data?.code;
+      if (errCode === 1015) {
+        setErrorMsg("Bạn đã gửi OTP quá nhiều lần. Vui lòng đợi 1 phút.");
+      } else {
+        setErrorMsg("Lỗi kết nối khi gửi lại mã.");
+      }
     } finally {
       setIsResending(false);
     }
@@ -156,9 +151,14 @@ export default function VerifyEmailPage() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white font-semibold py-2.5 rounded-lg transition-all duration-200 mb-4 shadow-md dark:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500/50"
+            disabled={isVerifying}
+            className={`w-full text-white font-semibold py-2.5 rounded-lg transition-all duration-200 mb-4 shadow-md dark:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500/50 ${
+              isVerifying
+                ? "bg-blue-400/70 dark:bg-cyan-600/50 cursor-not-allowed opacity-70"
+                : "bg-blue-600 hover:bg-blue-700 dark:bg-cyan-500 dark:hover:bg-cyan-400"
+            }`}
           >
-            Verify Code
+            {isVerifying ? "Verifying..." : "Verify Code"}
           </button>
         </form>
 
