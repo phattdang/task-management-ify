@@ -211,7 +211,7 @@ export default function LoginPage() {
         {/* Footer Links */}
         <div className="border-t border-slate-200 dark:border-slate-700/40 mt-6 pt-4 text-center text-sm text-slate-600 dark:text-slate-400 space-x-1">
           <Link
-            to="#"
+            to="/forgot-password"
             className="text-blue-600 dark:text-cyan-400 hover:text-blue-700 dark:hover:text-cyan-300 transition-colors"
           >
             Forgot password?

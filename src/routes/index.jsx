@@ -6,6 +6,9 @@ import {
   VerifyEmailPage,
   SetupAccountPage,
   CreateSitePage,
+  ForgotPasswordPage,
+  VerifyForgotPasswordOtpPage,
+  ResetPasswordPage,
 } from "../features/auth";
 import CreateProjectPage from "../features/projects/pages/CreateProjectPage";
 import TaskListPage from "../features/tasks/pages/TaskListPage";
@@ -21,6 +24,12 @@ export default function AppRoutes() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
       <Route path="/setup-account" element={<SetupAccountPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route
+        path="/verify-forgot-password-otp"
+        element={<VerifyForgotPasswordOtpPage />}
+      />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       {/* Protected Routes */}
       <Route path="/create-site" element={<CreateSitePage />} />

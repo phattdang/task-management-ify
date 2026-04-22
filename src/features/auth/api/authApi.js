@@ -55,6 +55,15 @@ const authApi = {
     
   verifyRegisterOtp: (request) =>
     axiosClient.post("/api/v1/auth/verify-register-otp", request),
+
+  forgotPassword: (request) =>
+    axiosClient.post("/api/v1/auth/forgot-password", request),
+
+  verifyForgotPasswordOtp: (request) =>
+    axiosClient.post("/api/v1/auth/verify-forgot-password-otp", request),
+
+  resetPassword: (request) =>
+    axiosClient.post("/api/v1/auth/reset-password", request),
     
   createUser: (request) => axiosClient.post("/api/v1/users", request),
 
