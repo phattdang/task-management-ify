@@ -90,7 +90,7 @@ export default function ProjectHeader({ projectInfo }) {
         <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center text-xl shadow-lg">
           📦
         </div>
-        <h1 className="text-3xl font-bold text-slate-100">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100 transition-colors duration-200">
           {projectInfo?.name || "Loading..."}
         </h1>
 
@@ -100,8 +100,8 @@ export default function ProjectHeader({ projectInfo }) {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className={`p-2 rounded-lg transition-all text-sm font-bold ${
                 isMenuOpen
-                  ? "bg-cyan-500/30 text-cyan-400"
-                  : "hover:bg-slate-800/40 text-slate-500 hover:text-cyan-400"
+                  ? "bg-blue-100 text-blue-700 dark:bg-cyan-500/30 dark:text-cyan-400"
+                  : "hover:bg-gray-200 dark:hover:bg-slate-800/40 text-gray-500 dark:text-slate-500 hover:text-blue-600 dark:hover:text-cyan-400"
               }`}
             >
               •••
