@@ -85,7 +85,7 @@ export default function ProjectHeader({ projectInfo }) {
   };
 
   return (
-    <div className="flex flex-col gap-4 mb-6 relative">
+    <div className="flex flex-col gap-4 mb-6 relative z-50">
       <div className="flex items-center gap-4 relative" ref={menuRef}>
         <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center text-xl shadow-lg">
           📦
@@ -95,8 +95,9 @@ export default function ProjectHeader({ projectInfo }) {
         </h1>
 
         {isManager && (
-          <div className="relative ml-auto">
+          <div className="relative z-50">
             <button
+              type="button"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className={`p-2 rounded-lg transition-all text-sm font-bold ${
                 isMenuOpen

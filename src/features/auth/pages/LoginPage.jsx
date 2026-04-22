@@ -3,12 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../../store/authSlice";
 import authApi from "../api/authApi";
+import { EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
 // Import authApi từ đường dẫn thực tế trong dự án của bạn
 
-const SocialButton = ({ icon, text }) => (
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const REDIRECT_URL = import.meta.env.VITE_REDIRECT_URL;
+
+const SocialButton = ({ icon, text, onClick }) => (
   <button
     type="button"
-    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-700/50 rounded-lg hover:bg-slate-800/60 hover:border-slate-600 transition-all bg-slate-800/40 text-slate-300 hover:text-slate-100 font-semibold text-sm"
+    onClick={onClick}
+    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:border-slate-400 dark:hover:border-slate-600 transition-all bg-white dark:bg-slate-800/40 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 font-semibold text-sm"
   >
     <span className="text-lg">{icon}</span>
     <span>{text}</span>
@@ -21,8 +26,22 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  const handleGoogleLogin = () => {
+    const url =
+      `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${GOOGLE_CLIENT_ID}&` +
+      `redirect_uri=${REDIRECT_URL}&` +
+      `response_type=code&` +
+      `scope=openid profile email&` +
+      `access_type=offline&` +
+      `prompt=consent`;
+
+    window.location.href = url;
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -87,27 +106,25 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 pt-12 pb-12 font-sans relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 pt-12 pb-12 font-sans relative overflow-hidden transition-colors duration-200">
       {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
-      <div className="absolute top-1/4 right-0 w-96 h-96 bg-cyan-500/10 blur-3xl rounded-full opacity-30 animate-softGlow"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-100 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"></div>
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-blue-500/10 dark:bg-cyan-500/10 blur-3xl rounded-full opacity-40 dark:opacity-30 animate-softGlow"></div>
 
       {/* Login Card */}
-      <div 
-        className="w-full max-w-[420px] px-6 py-10 rounded-2xl border relative z-10 animate-slideUp"
-        style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.5)',
-          backdropFilter: 'blur(16px)',
-          border: '1px solid rgba(71, 85, 105, 0.3)',
-          boxShadow: '0 20px 50px rgba(6, 182, 212, 0.1)',
-        }}
-      >
+      <div className="w-full max-w-[420px] px-6 py-10 rounded-2xl border border-slate-200 dark:border-slate-700/50 relative z-10 animate-slideUp bg-white/90 dark:bg-slate-900/50 backdrop-blur-xl shadow-xl dark:shadow-[0_20px_50px_rgba(6,182,212,0.1)]">
         {/* Logo & Title */}
         <div className="flex flex-col items-center mb-8">
-          <div className="flex items-center gap-2 text-cyan-400 font-bold text-2xl mb-4">
-            <span className="text-3xl">⚡</span> TaskMgmt
+          <div className="flex items-center gap-2 text-blue-600 dark:text-cyan-400 font-bold text-2xl mb-4">
+            <img 
+      src="https://res.cloudinary.com/dkrrib3mb/image/upload/v1775490962/logo_remove_background_fl6k7i.png" 
+      alt="Unemployed Team Logo" 
+      className="w-10 h-10 object-contain" 
+    /> Unemployed Team
           </div>
-          <h2 className="text-base font-semibold text-slate-300">Sign in to continue</h2>
+          <h2 className="text-base font-semibold text-slate-600 dark:text-slate-300">
+            Sign in to continue
+          </h2>
         </div>
 
         {/* Login Form */}
@@ -119,51 +136,49 @@ export default function LoginPage() {
               placeholder="your@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg focus:outline-none focus:border-cyan-500/50 focus:bg-slate-800/80 text-slate-100 placeholder-slate-600 text-sm transition-all"
+              className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:border-blue-600 dark:focus:border-cyan-500/50 focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-500 text-sm transition-all"
               required
               autoFocus
             />
           </div>
 
           {/* Password Input */}
-          <div>
+          <div className="relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg focus:outline-none focus:border-cyan-500/50 focus:bg-slate-800/80 text-slate-100 placeholder-slate-600 text-sm transition-all"
+              className="w-full px-4 py-2 pr-10 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:border-blue-600 dark:focus:border-cyan-500/50 focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-500 text-sm transition-all"
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+            >
+              {showPassword ? (
+                <EyeOpenIcon className="w-5 h-5" />
+              ) : (
+                <EyeClosedIcon className="w-5 h-5" />
+              )}
+            </button>
           </div>
 
           {/* Error Message */}
           {errorMsg && (
-            <div className="text-red-400 text-sm bg-red-500/10 p-3 rounded-lg border border-red-500/30">
+            <div className="text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-500/10 p-3 rounded-lg border border-red-200 dark:border-red-500/30">
               {errorMsg}
             </div>
           )}
-
-          {/* Remember Me */}
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="remember"
-              className="w-4 h-4 rounded border-slate-600/50 bg-slate-800/50 checked:bg-cyan-500 checked:border-cyan-500 focus:ring-cyan-500/50 cursor-pointer"
-            />
-            <label htmlFor="remember" className="ml-2 text-sm text-slate-400 cursor-pointer">
-              Remember me
-            </label>
-          </div>
-
           {/* Sign In Button */}
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full text-white font-semibold py-2.5 rounded-lg transition-all mt-6 ${
+            className={`w-full text-white font-semibold py-2.5 rounded-lg transition-all mt-6 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500/50 ${
               isLoading
-                ? "bg-cyan-600/50 cursor-not-allowed opacity-70"
-                : "bg-cyan-600 hover:bg-cyan-500 shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50"
+                ? "bg-blue-400/70 dark:bg-cyan-600/50 cursor-not-allowed opacity-70"
+                : "bg-blue-600 hover:bg-blue-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 shadow-md dark:shadow-cyan-500/25"
             }`}
           >
             {isLoading ? "Signing in..." : "Sign in"}
@@ -173,24 +188,39 @@ export default function LoginPage() {
         {/* Divider */}
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-700/30"></div>
+            <div className="w-full border-t border-slate-200 dark:border-slate-700/40"></div>
           </div>
-          <span className="relative bg-slate-950 px-2 text-xs text-slate-500">Or continue with</span>
+          <span className="relative bg-white dark:bg-slate-900 px-2 text-xs text-slate-500 dark:text-slate-500">
+            Or continue with
+          </span>
         </div>
 
         {/* Social Buttons */}
         <div className="space-y-2">
-          <SocialButton icon={<span className="text-lg">G</span>} text="Google" />
-          <SocialButton icon={<span className="text-lg">⊞</span>} text="Microsoft" />
+          <SocialButton
+            icon={<span className="text-lg">G</span>}
+            text="Google"
+            onClick={handleGoogleLogin}
+          />
+          <SocialButton
+            icon={<span className="text-lg">⊞</span>}
+            text="Microsoft"
+          />
         </div>
 
         {/* Footer Links */}
-        <div className="border-t border-slate-700/30 mt-6 pt-4 text-center text-sm text-slate-400 space-x-1">
-          <Link to="#" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+        <div className="border-t border-slate-200 dark:border-slate-700/40 mt-6 pt-4 text-center text-sm text-slate-600 dark:text-slate-400 space-x-1">
+          <Link
+            to="/forgot-password"
+            className="text-blue-600 dark:text-cyan-400 hover:text-blue-700 dark:hover:text-cyan-300 transition-colors"
+          >
             Forgot password?
           </Link>
           <span>•</span>
-          <Link to="/" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+          <Link
+            to="/"
+            className="text-blue-600 dark:text-cyan-400 hover:text-blue-700 dark:hover:text-cyan-300 transition-colors"
+          >
             Sign up
           </Link>
         </div>
@@ -198,8 +228,8 @@ export default function LoginPage() {
 
       {/* Footer */}
       <footer className="mt-12 text-center relative z-10">
-        <div className="text-slate-600 font-semibold text-sm">
-          <span className="tracking-tighter">TaskMgmt © 2025</span>
+        <div className="text-slate-500 dark:text-slate-600 font-semibold text-sm">
+          <span className="tracking-tighter">TaskMgmt © 2026</span>
         </div>
       </footer>
     </div>

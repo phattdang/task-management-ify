@@ -1,3 +1,5 @@
+import TaskActionsMenu from "../task-setting/TaskActionsMenu";
+
 export default function TaskHeader({
   taskName,
   menuRef,
@@ -8,7 +10,7 @@ export default function TaskHeader({
 }) {
   return (
     <div className="flex justify-between items-start mb-2">
-      <p className="text-sm text-gray-800 font-medium line-clamp-2">
+      <p className="text-sm text-slate-900 dark:text-slate-100 font-medium line-clamp-2">
         {taskName}
       </p>
       <div className="relative" ref={menuRef}>
@@ -19,9 +21,9 @@ export default function TaskHeader({
           }}
           className={`transition-opacity ${
             isMenuOpen
-              ? "opacity-100 bg-gray-100"
+              ? "opacity-100 bg-slate-100 dark:bg-slate-800/50"
               : "opacity-0 group-hover:opacity-100"
-          } text-gray-400 hover:bg-gray-100 p-1 rounded`}
+          } text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 p-1 rounded`}
         >
           •••
         </button>

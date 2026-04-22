@@ -38,31 +38,26 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }) {
   const content = (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6 lg:p-10 font-sans">
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50 dark:bg-black/60 backdrop-blur-sm"
         onClick={onClose}
+        role="presentation"
       />
 
-      <div 
-        className="relative w-full max-w-[1200px] h-full max-h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-slate-100 animate-slideUp border"
-        style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.6)',
-          backdropFilter: 'blur(16px)',
-          borderColor: 'rgba(71, 85, 105, 0.3)',
-          boxShadow: '0 25px 50px rgba(6, 182, 212, 0.15)',
-        }}
-      >
+      <div className="relative w-full max-w-[1200px] h-full max-h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-slate-900 dark:text-slate-100 animate-slideUp border border-slate-200 dark:border-slate-700/50 bg-white/95 dark:bg-slate-900/60 dark:backdrop-blur-xl dark:shadow-[0_25px_50px_rgba(6,182,212,0.15)]">
         {loading ? (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex items-center justify-center h-full bg-slate-50/50 dark:bg-transparent">
             <div className="flex flex-col items-center gap-3">
-              <div className="animate-spin rounded-full h-10 w-10 border-4 border-slate-700 border-t-cyan-500"></div>
-              <p className="text-slate-400 text-sm font-medium animate-pulse">Loading task details...</p>
+              <div className="animate-spin rounded-full h-10 w-10 border-4 border-slate-300 border-t-blue-600 dark:border-slate-700 dark:border-t-cyan-500"></div>
+              <p className="text-slate-500 dark:text-slate-400 text-sm font-medium animate-pulse">
+                Loading task details...
+              </p>
             </div>
           </div>
         ) : (
           <>
             <TaskDetailHeader task={task} onClose={onClose} />
 
-            <div className="flex-1 overflow-y-auto flex flex-col lg:flex-row px-6 gap-6">
+            <div className="flex-1 overflow-y-auto flex flex-col lg:flex-row px-6 gap-6 bg-slate-50/30 dark:bg-transparent">
               <TaskDetailContent task={task} onUpdate={handleTaskUpdate} />
               <TaskDetailSidebar task={task} onUpdate={handleTaskUpdate} />
             </div>

@@ -35,7 +35,7 @@ export default function ProjectActionsMenu({
       {
         icon: "🗑️",
         label: "Delete space",
-        color: "text-red-600",
+        color: "text-red-600 dark:text-red-400",
         onClick: onDeleteClick, // Gán trực tiếp callback từ props
       },
     ],

@@ -60,7 +60,7 @@ export default function TaskListPage() {
   if (!projectId) {
     return (
       <DashboardLayout>
-        <div className="h-full flex items-center justify-center text-gray-500">
+        <div className="h-full flex items-center justify-center text-slate-500 dark:text-slate-400">
           Loading Workspace...
         </div>
       </DashboardLayout>
@@ -70,8 +70,8 @@ export default function TaskListPage() {
   return (
     <DashboardLayout>
       <div className="flex flex-col h-full">
-        {/* HEADER SECTION - Tách thành khối riêng để scannable */}
-        <div className="px-8 pt-6 border-b border-gray-200 bg-white">
+        {/* HEADER SECTION: z-40 so project menu (absolute) stacks above board/toolbar (siblings paint later by default and would cover it) */}
+        <div className="relative z-40 px-8 pt-6 border-b border-slate-200 dark:border-slate-800/50 bg-white dark:bg-slate-900/30 backdrop-blur-sm transition-colors duration-200">
           <ProjectHeader projectInfo={projectInfo} />
           <NavigationTabs activeTab={currentTab} onTabChange={setCurrentTab} />
         </div>
@@ -80,7 +80,7 @@ export default function TaskListPage() {
         {currentTab === "BOARD" && (
           <>
             <BoardToolbar members={projectInfo?.members || []} />
-            <div className="flex-1 overflow-x-auto overflow-y-hidden bg-white px-8 pb-4">
+            <div className="relative z-0 flex-1 overflow-x-auto overflow-y-hidden bg-slate-50 dark:bg-slate-950 px-8 pb-4 transition-colors duration-200">
               {loading ? (
                 <LoadingPulse />
               ) : (
@@ -95,16 +95,24 @@ export default function TaskListPage() {
         )}
 
         {currentTab === "LIST" && (
-          <div className="p-8">Chức năng đang phát triển...</div>
+          <div className="p-8 text-slate-600 dark:text-slate-400">
+            Chức năng đang phát triển...
+          </div>
         )}
         {currentTab === "SUMMARY" && (
-          <div className="p-8">Chức năng đang phát triển...</div>
+          <div className="p-8 text-slate-600 dark:text-slate-400">
+            Chức năng đang phát triển...
+          </div>
         )}
         {currentTab === "TIMELINE" && (
-          <div className="p-8">Chức năng đang phát triển...</div>
+          <div className="p-8 text-slate-600 dark:text-slate-400">
+            Chức năng đang phát triển...
+          </div>
         )}
         {currentTab === "PAGES" && (
-          <div className="p-8">Chức năng đang phát triển...</div>
+          <div className="p-8 text-slate-600 dark:text-slate-400">
+            Chức năng đang phát triển...
+          </div>
         )}
 
         {/* Render Modal nếu có ID trên URL */}

@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import authApi from "../api/authApi"; // Import api
+import { useDispatch } from "react-redux";
+import { setAuth } from "../../../store/authSlice";
+import authApi from "../api/authApi";
 
 export default function SetupAccountPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   // Lấy email từ trang trước, nếu mất state thì fallback (hoặc redirect về login)
   const email = location.state?.email;
+  const validToken = location.state?.validToken;
 
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
@@ -25,6 +29,7 @@ export default function SetupAccountPage() {
       fullName: fullName,
       email: email,
       password: password,
+      validToken: validToken,
     };
 
     try {
@@ -50,20 +55,22 @@ export default function SetupAccountPage() {
             localStorage.setItem("access_token", accessToken);
             localStorage.setItem("refresh_token", refreshToken);
 
-            // 4. Lấy thông tin User để đồng bộ hóa ứng dụng
+            // 4. Lấy thông tin User và đồng bộ Redux store
+            let userInfo = null;
             try {
               const userRes = await authApi.getInformation();
               if (userRes.data && userRes.data.code === 200) {
-                localStorage.setItem(
-                  "user_info",
-                  JSON.stringify(userRes.data.body)
-                );
+                userInfo = userRes.data.body;
+                localStorage.setItem("user_info", JSON.stringify(userInfo));
               }
             } catch (infoError) {
               console.error("Failed to fetch info after signup:", infoError);
             }
 
-            // 5. Chuyển hướng đến trang Tạo Project thay vì /projects
+            // 5. Dispatch vào Redux để ProtectedRoute nhận ra user đã đăng nhập
+            dispatch(setAuth(userInfo));
+
+            // 6. Chuyển hướng đến trang Tạo Project
             navigate("/create-project");
           }
         } catch (loginError) {
@@ -101,19 +108,14 @@ export default function SetupAccountPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 pt-12 pb-12 font-sans relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
-      <div className="absolute top-1/3 right-0 w-96 h-96 bg-cyan-500/10 blur-3xl rounded-full opacity-30 animate-softGlow"></div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 pt-12 pb-12 font-sans relative overflow-hidden transition-colors duration-200">
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-100 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"></div>
+      <div className="absolute top-1/3 right-0 w-96 h-96 bg-blue-500/10 dark:bg-cyan-500/10 blur-3xl rounded-full opacity-40 dark:opacity-30 animate-softGlow"></div>
 
-      <div className="w-full max-w-[420px] px-6 py-10 rounded-2xl border relative z-10" style={{
-        backgroundColor: 'rgba(15, 23, 42, 0.5)',
-        backdropFilter: 'blur(16px)',
-        borderColor: 'rgba(71, 85, 105, 0.3)',
-        boxShadow: '0 20px 50px rgba(6, 182, 212, 0.1)',
-      }}>
+      <div className="w-full max-w-[420px] px-6 py-10 rounded-2xl border border-slate-200 dark:border-slate-700/50 relative z-10 bg-white/90 dark:bg-slate-900/50 backdrop-blur-xl shadow-xl dark:shadow-[0_20px_50px_rgba(6,182,212,0.1)]">
         {/* Logo */}
         <div className="flex justify-center mb-6">
-          <span className="flex items-center gap-2 text-2xl font-bold text-cyan-400">
+          <span className="flex items-center gap-2 text-2xl font-bold text-blue-600 dark:text-cyan-400">
             <span className="text-3xl">⚡</span>
             TaskMgmt
           </span>
@@ -121,21 +123,21 @@ export default function SetupAccountPage() {
 
         {/* Header Success */}
         <div className="text-center mb-8">
-          <h2 className="text-lg font-bold text-slate-100 flex items-center justify-center gap-2">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center justify-center gap-2">
             Email verified
-            <span className="text-emerald-400 text-xl">✓</span>
+            <span className="text-emerald-600 dark:text-emerald-400 text-xl">✓</span>
           </h2>
-          <p className="text-xs text-slate-400 mt-2 font-medium">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">
             Complete your account setup
           </p>
         </div>
 
         {/* Email Read-only */}
         <div className="mb-6">
-          <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">
+          <label className="block text-xs font-semibold text-slate-500 dark:text-slate-500 mb-2 uppercase tracking-wider">
             Email Address
           </label>
-          <div className="text-sm font-semibold text-slate-100 bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
+          <div className="text-sm font-semibold text-slate-900 dark:text-slate-100 bg-slate-100 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700/50">
             {email}
           </div>
         </div>
@@ -144,7 +146,7 @@ export default function SetupAccountPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Full Name */}
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">
+            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-500 mb-2 uppercase tracking-wider">
               Full Name
             </label>
             <input
@@ -152,21 +154,23 @@ export default function SetupAccountPage() {
               placeholder="John Doe"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className={`w-full px-4 py-2.5 bg-slate-800/50 border rounded-lg focus:outline-none transition-all text-sm text-slate-100 placeholder-slate-600 ${
+              className={`w-full px-4 py-2.5 bg-white dark:bg-slate-900 border rounded-lg focus:outline-none transition-all text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-500 focus:ring-2 ${
                 errors.fullName
-                  ? "border-red-500/50 focus:border-red-500/70"
-                  : "border-slate-700/50 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/30"
+                  ? "border-red-400 dark:border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
+                  : "border-slate-300 dark:border-slate-700 focus:border-blue-600 dark:focus:border-cyan-500/50 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30"
               }`}
               required
             />
             {errors.fullName && (
-              <p className="text-red-400 text-xs mt-2">{errors.fullName}</p>
+              <p className="text-red-600 dark:text-red-400 text-xs mt-2">
+                {errors.fullName}
+              </p>
             )}
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">
+            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-500 mb-2 uppercase tracking-wider">
               Password
             </label>
             <div className="relative">
@@ -175,37 +179,45 @@ export default function SetupAccountPage() {
                 placeholder="Create a strong password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`w-full px-4 py-2.5 bg-slate-800/50 border rounded-lg focus:outline-none transition-all text-sm text-slate-100 placeholder-slate-600 pr-10 ${
+                className={`w-full px-4 py-2.5 bg-white dark:bg-slate-900 border rounded-lg focus:outline-none transition-all text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-500 pr-10 focus:ring-2 ${
                   errors.password
-                    ? "border-red-500/50 focus:border-red-500/70"
-                    : "border-slate-700/50 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/30"
+                    ? "border-red-400 dark:border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
+                    : "border-slate-300 dark:border-slate-700 focus:border-blue-600 dark:focus:border-cyan-500/50 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30"
                 }`}
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-400 text-lg transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 text-lg transition-colors"
               >
                 {showPassword ? "👁️" : "👁️‍🗨️"}
               </button>
             </div>
             {errors.password && (
-              <p className="text-red-400 text-xs mt-2">{errors.password}</p>
+              <p className="text-red-600 dark:text-red-400 text-xs mt-2">
+                {errors.password}
+              </p>
             )}
           </div>
 
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-500 dark:text-slate-500">
             Password must be at least 8 characters long
           </p>
 
-          <p className="text-xs text-slate-400 leading-relaxed">
+          <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
             By signing up, you agree to our{" "}
-            <a href="#" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+            <a
+              href="#"
+              className="text-blue-600 dark:text-cyan-400 hover:text-blue-700 dark:hover:text-cyan-300 transition-colors"
+            >
               Terms of Service
             </a>{" "}
             and acknowledge our{" "}
-            <a href="#" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+            <a
+              href="#"
+              className="text-blue-600 dark:text-cyan-400 hover:text-blue-700 dark:hover:text-cyan-300 transition-colors"
+            >
               Privacy Policy
             </a>
             .
@@ -214,19 +226,19 @@ export default function SetupAccountPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full text-white font-semibold py-2.5 rounded-lg transition-all mt-6 ${
+            className={`w-full text-white font-semibold py-2.5 rounded-lg transition-all mt-6 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500/50 ${
               isLoading
-                ? "bg-cyan-600/50 cursor-not-allowed opacity-70"
-                : "bg-cyan-600 hover:bg-cyan-500 shadow-lg shadow-cyan-500/30"
+                ? "bg-blue-400/70 dark:bg-cyan-600/50 cursor-not-allowed opacity-70"
+                : "bg-blue-600 hover:bg-blue-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 shadow-md dark:shadow-cyan-500/25"
             }`}
           >
             {isLoading ? "Creating account..." : "Continue"}
           </button>
         </form>
 
-        <div className="mt-6 pt-6 border-t border-slate-700/30 text-center">
-          <p className="text-xs text-slate-600">
-            TaskMgmt © 2025
+        <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700/40 text-center">
+          <p className="text-xs text-slate-500 dark:text-slate-600">
+            TaskMgmt © 2026
           </p>
         </div>
       </div>

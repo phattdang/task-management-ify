@@ -88,8 +88,10 @@ export default function InvitationConfirmPage() {
   // 1. Màn hình Loading
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F9F9F9]">
-        <div className="text-gray-500 font-medium">Checking invitation...</div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <div className="text-slate-500 dark:text-slate-400 font-medium">
+          Checking invitation...
+        </div>
       </div>
     );
   }
@@ -97,17 +99,18 @@ export default function InvitationConfirmPage() {
   // 2. Màn hình Lỗi
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F9F9F9] text-center px-4">
-        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 text-center px-4">
+        <div className="w-16 h-16 bg-red-100 dark:bg-red-500/20 rounded-full flex items-center justify-center mb-4 border border-red-200 dark:border-red-500/30">
           <span className="text-2xl">⚠️</span>
         </div>
-        <h1 className="text-xl font-bold text-gray-800 mb-2">
+        <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
           Không thể tải lời mời
         </h1>
-        <p className="text-gray-600 mb-6">{error}</p>
+        <p className="text-slate-600 dark:text-slate-400 mb-6">{error}</p>
         <button
+          type="button"
           onClick={() => navigate("/projects")}
-          className="text-blue-600 hover:underline font-medium"
+          className="text-blue-600 dark:text-cyan-400 hover:underline font-medium"
         >
           Quay về trang chủ
         </button>
@@ -119,21 +122,23 @@ export default function InvitationConfirmPage() {
   const { inviter, project } = invitationData;
 
   return (
-    <div className="min-h-screen bg-[#F9F9F9] flex flex-col items-center pt-16 font-sans text-[#24292f]">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center pt-16 font-sans text-slate-900 dark:text-slate-100 transition-colors duration-200">
       {/* --- AVATAR GROUP --- */}
       <div className="flex items-center justify-center gap-4 mb-6">
         {/* Project Avatar */}
-        <div className="w-12 h-12 bg-green-200 rounded-md flex items-center justify-center border border-gray-200 shadow-sm">
-          <span className="text-xl font-bold text-green-700">
+        <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-500/20 rounded-md flex items-center justify-center border border-slate-200 dark:border-slate-800/50 shadow-sm">
+          <span className="text-xl font-bold text-emerald-800 dark:text-emerald-400">
             {getInitials(project?.name)}
           </span>
         </div>
 
-        <span className="text-gray-400 text-xl font-light">+</span>
+        <span className="text-slate-400 dark:text-slate-500 text-xl font-light">
+          +
+        </span>
 
         {/* Inviter Avatar */}
-        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center border border-gray-200 shadow-sm overflow-hidden">
-          <span className="text-xl font-bold text-blue-600">
+        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 rounded-full flex items-center justify-center border border-slate-200 dark:border-slate-800/50 shadow-sm overflow-hidden">
+          <span className="text-xl font-bold text-blue-700 dark:text-cyan-400">
             {getInitials(inviter?.fullName)}
           </span>
         </div>
@@ -141,11 +146,13 @@ export default function InvitationConfirmPage() {
 
       {/* --- TITLE --- */}
       <div className="text-center mb-6 px-4">
-        <h1 className="text-xl sm:text-2xl font-light mb-1">
-          <span className="font-semibold">{inviter?.fullName}</span> invited you
-          to collaborate on
+        <h1 className="text-xl sm:text-2xl font-light mb-1 text-slate-800 dark:text-slate-200">
+          <span className="font-semibold text-slate-900 dark:text-slate-100">
+            {inviter?.fullName}
+          </span>{" "}
+          invited you to collaborate on
         </h1>
-        <h2 className="text-xl sm:text-2xl font-semibold text-blue-600">
+        <h2 className="text-xl sm:text-2xl font-semibold text-blue-600 dark:text-cyan-400">
           {project?.name}
         </h2>
       </div>
@@ -153,30 +160,32 @@ export default function InvitationConfirmPage() {
       {/* --- ACTION BUTTONS --- */}
       <div className="flex items-center gap-3 mb-8">
         <button
+          type="button"
           onClick={() => handleAnswer(true)} // Accept
           disabled={isProcessing}
-          className="bg-[#2da44e] hover:bg-[#2c974b] text-white px-5 py-2 rounded-md font-semibold text-sm shadow-sm border border-[rgba(27,31,36,0.15)] transition-colors disabled:opacity-50"
+          className="bg-emerald-600 hover:bg-emerald-500 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white px-5 py-2 rounded-md font-semibold text-sm shadow-sm border border-emerald-700/20 dark:border-cyan-400/20 transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-cyan-500/50"
         >
           {isProcessing ? "Processing..." : "Accept invitation"}
         </button>
         <button
+          type="button"
           onClick={() => handleAnswer(false)} // Decline
           disabled={isProcessing}
-          className="bg-[#f6f8fa] hover:bg-[#f3f4f6] text-[#24292f] px-5 py-2 rounded-md font-semibold text-sm shadow-sm border border-[rgba(27,31,36,0.15)] transition-colors disabled:opacity-50"
+          className="bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-slate-100 px-5 py-2 rounded-md font-semibold text-sm shadow-sm border border-slate-300 dark:border-slate-700 transition-colors disabled:opacity-50"
         >
           Decline invitation
         </button>
       </div>
 
       {/* --- INFO BOX --- */}
-      <div className="bg-white border border-[#d0d7de] rounded-md p-4 max-w-lg w-full mx-4 mb-6">
+      <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/50 rounded-md p-4 max-w-lg w-full mx-4 mb-6 shadow-sm backdrop-blur-sm">
         <div className="flex items-start gap-3">
-          <span className="text-gray-500 mt-1">ℹ️</span>
-          <div className="text-sm text-[#57606a]">
-            <span className="text-[#0969da] cursor-pointer hover:underline">
+          <span className="text-slate-500 dark:text-slate-400 mt-1">ℹ️</span>
+          <div className="text-sm text-slate-600 dark:text-slate-400">
+            <span className="text-blue-600 dark:text-cyan-400 cursor-pointer hover:underline">
               Owners
             </span>{" "}
-            of <strong>{project?.name}</strong> will be able to see:
+            of <strong className="text-slate-900 dark:text-slate-200">{project?.name}</strong> will be able to see:
             <ul className="list-disc pl-5 mt-2 space-y-1">
               <li>Your public profile information</li>
               <li>Certain activity within this repository</li>
@@ -188,8 +197,8 @@ export default function InvitationConfirmPage() {
       </div>
 
       {/* --- FOOTER --- */}
-      <div className="mt-auto py-6 flex items-center gap-4 text-xs text-[#57606a]">
-        <span>© 2025 Taskify, Inc.</span>
+      <div className="mt-auto py-6 flex items-center gap-4 text-xs text-slate-500 dark:text-slate-500">
+        <span>© 2026 Taskify, Inc.</span>
       </div>
     </div>
   );

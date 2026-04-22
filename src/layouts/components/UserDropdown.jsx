@@ -40,28 +40,20 @@ export default function UserDropdown({ isOpen, userInfo }) {
   if (!isOpen) return null;
 
   return (
-    <div 
-      className="absolute right-0 top-12 w-[340px] rounded-lg z-50 animate-in fade-in zoom-in-95 duration-100 origin-top-right border"
-      style={{
-        backgroundColor: 'rgba(15, 23, 42, 0.5)',
-        backdropFilter: 'blur(16px)',
-        borderColor: 'rgba(71, 85, 105, 0.3)',
-        boxShadow: '0 20px 50px rgba(6, 182, 212, 0.1)',
-      }}
-    >
+    <div className="absolute right-0 top-12 w-[340px] rounded-xl z-[100] animate-in fade-in zoom-in-95 duration-100 origin-top-right border border-slate-200 dark:border-slate-800/50 bg-white/95 dark:bg-slate-900/50 backdrop-blur-xl shadow-2xl dark:shadow-[0_20px_50px_rgba(6,182,212,0.12)]">
       {/* Header Info */}
-      <div className="p-4 border-b" style={{ borderColor: 'rgba(71, 85, 105, 0.2)' }}>
+      <div className="p-4 border-b border-slate-200 dark:border-slate-700/40">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white">
+          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 dark:from-cyan-500 dark:to-blue-600 flex items-center justify-center text-white">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
             </svg>
           </div>
           <div className="overflow-hidden">
-            <h4 className="text-sm font-bold text-slate-100 truncate">
+            <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
               {displayUser.fullName}
             </h4>
-            <p className="text-xs text-slate-500 truncate">
+            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
               {displayUser.email}
             </p>
           </div>
@@ -69,30 +61,30 @@ export default function UserDropdown({ isOpen, userInfo }) {
       </div>
 
       {/* Menu List 1 */}
-      <div className="py-1 border-b" style={{ borderColor: 'rgba(71, 85, 105, 0.2)' }}>
-        <div className="px-4 py-2 hover:bg-slate-800/40 cursor-pointer flex items-center gap-3 text-sm text-slate-300 hover:text-slate-100 transition-colors">
+      <div className="py-1 border-b border-slate-200 dark:border-slate-700/40">
+        <div className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/40 cursor-pointer flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
           <span className="text-lg">👤</span> Profile
         </div>
-        <div className="px-4 py-2 hover:bg-slate-800/40 cursor-pointer flex items-center gap-3 text-sm text-slate-300 hover:text-slate-100 transition-colors">
+        <div className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/40 cursor-pointer flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
           <span className="text-lg">⚙️</span> Account Settings
         </div>
-        <div className="px-4 py-2 hover:bg-slate-800/40 cursor-pointer flex items-center justify-between text-sm text-slate-300 hover:text-slate-100 transition-colors">
+        <div className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/40 cursor-pointer flex items-center justify-between text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
           <div className="flex items-center gap-3">
             <span className="text-lg">◑</span> Theme
           </div>
-          <span className="text-xs text-slate-600">›</span>
+          <span className="text-xs text-slate-400 dark:text-slate-500">›</span>
         </div>
       </div>
 
       {/* Menu List 2 */}
       <div className="py-1">
-        <div className="px-4 py-2 hover:bg-slate-800/40 cursor-pointer flex items-center gap-3 text-sm text-slate-300 hover:text-slate-100 transition-colors">
+        <div className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/40 cursor-pointer flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
           <span className="text-lg">👥</span> Switch Account
         </div>
 
         <div
           onClick={handleLogout}
-          className="px-4 py-2 hover:bg-red-500/10 cursor-pointer flex items-center gap-3 text-sm text-red-400 hover:text-red-300 transition-colors"
+          className="px-4 py-2 hover:bg-red-500/10 cursor-pointer flex items-center gap-3 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors"
         >
           <span className="text-lg">🚪</span> Sign out
         </div>

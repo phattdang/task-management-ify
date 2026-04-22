@@ -1,54 +1,50 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import authApi from "../api/authApi";
 
-export default function VerifyEmailPage() {
+export default function VerifyForgotPasswordOtpPage() {
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Lấy dữ liệu truyền từ AuthForm
-  const { email } = location.state || {};
+  const email = location.state?.email;
 
   const [code, setCode] = useState(["", "", "", "", "", ""]);
-  const inputRefs = useRef([]);
   const [errorMsg, setErrorMsg] = useState("");
-  const [isResending, setIsResending] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const inputRefs = useRef([]);
 
-  // Nếu không có email trong state (người dùng vào thẳng link), đẩy về register
   useEffect(() => {
     if (!email) {
-      navigate("/register");
+      navigate("/forgot-password");
     }
   }, [email, navigate]);
 
   const handleChange = (index, e) => {
     const value = e.target.value;
-    if (isNaN(value)) return;
+    if (Number.isNaN(Number(value))) return;
 
-    const newCode = [...code];
-    newCode[index] = value.substring(value.length - 1);
-    setCode(newCode);
-    setErrorMsg(""); // Xóa lỗi khi người dùng nhập lại
+    const nextCode = [...code];
+    nextCode[index] = value.substring(value.length - 1);
+    setCode(nextCode);
+    setErrorMsg("");
 
     if (value && index < 5) {
-      inputRefs.current[index + 1].focus();
+      inputRefs.current[index + 1]?.focus();
     }
   };
 
   const handleKeyDown = (index, e) => {
     if (e.key === "Backspace" && !code[index] && index > 0) {
-      inputRefs.current[index - 1].focus();
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
-  // Hàm xử lý Verify — gọi API backend
   const handleVerify = async (e) => {
     e.preventDefault();
-    const fullCode = code.join("");
+    const otp = code.join("");
 
-    if (fullCode.length < 6) {
-      setErrorMsg("Vui lòng nhập đủ 6 số!");
+    if (otp.length < 6) {
+      setErrorMsg("Vui long nhap du 6 so.");
       return;
     }
 
@@ -56,45 +52,49 @@ export default function VerifyEmailPage() {
     setErrorMsg("");
 
     try {
-      const res = await authApi.verifyRegisterOtp({ otp: fullCode, email });
+      const res = await authApi.verifyForgotPasswordOtp({ otp, email });
       if (res.data?.code === 200 && res.data?.body?.valid) {
-        const { validToken } = res.data.body;
-        navigate("/setup-account", { state: { email, validToken } });
+        navigate("/reset-password", {
+          state: {
+            email,
+            resetToken: res.data.body.validToken,
+          },
+        });
       } else {
-        setErrorMsg("Mã OTP không chính xác.");
+        setErrorMsg("Ma OTP khong chinh xac.");
       }
     } catch (error) {
-      const code = error.response?.data?.code;
-      if (code === 1014) {
-        setErrorMsg("Mã OTP đã hết hạn. Vui lòng gửi lại mã mới.");
-      } else if (code === 1013) {
-        setErrorMsg("Mã OTP không chính xác.");
+      const backendCode = error.response?.data?.code;
+      if (backendCode === 1014) {
+        setErrorMsg("Ma OTP da het han. Vui long gui lai ma moi.");
+      } else if (backendCode === 1013) {
+        setErrorMsg("Ma OTP khong chinh xac.");
       } else {
-        setErrorMsg("Xác thực thất bại. Vui lòng thử lại.");
+        setErrorMsg("Xac thuc that bai. Vui long thu lai.");
       }
     } finally {
       setIsVerifying(false);
     }
   };
 
-  // Hàm Gửi lại mã
-  const handleResendOtp = async () => {
+  const handleResend = async () => {
     setIsResending(true);
     setErrorMsg("");
     setCode(["", "", "", "", "", ""]);
+
     try {
-      const res = await authApi.requestRegisterOtp({ email });
+      const res = await authApi.forgotPassword({ email });
       if (res.data?.code === 200) {
         inputRefs.current[0]?.focus();
       } else {
-        setErrorMsg("Không thể gửi lại mã. Vui lòng thử lại sau.");
+        setErrorMsg("Khong the gui lai ma. Vui long thu lai sau.");
       }
     } catch (error) {
-      const errCode = error.response?.data?.code;
-      if (errCode === 1015) {
-        setErrorMsg("Bạn đã gửi OTP quá nhiều lần. Vui lòng đợi 1 phút.");
+      const backendCode = error.response?.data?.code;
+      if (backendCode === 1015) {
+        setErrorMsg("Ban da gui OTP qua nhieu lan. Vui long doi 1 phut.");
       } else {
-        setErrorMsg("Lỗi kết nối khi gửi lại mã.");
+        setErrorMsg("Loi ket noi khi gui lai ma.");
       }
     } finally {
       setIsResending(false);
@@ -107,18 +107,9 @@ export default function VerifyEmailPage() {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-500/10 dark:bg-cyan-500/10 blur-3xl rounded-full opacity-50 dark:opacity-40 animate-softGlow"></div>
 
       <div className="w-full max-w-[420px] px-6 py-10 rounded-2xl border border-slate-200 dark:border-slate-700/50 relative z-10 text-center bg-white/90 dark:bg-slate-900/50 backdrop-blur-xl shadow-xl dark:shadow-[0_20px_50px_rgba(6,182,212,0.1)]">
-        {/* Logo Section */}
-        <div className="flex justify-center mb-6">
-          <span className="flex items-center gap-2 text-2xl font-bold text-blue-600 dark:text-cyan-400">
-            <span className="text-3xl">⚡</span>
-            TaskMgmt
-          </span>
-        </div>
-
         <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">
-          Verify your email address
+          Verify reset OTP
         </h1>
-
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
           We sent a verification code to:
           <br />
@@ -162,22 +153,14 @@ export default function VerifyEmailPage() {
           </button>
         </form>
 
-        <div className="text-sm">
-          <button
-            type="button"
-            onClick={handleResendOtp}
-            disabled={isResending}
-            className="text-blue-600 dark:text-cyan-400 hover:text-blue-700 dark:hover:text-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
-          >
-            {isResending ? "Sending..." : "Didn't receive code? Resend"}
-          </button>
-        </div>
-
-        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700/40">
-          <p className="text-[12px] text-slate-500 dark:text-slate-600">
-            TaskMgmt © 2026 • Secure task management
-          </p>
-        </div>
+        <button
+          type="button"
+          onClick={handleResend}
+          disabled={isResending}
+          className="text-blue-600 dark:text-cyan-400 hover:text-blue-700 dark:hover:text-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
+        >
+          {isResending ? "Sending..." : "Didn't receive code? Resend"}
+        </button>
       </div>
     </div>
   );

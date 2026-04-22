@@ -68,20 +68,21 @@ export default function AuthForm() {
   return (
     <div className="max-w-lg w-full">
       {/* Hero Headline */}
-      <h1 className="text-5xl md:text-6xl font-bold text-slate-100 leading-tight mb-4">
-        Connect, collaborate, and manage{' '}
-        <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+      <h1 className="text-5xl md:text-6xl font-bold text-slate-900 dark:text-slate-100 leading-tight mb-4">
+        Connect, collaborate, and manage{" "}
+        <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-cyan-400 dark:to-blue-400 bg-clip-text text-transparent">
           everything
         </span>
       </h1>
-      <p className="text-lg text-slate-400 mb-8 leading-relaxed">
-        Bring your team together with TaskMgmt. Organize tasks, boost productivity, and ship better work.
+      <p className="text-lg text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
+        Bring your team together with TaskMgmt. Organize tasks, boost
+        productivity, and ship better work.
       </p>
 
       {/* Email Signup Form */}
       <div className="space-y-4 mb-6">
         <div>
-          <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">
+          <label className="block text-xs font-semibold text-slate-500 dark:text-slate-500 mb-2 uppercase tracking-wider">
             Email Address
           </label>
           <input
@@ -90,24 +91,25 @@ export default function AuthForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
-            className={`w-full px-4 py-3 bg-slate-800/50 border rounded-lg outline-none transition-all text-slate-100 placeholder-slate-600 text-sm ${
+            className={`w-full px-4 py-3 bg-white dark:bg-slate-900 border rounded-lg outline-none transition-all text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-500 text-sm focus:ring-2 ${
               errorMsg
-                ? "border-red-500/50 focus:border-red-500/70"
-                : "border-slate-700/50 focus:border-cyan-500/50 focus:bg-slate-800/80"
+                ? "border-red-400 dark:border-red-500/50 focus:border-red-500 dark:focus:border-red-500/70 focus:ring-red-500/20"
+                : "border-slate-300 dark:border-slate-700 focus:border-blue-600 dark:focus:border-cyan-500/50 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30"
             }`}
           />
           {errorMsg && (
-            <p className="text-red-400 text-sm mt-2">{errorMsg}</p>
+            <p className="text-red-600 dark:text-red-400 text-sm mt-2">{errorMsg}</p>
           )}
         </div>
 
         <button
+          type="button"
           onClick={handleSignUpClick}
           disabled={isLoading}
-          className={`w-full text-white font-semibold py-3 rounded-lg transition-all ${
+          className={`w-full text-white font-semibold py-3 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500/50 ${
             isLoading
-              ? "bg-cyan-600/50 cursor-not-allowed opacity-70"
-              : "bg-cyan-600 hover:bg-cyan-500 shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50"
+              ? "bg-blue-400/70 dark:bg-cyan-600/50 cursor-not-allowed opacity-70"
+              : "bg-blue-600 hover:bg-blue-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 shadow-md dark:shadow-cyan-500/25"
           }`}
         >
           {isLoading ? "Creating account..." : "Get Started"}
@@ -117,30 +119,37 @@ export default function AuthForm() {
       {/* Divider */}
       <div className="relative my-8">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-700/30"></div>
+          <div className="w-full border-t border-slate-200 dark:border-slate-700/40"></div>
         </div>
-        <span className="relative bg-slate-950 px-2 text-xs text-slate-500">Or continue with</span>
+        <span className="relative bg-slate-50 dark:bg-slate-950 px-2 text-xs text-slate-500 dark:text-slate-500">
+          Or continue with
+        </span>
       </div>
 
       {/* Social Login */}
       <div className="grid grid-cols-2 gap-3 mb-8">
         <button
+          type="button"
           onClick={handleGoogleLogin}
-          className="py-2.5 px-4 bg-slate-800/40 border border-slate-700/50 rounded-lg font-semibold text-slate-300 hover:text-cyan-400 hover:border-slate-700/80 hover:bg-slate-800/60 flex items-center justify-center gap-2 text-sm transition-all"
+          className="py-2.5 px-4 bg-white dark:bg-slate-800/40 border border-slate-300 dark:border-slate-700 rounded-lg font-semibold text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-cyan-400 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-center justify-center gap-2 text-sm transition-all"
         >
           <span className="text-lg">G</span> Google
         </button>
-        <button className="py-2.5 px-4 bg-slate-800/40 border border-slate-700/50 rounded-lg font-semibold text-slate-300 hover:text-cyan-400 hover:border-slate-700/80 hover:bg-slate-800/60 flex items-center justify-center gap-2 text-sm transition-all">
+        <button
+          type="button"
+          className="py-2.5 px-4 bg-white dark:bg-slate-800/40 border border-slate-300 dark:border-slate-700 rounded-lg font-semibold text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-cyan-400 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-center justify-center gap-2 text-sm transition-all"
+        >
           <span className="text-lg">⊞</span> Microsoft
         </button>
       </div>
 
       {/* Sign In Link */}
-      <div className="pt-4 border-t border-slate-700/30 text-center text-sm text-slate-400">
+      <div className="pt-4 border-t border-slate-200 dark:border-slate-700/40 text-center text-sm text-slate-600 dark:text-slate-400">
         <span>Already have an account? </span>
         <button
+          type="button"
           onClick={handleLoginClick}
-          className="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors cursor-pointer"
+          className="text-blue-600 dark:text-cyan-400 hover:text-blue-700 dark:hover:text-cyan-300 font-semibold transition-colors cursor-pointer"
         >
           Sign in
         </button>

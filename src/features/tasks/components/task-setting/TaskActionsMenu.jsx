@@ -18,22 +18,26 @@ export default function TaskActionsMenu({ onClose, onDeleteClick, onCopyId }) {
       {
         icon: "🗑️",
         label: "Delete",
-        color: "text-red-600",
+        color:
+          "text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10",
         onClick: onDeleteClick,
       },
     ],
   ];
 
   return (
-    <div className="absolute top-8 right-0 w-52 bg-white shadow-xl border border-gray-200 rounded-md z-[100] py-1 overflow-hidden">
+    <div className="absolute top-8 right-0 w-52 bg-white dark:bg-slate-900/95 backdrop-blur-md shadow-xl border border-slate-200 dark:border-slate-700 rounded-lg z-[100] py-1 overflow-hidden">
       {menuGroups.map((group, gIndex) => (
         <React.Fragment key={gIndex}>
-          {gIndex > 0 && <div className="h-[1px] bg-gray-100 my-1" />}
+          {gIndex > 0 && (
+            <div className="h-[1px] bg-slate-200 dark:bg-slate-800 my-1" />
+          )}
           {group.map((item, iIndex) => (
             <div
               key={iIndex}
-              className={`px-3 py-2 hover:bg-gray-50 cursor-pointer flex items-center justify-between group transition-colors ${
-                item.color || "text-gray-700"
+              className={`px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/60 cursor-pointer flex items-center justify-between group transition-colors ${
+                item.color ||
+                "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60"
               }`}
               onClick={(e) => {
                 e.stopPropagation();
@@ -46,7 +50,9 @@ export default function TaskActionsMenu({ onClose, onDeleteClick, onCopyId }) {
                 <span className="text-sm font-medium">{item.label}</span>
               </div>
               {item.hasSubmenu && (
-                <span className="text-gray-400 text-xs">›</span>
+                <span className="text-slate-400 dark:text-slate-500 text-xs">
+                  ›
+                </span>
               )}
             </div>
           ))}

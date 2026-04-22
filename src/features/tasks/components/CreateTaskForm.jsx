@@ -96,16 +96,11 @@ export default function CreateTaskForm({ projectId, onCancel, onSuccess }) {
     <div ref={formRef} className="mb-3">
       <form
         onSubmit={handleSubmit}
-        className="rounded-lg p-3 border"
-        style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.4)',
-          backdropFilter: 'blur(8px)',
-          borderColor: 'rgba(6, 182, 212, 0.4)',
-        }}
+        className="rounded-lg p-3 border border-blue-200/80 dark:border-cyan-500/40 bg-white/90 dark:bg-slate-900/40 backdrop-blur-md shadow-sm transition-colors duration-200"
       >
         <textarea
           placeholder="What needs to be done?"
-          className="w-full text-sm resize-none outline-none bg-slate-800/50 text-slate-100 placeholder-slate-600 mb-3 p-2 rounded border border-slate-700/50 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/30 transition-all"
+          className="w-full text-sm resize-none outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-500 mb-3 p-2 rounded border border-slate-300 dark:border-slate-700 focus:border-blue-600 dark:focus:border-cyan-500/50 focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 transition-all"
           rows={3}
           autoFocus
           value={taskName}
@@ -128,11 +123,11 @@ export default function CreateTaskForm({ projectId, onCancel, onSuccess }) {
               className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10"
             />
             {dueDate ? (
-              <div className="flex items-center gap-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 px-2 py-1 rounded-md text-xs font-bold">
+              <div className="flex items-center gap-1 bg-blue-50 text-blue-700 border border-blue-200 dark:bg-cyan-500/20 dark:text-cyan-400 dark:border-cyan-500/50 px-2 py-1 rounded-md text-xs font-bold">
                 📅 {formatDateDisplay(dueDate)}
               </div>
             ) : (
-              <div className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-700/50 text-slate-500 hover:text-cyan-400 transition-colors">
+              <div className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/50 text-slate-500 dark:text-slate-500 hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
                 📅
               </div>
             )}
@@ -143,13 +138,13 @@ export default function CreateTaskForm({ projectId, onCancel, onSuccess }) {
             <button
               type="button"
               onClick={() => setIsMemberOpen(!isMemberOpen)}
-              className={`flex items-center justify-center rounded-lg hover:bg-slate-700/50 transition-colors ${
+              className={`flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors ${
                 assigneeId ? "" : "w-8 h-8"
               }`}
             >
               {assigneeId && selectedMember ? (
-                <div className="flex items-center gap-1 bg-slate-700/50 text-slate-300 px-2 py-1 rounded-md border border-slate-600/50">
-                  <div className="w-4 h-4 bg-gradient-to-br from-cyan-500 to-blue-600 text-white rounded-full flex items-center justify-center text-[8px] font-bold">
+                <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/50 text-slate-800 dark:text-slate-300 px-2 py-1 rounded-md border border-slate-200 dark:border-slate-600/50">
+                  <div className="w-4 h-4 bg-gradient-to-br from-blue-600 to-blue-700 dark:from-cyan-500 dark:to-blue-600 text-white rounded-full flex items-center justify-center text-[8px] font-bold">
                     {getInitials(selectedMember.fullName)}
                   </div>
                   <span className="text-xs font-medium whitespace-nowrap max-w-[80px] truncate">
@@ -157,52 +152,51 @@ export default function CreateTaskForm({ projectId, onCancel, onSuccess }) {
                   </span>
                 </div>
               ) : (
-                <span className="text-slate-500 text-lg hover:text-cyan-400 transition-colors">👤</span>
+                <span className="text-slate-500 dark:text-slate-500 text-lg hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
+                  👤
+                </span>
               )}
             </button>
 
             {isMemberOpen && (
-              <div 
-                className="absolute top-10 left-0 w-60 rounded-lg z-50 border"
-                style={{
-                  backgroundColor: 'rgba(15, 23, 42, 0.5)',
-                  backdropFilter: 'blur(12px)',
-                  borderColor: 'rgba(71, 85, 105, 0.3)',
-                }}
-              >
-                <div className="p-3 border-b" style={{ borderColor: 'rgba(71, 85, 105, 0.2)' }}>
-                  <span className="text-xs font-bold text-slate-500 uppercase">Assign to</span>
+              <div className="absolute top-10 left-0 w-60 rounded-lg z-50 border border-slate-200 dark:border-slate-700/50 bg-white/95 dark:bg-slate-900/50 backdrop-blur-xl shadow-xl">
+                <div className="p-3 border-b border-slate-200 dark:border-slate-700/40">
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase">
+                    Assign to
+                  </span>
                 </div>
                 <div className="max-h-56 overflow-y-auto py-1">
                   <div
-                    className="px-3 py-2 hover:bg-slate-800/40 cursor-pointer flex items-center gap-2 transition-colors"
+                    className="px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/40 cursor-pointer flex items-center gap-2 transition-colors"
                     onClick={() => {
                       setAssigneeId(null);
                       setIsMemberOpen(false);
                     }}
                   >
-                    <div className="w-6 h-6 rounded-lg bg-slate-700/50 flex items-center justify-center text-slate-500 text-xs">
+                    <div className="w-6 h-6 rounded-lg bg-slate-200 dark:bg-slate-700/50 flex items-center justify-center text-slate-500 dark:text-slate-500 text-xs">
                       ?
                     </div>
-                    <span className="text-sm text-slate-300">Unassigned</span>
+                    <span className="text-sm text-slate-700 dark:text-slate-300">
+                      Unassigned
+                    </span>
                   </div>
                   {members.map((mem) => (
                     <div
                       key={mem.id}
-                      className="px-3 py-2 hover:bg-slate-800/40 cursor-pointer flex items-center gap-2 transition-colors"
+                      className="px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/40 cursor-pointer flex items-center gap-2 transition-colors"
                       onClick={() => {
                         setAssigneeId(mem.id);
                         setIsMemberOpen(false);
                       }}
                     >
-                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-cyan-500/50 to-blue-600/50 text-slate-100 flex items-center justify-center text-xs font-bold">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500/80 to-blue-700/80 dark:from-cyan-500/50 dark:to-blue-600/50 text-white dark:text-slate-100 flex items-center justify-center text-xs font-bold">
                         {getInitials(mem.fullName)}
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-sm text-slate-200 font-medium">
+                        <span className="text-sm text-slate-900 dark:text-slate-200 font-medium">
                           {mem.fullName}
                         </span>
-                        <span className="text-[10px] text-slate-600">
+                        <span className="text-[10px] text-slate-500 dark:text-slate-500">
                           {mem.email}
                         </span>
                       </div>
@@ -217,19 +211,21 @@ export default function CreateTaskForm({ projectId, onCancel, onSuccess }) {
 
       <div className="flex items-center gap-2 mt-3 px-0">
         <button
+          type="button"
           onClick={handleSubmit}
           disabled={isSubmitting}
-          className={`text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition-all ${
+          className={`text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500/50 ${
             isSubmitting
-              ? "bg-cyan-600/50 cursor-not-allowed opacity-70"
-              : "bg-cyan-600 hover:bg-cyan-500 shadow-lg shadow-cyan-500/30"
+              ? "bg-blue-400/70 dark:bg-cyan-600/50 cursor-not-allowed opacity-70"
+              : "bg-blue-600 hover:bg-blue-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 shadow-md dark:shadow-[0_0_12px_rgba(6,182,212,0.25)]"
           }`}
         >
           {isSubmitting ? "Adding..." : "Add"}
         </button>
         <button
+          type="button"
           onClick={onCancel}
-          className="text-slate-400 hover:text-slate-300 text-sm font-medium px-4 py-1.5 rounded-lg hover:bg-slate-800/40 transition-colors"
+          className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 text-sm font-medium px-4 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/40 transition-colors"
         >
           Cancel
         </button>

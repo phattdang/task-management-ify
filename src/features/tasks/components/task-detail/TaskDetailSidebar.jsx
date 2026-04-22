@@ -45,7 +45,7 @@ export default function TaskDetailSidebar({ task, onUpdate }) {
     <select
       value={task?.status}
       onChange={(e) => handleUpdate("status", e.target.value)}
-      className="bg-cyan-500/20 text-cyan-400 font-bold px-3 py-1.5 rounded-lg text-xs uppercase cursor-pointer border border-cyan-500/30 outline-none hover:bg-cyan-500/30 transition-all"
+      className="bg-blue-50 text-blue-700 dark:bg-cyan-500/20 dark:text-cyan-400 font-bold px-3 py-1.5 rounded-lg text-xs uppercase cursor-pointer border border-blue-200 dark:border-cyan-500/30 outline-none hover:bg-blue-100 dark:hover:bg-cyan-500/30 transition-all focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500/50"
     >
       <option value="TO_DO">TO DO</option>
       <option value="IN_PROGRESS">IN PROGRESS</option>
@@ -58,7 +58,7 @@ export default function TaskDetailSidebar({ task, onUpdate }) {
     <select
       value={task?.priority}
       onChange={(e) => handleUpdate("priority", e.target.value)}
-      className="bg-slate-800/50 text-sm text-slate-300 cursor-pointer outline-none hover:bg-slate-700/50 px-2 py-1 rounded-lg border border-slate-700/30 transition-all"
+      className="bg-white dark:bg-slate-900 text-sm text-slate-800 dark:text-slate-300 cursor-pointer outline-none hover:bg-slate-50 dark:hover:bg-slate-800/50 px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700/40 transition-all focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500/50"
     >
       <option value="HIGHEST">Highest</option>
       <option value="HIGH">High</option>
@@ -92,51 +92,47 @@ export default function TaskDetailSidebar({ task, onUpdate }) {
       <div className="relative" ref={dropdownRef}>
         <div
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 group cursor-pointer hover:bg-slate-800/40 p-1.5 rounded-lg -ml-1.5 transition-colors"
+          className="flex items-center gap-2 group cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/40 p-1.5 rounded-lg -ml-1.5 transition-colors"
         >
-          <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 text-white flex items-center justify-center text-[10px] font-bold">
+          <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 dark:from-cyan-500 dark:to-blue-600 text-white flex items-center justify-center text-[10px] font-bold">
             {getInitials(task?.assignee?.fullName)}
           </div>
-          <span className="text-slate-300 text-sm">
+          <span className="text-slate-800 dark:text-slate-300 text-sm">
             {task?.assignee?.fullName || "Unassigned"}
           </span>
         </div>
 
         {isOpen && (
-          <div 
-            className="absolute top-full left-0 mt-2 w-56 rounded-lg z-50 py-2 border"
-            style={{
-              backgroundColor: 'rgba(15, 23, 42, 0.5)',
-              backdropFilter: 'blur(12px)',
-              borderColor: 'rgba(71, 85, 105, 0.3)',
-              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-            }}
-          >
+          <div className="absolute top-full left-0 mt-2 w-56 rounded-lg z-50 py-2 border border-slate-200 dark:border-slate-700/50 bg-white/95 dark:bg-slate-900/50 backdrop-blur-xl shadow-xl dark:shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
             <div
-              className="px-3 py-2 hover:bg-slate-800/40 cursor-pointer flex items-center gap-2 transition-colors"
+              className="px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/40 cursor-pointer flex items-center gap-2 transition-colors"
               onClick={() => {
                 handleUpdate("assigneeId", null);
                 setIsOpen(false);
               }}
             >
-              <div className="w-6 h-6 rounded-lg bg-slate-700/50 flex items-center justify-center text-slate-500">
+              <div className="w-6 h-6 rounded-lg bg-slate-200 dark:bg-slate-700/50 flex items-center justify-center text-slate-500 dark:text-slate-500">
                 ?
               </div>
-              <span className="text-sm text-slate-300">Unassigned</span>
+              <span className="text-sm text-slate-700 dark:text-slate-300">
+                Unassigned
+              </span>
             </div>
             {members.map((mem) => (
               <div
                 key={mem.id}
-                className="px-3 py-2 hover:bg-slate-800/40 cursor-pointer flex items-center gap-2 transition-colors"
+                className="px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/40 cursor-pointer flex items-center gap-2 transition-colors"
                 onClick={() => {
                   handleUpdate("assigneeId", mem.id);
                   setIsOpen(false);
                 }}
               >
-                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-cyan-500/50 to-blue-600/50 text-slate-100 flex items-center justify-center text-xs font-bold">
+                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500/80 to-blue-700/80 dark:from-cyan-500/50 dark:to-blue-600/50 text-white dark:text-slate-100 flex items-center justify-center text-xs font-bold">
                   {getInitials(mem.fullName)}
                 </div>
-                <span className="text-sm text-slate-300">{mem.fullName}</span>
+                <span className="text-sm text-slate-800 dark:text-slate-300">
+                  {mem.fullName}
+                </span>
               </div>
             ))}
           </div>
@@ -150,17 +146,22 @@ export default function TaskDetailSidebar({ task, onUpdate }) {
     <div className="w-full lg:w-[360px] py-2 lg:pl-2">
       {/* Status */}
       <div className="mb-6">
-        <label className="block text-[11px] font-bold text-[#5E6C84] uppercase mb-2">
+        <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase mb-2">
           Status
         </label>
         <StatusSelector />
       </div>
 
       {/* Details Box */}
-      <div className="border border-slate-700/30 rounded-lg overflow-hidden mb-6 bg-slate-800/30">
-        <div className="px-4 py-3 bg-slate-800/50 border-b border-slate-700/30 flex justify-between items-center">
-          <span className="text-sm font-semibold text-slate-100">Details</span>
-          <button className="text-slate-500 hover:text-slate-300 text-lg transition-colors">
+      <div className="border border-slate-200 dark:border-slate-700/40 rounded-lg overflow-hidden mb-6 bg-white dark:bg-slate-800/30 shadow-sm dark:shadow-none">
+        <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700/40 flex justify-between items-center">
+          <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+            Details
+          </span>
+          <button
+            type="button"
+            className="text-slate-500 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 text-lg transition-colors"
+          >
             ›
           </button>
         </div>
@@ -168,19 +169,23 @@ export default function TaskDetailSidebar({ task, onUpdate }) {
         <div className="p-4 space-y-4 text-sm">
           {/* Assignee */}
           <div className="grid grid-cols-[100px_1fr] items-center">
-            <span className="text-slate-400 font-medium">Assignee</span>
+            <span className="text-slate-500 dark:text-slate-400 font-medium">
+              Assignee
+            </span>
             <AssigneeSelector />
           </div>
 
           {/* Priority */}
           <div className="grid grid-cols-[100px_1fr] items-center">
-            <span className="text-slate-400 font-medium">Priority</span>
+            <span className="text-slate-500 dark:text-slate-400 font-medium">
+              Priority
+            </span>
             <div className="flex items-center gap-2 -ml-2">
               <span
                 className={`ml-2 font-bold ${
                   task?.priority === "HIGHEST"
-                    ? "text-red-500"
-                    : "text-amber-500"
+                    ? "text-red-600 dark:text-red-400"
+                    : "text-amber-600 dark:text-amber-400"
                 }`}
               >
                 {task?.priority === "HIGHEST" ? "↑" : "●"}
@@ -191,18 +196,24 @@ export default function TaskDetailSidebar({ task, onUpdate }) {
 
           {/* Reporter */}
           <div className="grid grid-cols-[100px_1fr] items-center">
-            <span className="text-slate-400 font-medium">Reporter</span>
+            <span className="text-slate-500 dark:text-slate-400 font-medium">
+              Reporter
+            </span>
             <div className="flex items-center gap-2 p-1.5 -ml-1.5">
-              <div className="w-6 h-6 rounded-lg bg-slate-700/50 text-slate-300 flex items-center justify-center text-[10px] font-bold">
+              <div className="w-6 h-6 rounded-lg bg-slate-200 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 flex items-center justify-center text-[10px] font-bold">
                 {getInitials(task?.assignor?.fullName)}
               </div>
-              <span className="text-slate-300">{task?.assignor?.fullName}</span>
+              <span className="text-slate-800 dark:text-slate-300">
+                {task?.assignor?.fullName}
+              </span>
             </div>
           </div>
 
           {/* Due Date */}
           <div className="grid grid-cols-[100px_1fr] items-center">
-            <span className="text-slate-400 font-medium">Due date</span>
+            <span className="text-slate-500 dark:text-slate-400 font-medium">
+              Due date
+            </span>
             <input
               type="date"
               value={task?.dueDate ? task.dueDate.split("T")[0] : ""}
@@ -212,14 +223,14 @@ export default function TaskDetailSidebar({ task, onUpdate }) {
                   e.target.value ? `${e.target.value}T00:00:00` : null
                 )
               }
-              className="text-sm text-slate-300 bg-slate-800/50 p-1.5 -ml-1 hover:bg-slate-700/50 rounded-lg cursor-pointer border border-slate-700/30 outline-none focus:border-cyan-500/50 transition-all"
+              className="text-sm text-slate-800 dark:text-slate-300 bg-white dark:bg-slate-900 p-1.5 -ml-1 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg cursor-pointer border border-slate-300 dark:border-slate-700/40 outline-none focus:border-blue-600 dark:focus:border-cyan-500/50 focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 transition-all"
             />
           </div>
         </div>
       </div>
 
       {/* Timestamps */}
-      <div className="text-[11px] text-slate-600 space-y-1 ml-1 border-t border-slate-700/30 pt-4">
+      <div className="text-[11px] text-slate-500 dark:text-slate-600 space-y-1 ml-1 border-t border-slate-200 dark:border-slate-700/40 pt-4">
         <p>Created {formatFullDateTime(task?.createdAt)}</p>
         <p>Updated {formatFullDateTime(task?.updatedAt)}</p>
       </div>
