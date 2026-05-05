@@ -3,6 +3,7 @@ import taskApi from "../../api/taskApi";
 import TaskActionsMenu from "../task-setting/TaskActionsMenu";
 import ConfirmDialog from "../../../projects/components/project_setting/delete_project/ConfirmDialog";
 import { useSearchParams } from "react-router-dom";
+import { useToast } from "../../../../contexts/ToastContext";
 
 const formatDate = (dateString) => {
   if (!dateString) return "";
@@ -37,6 +38,7 @@ export default function TaskCard({ task, onTaskUpdated }) {
   const menuRef = useRef(null);
   const dateInputRef = useRef(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const toast = useToast();
 
   const handleOpenModal = () => {
     // Thêm taskId vào URL mà không làm mất các params khác (nếu có)
@@ -65,8 +67,8 @@ export default function TaskCard({ task, onTaskUpdated }) {
         if (onTaskUpdated) onTaskUpdated();
       }
     } catch (error) {
-      console.error("Update status failed:", error);
-      alert("Không thể cập nhật trạng thái.");
+      const msg = error.response?.data?.message || "Không thể cập nhật trạng thái.";
+      toast.error(msg);
     } finally {
       setIsUpdating(false);
     }
@@ -85,8 +87,8 @@ export default function TaskCard({ task, onTaskUpdated }) {
         if (onTaskUpdated) onTaskUpdated();
       }
     } catch (error) {
-      console.error("Update date failed:", error);
-      alert("Không thể cập nhật ngày.");
+      const msg = error.response?.data?.message || "Không thể cập nhật ngày.";
+      toast.error(msg);
     } finally {
       setIsUpdating(false);
     }
@@ -107,8 +109,8 @@ export default function TaskCard({ task, onTaskUpdated }) {
         if (onTaskUpdated) onTaskUpdated();
       }
     } catch (error) {
-      console.error("Delete failed:", error);
-      alert("Không thể xóa task.");
+      const msg = error.response?.data?.message || "Không thể xóa task.";
+      toast.error(msg);
     } finally {
       setShowDeleteConfirm(false);
       setIsUpdating(false);

@@ -78,7 +78,6 @@ axiosClient.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem("refresh_token");
-        console.log(refreshToken);
 
         // Gọi refreshClient (KHÔNG dùng axiosClient ở đây)
         const rs = await refreshClient.post(
@@ -86,7 +85,6 @@ axiosClient.interceptors.response.use(
           { refreshToken: refreshToken }, // Đảm bảo key này khớp với @RequestBody của Java
         );
 
-        console.log(rs);
 
         // Kiểm tra cấu trúc data backend: rs.data.body hay rs.data.result?
         const data = rs.data.body || rs.data.data || rs.data;

@@ -11,6 +11,36 @@ export default function LandingPage() {
 
   const hasFetched = useRef(false);
 
+  // Check session khi vào root (http://localhost:5173/)
+  useEffect(() => {
+    // Nếu đang xử lý callback từ Google Auth thì bỏ qua logic check session
+    const queryParams = new URLSearchParams(location.search);
+    if (queryParams.get("code")) return;
+
+    const accessToken = localStorage.getItem("access_token");
+    const refreshToken = localStorage.getItem("refresh_token");
+    const userInfo = localStorage.getItem("user_info");
+
+    let isValid = false;
+    if (accessToken && refreshToken && userInfo) {
+      try {
+        JSON.parse(userInfo);
+        isValid = true;
+      } catch (e) {
+        isValid = false;
+      }
+    }
+
+    if (isValid) {
+      navigate("/projects", { replace: true });
+    } else {
+      // Chỉ dọn rác, KHÔNG redirect — để user tự do dùng Landing/Register
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("user_info");
+    }
+  }, [navigate, location.search]);
+
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const authCode = queryParams.get("code");

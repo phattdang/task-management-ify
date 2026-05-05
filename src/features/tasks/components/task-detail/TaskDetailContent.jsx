@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import taskApi from "../../api/taskApi";
+import { useToast } from "../../../../contexts/ToastContext";
 
 export default function TaskDetailContent({ task, onUpdate }) {
   // State cho Edit Title
@@ -9,6 +10,7 @@ export default function TaskDetailContent({ task, onUpdate }) {
   // State cho Edit Description
   const [isEditingDesc, setIsEditingDesc] = useState(false);
   const [description, setDescription] = useState(task?.description || "");
+  const toast = useToast();
 
   // Sync state khi task thay đổi (từ cha truyền xuống)
   useEffect(() => {
@@ -19,14 +21,15 @@ export default function TaskDetailContent({ task, onUpdate }) {
   // --- HANDLERS ---
   const handleUpdateTitle = async () => {
     if (title === task?.taskName) return setIsEditingTitle(false); // Không đổi thì thôi
-    if (!title.trim()) return alert("Task name cannot be empty");
+    if (!title.trim()) return toast.warning("Task name cannot be empty");
 
     try {
       await taskApi.updateTask(task.id, { taskName: title });
       onUpdate(); // Gọi callback để refresh data ở cha
       setIsEditingTitle(false);
     } catch (error) {
-      console.error("Update title failed:", error);
+      const msg = error.response?.data?.message || "Không thể cập nhật tiêu đề.";
+      toast.error(msg);
     }
   };
 
@@ -36,7 +39,8 @@ export default function TaskDetailContent({ task, onUpdate }) {
       onUpdate();
       setIsEditingDesc(false);
     } catch (error) {
-      console.error("Update description failed:", error);
+      const msg = error.response?.data?.message || "Không thể cập nhật mô tả.";
+      toast.error(msg);
     }
   };
 

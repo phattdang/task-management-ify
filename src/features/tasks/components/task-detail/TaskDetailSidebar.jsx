@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { getInitials, formatFullDateTime } from "../../../../utils/formatters";
 import taskApi from "../../api/taskApi";
 import projectApi from "../../../projects/apis/projectApi"; // Import API lấy member
+import { useToast } from "../../../../contexts/ToastContext";
 
 export default function TaskDetailSidebar({ task, onUpdate }) {
   const [members, setMembers] = useState([]);
+  const toast = useToast();
 
   // Load Members để dùng cho Assignee Dropdown
   useEffect(() => {
@@ -16,26 +18,32 @@ export default function TaskDetailSidebar({ task, onUpdate }) {
   }, [task?.project?.id]);
 
   // --- GENERIC UPDATE HANDLER ---
+  // Contract BE:
+  //   - Giữ nguyên assignee: KHÔNG gửi assigneeId hoặc gửi null
+  //   - Xóa assignee (Unassign): gửi assigneeId: "" (chuỗi rỗng)
+  //   - Gán assignee mới: gửi assigneeId: "<userId>"
   const handleUpdate = async (field, value) => {
     try {
-      // Tạo payload cơ bản
-      const payload = {
-        taskName: task.taskName, // Gửi lại tên cũ
-        description: task.description, // Gửi lại mô tả cũ
-        priority: task.priority, // Gửi lại priority cũ
-        status: task.status, // Gửi lại status cũ
-        assigneeId: task.assignee?.id || null, // Gửi lại ID cũ (hoặc null)
-        dueDate: task.dueDate,
-      };
+      // Chỉ gửi field cần update, KHÔNG gửi lại toàn bộ payload cũ
+      // để tránh ghi đè dữ liệu (đặc biệt assigneeId)
+      const payload = {};
 
-      // Ghi đè giá trị mới vào
-      payload[field] = value;
+      if (field === "assigneeId") {
+        // Nếu value là null → user muốn Unassign → gửi chuỗi rỗng ""
+        // Nếu value là userId → gán người mới
+        payload.assigneeId = value === null ? "" : value;
+      } else {
+        // Update field khác (status, priority, dueDate, ...)
+        // KHÔNG gửi assigneeId → BE giữ nguyên assignee hiện tại
+        payload[field] = value;
+      }
 
       // Gọi API
       await taskApi.updateTask(task.id, payload);
       onUpdate();
     } catch (error) {
-      console.error(`Update ${field} failed:`, error);
+      const msg = error.response?.data?.message || `Không thể cập nhật ${field}.`;
+      toast.error(msg);
     }
   };
 

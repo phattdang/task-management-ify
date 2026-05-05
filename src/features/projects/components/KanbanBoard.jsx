@@ -3,10 +3,12 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import TaskCard from "../../tasks/components/task-card/TaskCard";
 import CreateTaskForm from "../../tasks/components/CreateTaskForm";
 import taskApi from "../../tasks/api/taskApi";
+import { useToast } from "../../../contexts/ToastContext";
 
 export default function KanbanBoard({ tasks = [], projectId, onTaskCreated }) {
   const [isCreating, setIsCreating] = useState(false);
   const [localTasks, setLocalTasks] = useState(tasks);
+  const toast = useToast();
 
   useEffect(() => {
     setLocalTasks(tasks);
@@ -52,9 +54,9 @@ export default function KanbanBoard({ tasks = [], projectId, onTaskCreated }) {
       await taskApi.updateTask(draggableId, { status: newStatus });
       if (onTaskCreated) onTaskCreated();
     } catch (error) {
-      console.error("Failed to update status:", error);
       setLocalTasks(tasks); // Revert
-      alert("Không thể cập nhật trạng thái.");
+      const msg = error.response?.data?.message || "Không thể cập nhật trạng thái.";
+      toast.error(msg);
     }
   };
 

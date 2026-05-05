@@ -13,6 +13,15 @@ export default {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
       },
+      keyframes: {
+        slideIn: {
+          '0%': { opacity: '0', transform: 'translateX(100%)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+      },
+      animation: {
+        slideIn: 'slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+      },
     },
   },
   plugins: [],
