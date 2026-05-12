@@ -4,10 +4,6 @@ import projectApi from "../../apis/projectApi";
 export default function SettingsDetailsPanel({ projectId }) {
   const [projectData, setProjectData] = useState({
     name: "",
-    spaceKey: "",
-    category: "Software",
-    owner: "",
-    defaultAssignee: "Unassigned",
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -20,15 +16,13 @@ export default function SettingsDetailsPanel({ projectId }) {
   const fetchProjectDetails = async () => {
     try {
       setIsLoading(true);
-      // Mock data for now - replace with actual API call
-      const mockData = {
-        name: "Billing System Dev",
-        spaceKey: "SAM1",
-        category: "Software",
-        owner: "Đặng Nguyễn Tiến Phát",
-        defaultAssignee: "Unassigned",
-      };
-      setProjectData(mockData);
+      const response = await projectApi.getAll();
+      const projects = response.data.body || [];
+      const currentProject = projects.find((p) => p.id === projectId);
+      
+      if (currentProject) {
+        setProjectData({ name: currentProject.name });
+      }
     } catch (error) {
       console.error("Error fetching project details:", error);
     } finally {
@@ -47,8 +41,9 @@ export default function SettingsDetailsPanel({ projectId }) {
   const handleSave = async () => {
     try {
       setIsSaving(true);
-      // Replace with actual API call
-      console.log("Saving project data:", projectData);
+      await projectApi.updateProject(projectId, {
+        projectName: projectData.name,
+      });
       setMessage("Changes saved successfully!");
       setTimeout(() => setMessage(""), 3000);
     } catch (error) {
@@ -57,11 +52,6 @@ export default function SettingsDetailsPanel({ projectId }) {
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const handleIconChange = () => {
-    // Handle icon change - show file picker or icon selector
-    console.log("Change icon clicked");
   };
 
   if (isLoading) {
@@ -74,7 +64,7 @@ export default function SettingsDetailsPanel({ projectId }) {
       <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
         <span>Spaces</span>
         <span>/</span>
-        <span>(Example) Billing System Dev</span>
+        <span>{projectData.name || "Space"}</span>
         <span>/</span>
         <span className="font-semibold text-gray-900 dark:text-slate-200">Space settings</span>
       </div>
@@ -87,19 +77,6 @@ export default function SettingsDetailsPanel({ projectId }) {
             {message}
           </div>
         )}
-      </div>
-
-      {/* Space Icon Section */}
-      <div className="space-y-4">
-        <div className="w-32 h-32 bg-gradient-to-br from-purple-500 via-purple-600 to-cyan-500 rounded-lg flex items-center justify-center text-6xl shadow-lg">
-          📦
-        </div>
-        <button
-          onClick={handleIconChange}
-          className="px-4 py-2 bg-blue-600 dark:bg-cyan-600 hover:bg-blue-700 dark:hover:bg-cyan-500 text-white font-semibold rounded-lg transition-colors"
-        >
-          Change icon
-        </button>
       </div>
 
       {/* Form Fields */}
@@ -121,77 +98,6 @@ export default function SettingsDetailsPanel({ projectId }) {
             onChange={handleChange}
             className="w-full max-w-2xl px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900/50 rounded-lg text-gray-900 dark:text-slate-100 placeholder-gray-500 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500 focus:border-transparent transition-all"
           />
-        </div>
-
-        {/* Space Key Field */}
-        <div>
-          <label htmlFor="spaceKey" className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-slate-200 mb-2">
-            Space key <span className="text-red-600">*</span>
-            <span className="text-gray-400 dark:text-slate-500 text-xs">ⓘ</span>
-          </label>
-          <input
-            type="text"
-            id="spaceKey"
-            name="spaceKey"
-            value={projectData.spaceKey}
-            onChange={handleChange}
-            className="w-full max-w-2xl px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900/50 rounded-lg text-gray-900 dark:text-slate-100 placeholder-gray-500 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500 focus:border-transparent transition-all"
-          />
-        </div>
-
-        {/* Category Field */}
-        <div>
-          <label htmlFor="category" className="block text-sm font-semibold text-gray-900 dark:text-slate-200 mb-2">
-            Category
-          </label>
-          <select
-            id="category"
-            name="category"
-            value={projectData.category}
-            onChange={handleChange}
-            className="w-full max-w-2xl px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900/50 rounded-lg text-gray-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500 focus:border-transparent transition-all cursor-pointer"
-          >
-            <option>Choose a category</option>
-            <option>Software</option>
-            <option>Business</option>
-            <option>Design</option>
-            <option>Marketing</option>
-            <option>Operations</option>
-          </select>
-        </div>
-
-        {/* Space Owner Field */}
-        <div>
-          <label htmlFor="owner" className="block text-sm font-semibold text-gray-900 dark:text-slate-200 mb-2">
-            Space owner
-          </label>
-          <div className="w-full max-w-2xl px-4 py-3 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900/50 rounded-lg flex items-center gap-3">
-            <span className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-sm font-bold">
-              ĐN
-            </span>
-            <span className="text-gray-900 dark:text-slate-100 font-medium">{projectData.owner}</span>
-          </div>
-          <p className="text-xs text-gray-600 dark:text-slate-400 mt-2">
-            Make sure your space lead has access to work items in the space.
-          </p>
-        </div>
-
-        {/* Default Assignee Field */}
-        <div>
-          <label htmlFor="defaultAssignee" className="block text-sm font-semibold text-gray-900 dark:text-slate-200 mb-2">
-            Default assignee
-          </label>
-          <select
-            id="defaultAssignee"
-            name="defaultAssignee"
-            value={projectData.defaultAssignee}
-            onChange={handleChange}
-            className="w-full max-w-2xl px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900/50 rounded-lg text-gray-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500 focus:border-transparent transition-all cursor-pointer"
-          >
-            <option>Unassigned</option>
-            <option>Current User</option>
-            <option>Project Lead</option>
-          </select>
         </div>
       </div>
 
