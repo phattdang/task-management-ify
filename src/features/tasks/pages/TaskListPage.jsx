@@ -10,6 +10,7 @@ import LoadingPulse from "../components/LoadingPulse";
 import BoardToolbar from "./../../projects/components/BoardToolbar";
 import TaskDetailModal from "../components/task-detail/TaskDetailModal";
 import ProjectSummary from "../../projects/components/ProjectSummary";
+import ProjectListView from "../../projects/components/ProjectListView";
 
 export default function TaskListPage() {
   const { projectId } = useParams();
@@ -96,8 +97,8 @@ export default function TaskListPage() {
         )}
 
         {currentTab === "LIST" && (
-          <div className="p-8 text-slate-600 dark:text-slate-400">
-            Chức năng đang phát triển...
+          <div className="flex-1 overflow-y-auto bg-white dark:bg-slate-950 transition-colors duration-200">
+            <ProjectListView tasks={tasks} onTaskUpdated={fetchTasks} />
           </div>
         )}
         {currentTab === "SUMMARY" && (
