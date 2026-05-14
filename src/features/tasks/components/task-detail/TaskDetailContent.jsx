@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import taskApi from "../../api/taskApi";
 import { useToast } from "../../../../contexts/ToastContext";
+import TaskAttachments from "./TaskAttachments";
 
 export default function TaskDetailContent({ task, onUpdate }) {
   // State cho Edit Title
@@ -11,6 +12,7 @@ export default function TaskDetailContent({ task, onUpdate }) {
   const [isEditingDesc, setIsEditingDesc] = useState(false);
   const [description, setDescription] = useState(task?.description || "");
   const toast = useToast();
+  const attachFileRef = useRef(null);
 
   // Sync state khi task thay đổi (từ cha truyền xuống)
   useEffect(() => {
@@ -77,9 +79,10 @@ export default function TaskDetailContent({ task, onUpdate }) {
       <div className="flex gap-2 mb-8">
         <button
           type="button"
+          onClick={() => attachFileRef.current?.click()}
           className="bg-white dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-700/50 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 border border-slate-200 dark:border-slate-700/40 transition-all"
         >
-          ➕ Attach
+          📎 Attach
         </button>
         <button
           type="button"
@@ -137,6 +140,9 @@ export default function TaskDetailContent({ task, onUpdate }) {
           </div>
         )}
       </div>
+
+      {/* Attachments Section */}
+      <TaskAttachments taskId={task?.id} attachRef={attachFileRef} />
 
       {/* Activity Section (Giữ nguyên) */}
       <div className="mb-8">{/* ... (Code Activity cũ giữ nguyên) */}</div>
