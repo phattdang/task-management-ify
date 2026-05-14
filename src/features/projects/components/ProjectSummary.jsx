@@ -1,26 +1,34 @@
 import React, { useEffect, useState, useMemo } from "react";
 import projectApi from "../apis/projectApi";
+import activityLogApi from "../apis/activityLogApi";
 
 export default function ProjectSummary({ tasks = [], projectId }) {
   const [apiSummary, setApiSummary] = useState(null);
+  const [activityLogs, setActivityLogs] = useState([]);
   const [loadingSummary, setLoadingSummary] = useState(false);
 
   useEffect(() => {
     if (!projectId) return;
-    const fetchSummary = async () => {
+    const fetchData = async () => {
       try {
         setLoadingSummary(true);
-        const res = await projectApi.getProjectSummary(projectId);
-        if (res.data?.body) {
-          setApiSummary(res.data.body);
+        const [summaryRes, logsRes] = await Promise.all([
+          projectApi.getProjectSummary(projectId),
+          activityLogApi.getActivityLogs(projectId, 0, 10),
+        ]);
+        if (summaryRes.data?.body) {
+          setApiSummary(summaryRes.data.body);
+        }
+        if (logsRes.data?.body?.data) {
+          setActivityLogs(logsRes.data.body.data);
         }
       } catch (error) {
-        console.error("Failed to fetch project summary", error);
+        console.error("Failed to fetch project summary data", error);
       } finally {
         setLoadingSummary(false);
       }
     };
-    fetchSummary();
+    fetchData();
   }, [projectId]);
   const stats = useMemo(() => {
     const now = new Date();
@@ -257,19 +265,66 @@ export default function ProjectSummary({ tasks = [], projectId }) {
         </div>
 
         {/* Activity Card */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 shadow-sm flex flex-col items-center justify-center text-center min-h-[300px]">
-          <div className="mb-4">
-            <svg width="120" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="20" y="20" width="80" height="40" rx="4" fill="#E2E8F0" className="dark:fill-slate-800" />
-              <rect x="40" y="30" width="40" height="20" fill="#3B82F6" className="dark:fill-blue-600" />
-              <circle cx="80" cy="50" r="10" fill="#10B981" className="dark:fill-emerald-500" />
-              <path d="M76 50L79 53L84 47" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2">No activity yet</h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm">
-            Create a few work items and invite some teammates to your space to see your space activity.
-          </p>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 shadow-sm flex flex-col min-h-[300px]">
+          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Recent Activity</h3>
+          
+          {activityLogs.length === 0 ? (
+            <div className="flex-1 flex flex-col items-center justify-center text-center">
+              <div className="mb-4">
+                <svg width="120" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="20" y="20" width="80" height="40" rx="4" fill="#E2E8F0" className="dark:fill-slate-800" />
+                  <rect x="40" y="30" width="40" height="20" fill="#3B82F6" className="dark:fill-blue-600" />
+                  <circle cx="80" cy="50" r="10" fill="#10B981" className="dark:fill-emerald-500" />
+                  <path d="M76 50L79 53L84 47" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2">No activity yet</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm">
+                Create a few work items and invite some teammates to your space to see your space activity.
+              </p>
+            </div>
+          ) : (
+            <div className="flex-1 overflow-y-auto pr-2 space-y-4 max-h-[250px]">
+              {activityLogs.map((log) => {
+                const date = new Date(log.timestamp);
+                const timeStr = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+                const dateStr = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+                const actionLabel = log.actionType.replace("_", " ").toLowerCase();
+                const entityName = log.payload?.current?.taskName || log.entityId.substring(0, 8);
+                const initials = log.actorEmail ? log.actorEmail.substring(0, 2).toUpperCase() : "U";
+
+                return (
+                  <div key={log.id} className="flex gap-3 text-sm">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0 mt-1">
+                      {initials}
+                    </div>
+                    <div>
+                      <p className="text-slate-800 dark:text-slate-200">
+                        <span className="font-semibold">{log.actorEmail?.split("@")[0]}</span>{" "}
+                        <span className="text-slate-500 dark:text-slate-400">{actionLabel}</span>{" "}
+                        <span className="font-medium text-blue-600 dark:text-cyan-500">{entityName}</span>
+                      </p>
+                      {log.payload?.changes && (
+                        <div className="mt-1 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 p-2 rounded">
+                          {Object.entries(log.payload.changes).map(([key, value]) => (
+                            <div key={key}>
+                              <span className="capitalize">{key}</span> changed to{" "}
+                              <span className="font-semibold text-slate-700 dark:text-slate-300">
+                                {value.newValue}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <p className="text-xs text-slate-400 mt-1">
+                        {dateStr} at {timeStr}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
