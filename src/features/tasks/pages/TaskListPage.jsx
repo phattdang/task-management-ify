@@ -103,7 +103,7 @@ export default function TaskListPage() {
         )}
         {currentTab === "SUMMARY" && (
           <div className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
-            <ProjectSummary tasks={tasks} />
+            <ProjectSummary tasks={tasks} projectId={projectId} />
           </div>
         )}
         {currentTab === "TIMELINE" && (

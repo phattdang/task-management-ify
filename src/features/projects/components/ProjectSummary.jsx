@@ -1,6 +1,27 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
+import projectApi from "../apis/projectApi";
 
-export default function ProjectSummary({ tasks = [] }) {
+export default function ProjectSummary({ tasks = [], projectId }) {
+  const [apiSummary, setApiSummary] = useState(null);
+  const [loadingSummary, setLoadingSummary] = useState(false);
+
+  useEffect(() => {
+    if (!projectId) return;
+    const fetchSummary = async () => {
+      try {
+        setLoadingSummary(true);
+        const res = await projectApi.getProjectSummary(projectId);
+        if (res.data?.body) {
+          setApiSummary(res.data.body);
+        }
+      } catch (error) {
+        console.error("Failed to fetch project summary", error);
+      } finally {
+        setLoadingSummary(false);
+      }
+    };
+    fetchSummary();
+  }, [projectId]);
   const stats = useMemo(() => {
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -72,16 +93,16 @@ export default function ProjectSummary({ tasks = [] }) {
     });
 
     return {
-      completed,
-      updated,
-      created,
+      completed: apiSummary ? apiSummary.recentMetrics?.completedInLast7Days || 0 : completed,
+      updated: apiSummary ? apiSummary.recentMetrics?.updatedInLast7Days || 0 : updated,
+      created: apiSummary ? apiSummary.recentMetrics?.createdInLast7Days || 0 : created,
       dueSoon,
-      statusCounts,
-      priorityCounts,
+      statusCounts: apiSummary ? apiSummary.statusOverview || {} : statusCounts,
+      priorityCounts: apiSummary ? apiSummary.priorityBreakdown || {} : priorityCounts,
       typeCounts,
-      total: tasks.length,
+      total: apiSummary ? apiSummary.totalTasks || 0 : tasks.length,
     };
-  }, [tasks]);
+  }, [tasks, apiSummary]);
 
   const MetricCard = ({ icon, value, label, subtext }) => (
     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">

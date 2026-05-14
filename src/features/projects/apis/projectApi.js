@@ -12,6 +12,8 @@ const projectApi = {
     axiosClient.get(`${URL}/${projectId}/is-manager`),
   updateProject: (projectId, request) =>
     axiosClient.put(`${URL}/${projectId}`, request),
+  getProjectSummary: (projectId) =>
+    axiosClient.get(`${URL}/${projectId}/summary`),
 };
 
 export default projectApi;
