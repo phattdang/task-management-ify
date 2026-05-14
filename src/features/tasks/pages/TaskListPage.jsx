@@ -9,6 +9,7 @@ import NavigationTabs from "../../projects/components/NavigationTabs";
 import LoadingPulse from "../components/LoadingPulse";
 import BoardToolbar from "./../../projects/components/BoardToolbar";
 import TaskDetailModal from "../components/task-detail/TaskDetailModal";
+import ProjectSummary from "../../projects/components/ProjectSummary";
 
 export default function TaskListPage() {
   const { projectId } = useParams();
@@ -100,8 +101,8 @@ export default function TaskListPage() {
           </div>
         )}
         {currentTab === "SUMMARY" && (
-          <div className="p-8 text-slate-600 dark:text-slate-400">
-            Chức năng đang phát triển...
+          <div className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
+            <ProjectSummary tasks={tasks} />
           </div>
         )}
         {currentTab === "TIMELINE" && (
