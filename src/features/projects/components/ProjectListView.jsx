@@ -24,7 +24,7 @@ const getInitials = (name) => {
     .toUpperCase();
 };
 
-export default function ProjectListView({ tasks = [], onTaskUpdated }) {
+export default function ProjectListView({ tasks = [], onTaskUpdated, pageData, onPageChange }) {
   const [updatingTaskId, setUpdatingTaskId] = useState(null);
   const toast = useToast();
 
@@ -242,11 +242,28 @@ export default function ProjectListView({ tasks = [], onTaskUpdated }) {
         <button className="flex items-center gap-1 hover:text-slate-800 dark:hover:text-slate-200 transition-colors">
           <span className="text-lg leading-none">+</span> Create
         </button>
-        <div className="flex items-center gap-2">
-          <span>{tasks.length} of {tasks.length}</span>
-          <button className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-          </button>
+        <div className="flex items-center gap-4">
+          <span>{tasks.length} of {pageData?.totalElements || tasks.length}</span>
+          
+          <div className="flex items-center gap-1 border border-slate-300 dark:border-slate-700 rounded overflow-hidden">
+            <button 
+              onClick={() => onPageChange && onPageChange(pageData.number - 1)}
+              disabled={!pageData || pageData.number === 0}
+              className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+            </button>
+            <span className="px-2 text-xs font-medium border-x border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              Page {(pageData?.number || 0) + 1} of {pageData?.totalPages || 1}
+            </span>
+            <button 
+              onClick={() => onPageChange && onPageChange(pageData.number + 1)}
+              disabled={!pageData || pageData.number >= (pageData.totalPages - 1)}
+              className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>

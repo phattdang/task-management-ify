@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import KanbanBoard from "../../projects/components/KanbanBoard";
@@ -20,6 +20,33 @@ export default function TaskListPage() {
   const [currentTab, setCurrentTab] = useState("BOARD");
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Pagination and Filter state
+  const [filters, setFilters] = useState({
+    searchKey: "",
+    assigneeIds: [],
+    statuses: [],
+    priorities: [],
+    unassigned: false,
+    page: 0,
+    size: 200, // Initial size based on default BOARD tab
+    sort: "createdAt,desc"
+  });
+  const [pageData, setPageData] = useState({
+    totalPages: 0,
+    totalElements: 0,
+    number: 0,
+    size: 10
+  });
+
+  // When tab changes, adjust size if needed
+  useEffect(() => {
+    if (currentTab === "BOARD") {
+      setFilters(prev => ({ ...prev, size: 200 }));
+    } else if (currentTab === "LIST") {
+      setFilters(prev => ({ ...prev, size: 10 }));
+    }
+  }, [currentTab]);
+
   // Lấy ID task từ URL
   const selectedTaskId = searchParams.get("selectedIssue");
   const handleCloseModal = () => {
@@ -27,27 +54,37 @@ export default function TaskListPage() {
     setSearchParams(searchParams);
   };
 
-  // Chuyển logic fetch thành hàm riêng để tái sử dụng
   const fetchTasks = useCallback(async () => {
     if (!projectId) return;
     try {
-      const taskRes = await taskApi.getAllTaskByProjectId(projectId);
-      setTasks(taskRes.data.body || []);
+      const taskRes = await taskApi.filterTasksByProjectId(projectId, filters);
+      const resBody = taskRes.data.body;
+      setTasks(resBody.content || []);
+      setPageData({
+        totalPages: resBody.totalPages || 0,
+        totalElements: resBody.totalElements || 0,
+        number: resBody.number || 0,
+        size: resBody.size || filters.size
+      });
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
-  }, [projectId]);
+  }, [projectId, filters]);
 
+  // Re-fetch tasks whenever filters change
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
+
+  // Initial Data Load (Project Info)
   useEffect(() => {
     if (!projectId) return;
 
     const initData = async () => {
       setLoading(true);
       try {
-        await fetchTasks(); // Lấy tasks
-        const projRes = await projectApi.getAll(); // Lấy info project
+        const projRes = await projectApi.getAll();
         const currentProj = projRes.data.body.find((p) => p.id === projectId);
-        // console.log(currentProj);
         setProjectInfo(currentProj);
       } catch (error) {
         console.error("Error init data:", error);
@@ -57,7 +94,31 @@ export default function TaskListPage() {
     };
 
     initData();
-  }, [projectId, fetchTasks]);
+  }, [projectId]);
+
+  const handleApplyFilter = (newFilters) => {
+    setFilters(prev => ({
+      ...prev,
+      ...newFilters,
+      page: 0 // Reset to first page on new filter
+    }));
+  };
+
+  const handleClearFilter = () => {
+    setFilters(prev => ({
+      ...prev,
+      searchKey: "",
+      assigneeIds: [],
+      statuses: [],
+      priorities: [],
+      unassigned: false,
+      page: 0
+    }));
+  };
+
+  const handlePageChange = (newPage) => {
+    setFilters(prev => ({ ...prev, page: newPage }));
+  };
 
   if (!projectId) {
     return (
@@ -72,35 +133,47 @@ export default function TaskListPage() {
   return (
     <DashboardLayout>
       <div className="flex flex-col h-full">
-        {/* HEADER SECTION: z-40 so project menu (absolute) stacks above board/toolbar (siblings paint later by default and would cover it) */}
+        {/* HEADER SECTION */}
         <div className="relative z-40 px-8 pt-6 border-b border-slate-200 dark:border-slate-800/50 bg-white dark:bg-slate-900/30 backdrop-blur-sm transition-colors duration-200">
           <ProjectHeader projectInfo={projectInfo} />
           <NavigationTabs activeTab={currentTab} onTabChange={setCurrentTab} />
         </div>
 
-        {/* VIEW CONTENT - Dựa vào tab để render component tương ứng */}
+        {/* VIEW CONTENT */}
+        {(currentTab === "BOARD" || currentTab === "LIST") && (
+          <BoardToolbar 
+            members={projectInfo?.members || []} 
+            filters={filters}
+            onApplyFilter={handleApplyFilter}
+            onClearFilter={handleClearFilter}
+          />
+        )}
+
         {currentTab === "BOARD" && (
-          <>
-            <BoardToolbar members={projectInfo?.members || []} />
-            <div className="relative z-0 flex-1 overflow-x-auto overflow-y-hidden bg-slate-50 dark:bg-slate-950 px-8 pb-4 transition-colors duration-200">
-              {loading ? (
-                <LoadingPulse />
-              ) : (
-                <KanbanBoard
-                  tasks={tasks}
-                  projectId={projectId}
-                  onTaskCreated={fetchTasks}
-                />
-              )}
-            </div>
-          </>
+          <div className="relative z-0 flex-1 overflow-x-auto overflow-y-hidden bg-slate-50 dark:bg-slate-950 px-8 pb-4 transition-colors duration-200">
+            {loading ? (
+              <LoadingPulse />
+            ) : (
+              <KanbanBoard
+                tasks={tasks}
+                projectId={projectId}
+                onTaskCreated={fetchTasks}
+              />
+            )}
+          </div>
         )}
 
         {currentTab === "LIST" && (
           <div className="flex-1 overflow-y-auto bg-white dark:bg-slate-950 transition-colors duration-200">
-            <ProjectListView tasks={tasks} onTaskUpdated={fetchTasks} />
+            <ProjectListView 
+              tasks={tasks} 
+              onTaskUpdated={fetchTasks} 
+              pageData={pageData}
+              onPageChange={handlePageChange}
+            />
           </div>
         )}
+        
         {currentTab === "SUMMARY" && (
           <div className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
             <ProjectSummary tasks={tasks} projectId={projectId} />
