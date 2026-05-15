@@ -4,7 +4,7 @@ const TABS = [
   { id: "LIST", label: "List", icon: "📝" },
   { id: "BOARD", label: "Board", icon: "📊" },
   { id: "TIMELINE", label: "Timeline", icon: "⏳" },
-  { id: "PAGES", label: "Pages", icon: "📄" },
+  { id: "CHAT", label: "Chat", icon: "💬" },
 ];
 
 export default function NavigationTabs({ activeTab = "BOARD", onTabChange }) {

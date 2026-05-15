@@ -11,6 +11,7 @@ import BoardToolbar from "./../../projects/components/BoardToolbar";
 import TaskDetailModal from "../components/task-detail/TaskDetailModal";
 import ProjectSummary from "../../projects/components/ProjectSummary";
 import ProjectListView from "../../projects/components/ProjectListView";
+import ProjectChatView from "../../projects/components/ProjectChatView";
 
 export default function TaskListPage() {
   const { projectId } = useParams();
@@ -184,9 +185,9 @@ export default function TaskListPage() {
             Chức năng đang phát triển...
           </div>
         )}
-        {currentTab === "PAGES" && (
-          <div className="p-8 text-slate-600 dark:text-slate-400">
-            Chức năng đang phát triển...
+        {currentTab === "CHAT" && (
+          <div className="flex-1 overflow-y-hidden bg-white dark:bg-slate-900 transition-colors duration-200">
+            <ProjectChatView projectInfo={projectInfo} projectId={projectId} />
           </div>
         )}
 
