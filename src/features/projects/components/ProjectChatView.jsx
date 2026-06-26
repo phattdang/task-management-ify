@@ -3,7 +3,7 @@ import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import chatApi from "../apis/chatApi";
 
-const WS_URL = "http://localhost:8080/ws";
+const WS_URL = import.meta.env.VITE_WS_URL || "http://localhost:8080/ws";
 
 const AVATAR_COLORS = [
   "bg-blue-500", "bg-purple-500", "bg-green-500", "bg-pink-500",
