@@ -130,10 +130,7 @@ export default function LeftSidebar({
             aria-label="Navigation menu"
           >
             {/* Close button */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2 text-blue-600 dark:text-cyan-400 font-bold text-lg tracking-tight">
-                <span className="text-2xl">⚡</span> TaskMgmt
-              </div>
+            <div className="flex items-center justify-end mb-4">
               <button
                 type="button"
                 onClick={onMobileClose}

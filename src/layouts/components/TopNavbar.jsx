@@ -70,10 +70,6 @@ export default function TopNavbar({ userInfo, onToggleSidebar }) {
             ))}
           </span>
         </button>
-        <div className="flex items-center gap-2 text-blue-600 dark:text-cyan-400 font-bold text-lg tracking-tight cursor-pointer hover:text-blue-700 dark:hover:text-cyan-300 transition-colors">
-          <span className="text-2xl">⚡</span>
-          <span className="hidden sm:inline">TaskMgmt</span>
-        </div>
       </div>
 
       {/* Right: Actions */}
