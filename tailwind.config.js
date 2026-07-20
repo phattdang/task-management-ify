@@ -18,9 +18,14 @@ export default {
           '0%': { opacity: '0', transform: 'translateX(100%)' },
           '100%': { opacity: '1', transform: 'translateX(0)' },
         },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-15px)' },
+        },
       },
       animation: {
         slideIn: 'slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+        float: 'float 5s ease-in-out infinite',
       },
     },
   },

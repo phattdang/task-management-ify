@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { setAuth } from "../../../store/authSlice";
 import authApi from "../api/authApi";
 import { EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
-// Import authApi từ đường dẫn thực tế trong dự án của bạn
+import introVideo from "../../../assets/background-intro.webm";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const REDIRECT_URL = import.meta.env.VITE_REDIRECT_URL;
@@ -15,10 +15,10 @@ const SocialButton = ({ icon, text, onClick, disabled, title, className = "" }) 
     onClick={onClick}
     disabled={disabled}
     title={title}
-    className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-300 dark:border-slate-700 rounded-lg transition-all text-sm font-semibold ${
+    className={`w-full flex items-center justify-center gap-3 py-3 px-4 border border-white/40 dark:border-slate-700 rounded-full transition-all text-sm font-semibold shadow-sm hover:shadow-md ${
       disabled
-        ? "opacity-60 cursor-not-allowed bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500"
-        : "hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:border-slate-400 dark:hover:border-slate-600 bg-white dark:bg-slate-800/40 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100"
+        ? "opacity-50 cursor-not-allowed bg-white/30 dark:bg-slate-800/40 text-slate-500"
+        : "bg-white/70 dark:bg-slate-800/60 backdrop-blur-sm hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200"
     } ${className}`}
   >
     <span className="text-lg">{icon}</span>
@@ -112,23 +112,37 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 pt-12 pb-12 font-sans relative overflow-hidden transition-colors duration-200">
-      {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-100 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"></div>
-      <div className="absolute top-1/4 right-0 w-96 h-96 bg-blue-500/10 dark:bg-cyan-500/10 blur-3xl rounded-full opacity-40 dark:opacity-30 animate-softGlow"></div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 font-sans relative overflow-hidden transition-colors duration-200">
+      {/* Video Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        >
+          <source src={introVideo} type="video/webm" />
+        </video>
+        {/* Subtle Dark Overlay */}
+        <div className="absolute inset-0 bg-black/25 dark:bg-black/40"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950"></div>
+        {/* Decorative glows */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 dark:bg-cyan-500/10 blur-[100px] rounded-full mix-blend-screen opacity-60"></div>
+      </div>
 
       {/* Login Card */}
-      <div className="w-full max-w-[420px] px-6 py-10 rounded-2xl border border-slate-200 dark:border-slate-700/50 relative z-10 animate-slideUp bg-white/90 dark:bg-slate-900/50 backdrop-blur-xl shadow-xl dark:shadow-[0_20px_50px_rgba(6,182,212,0.1)]">
+      <div className="w-full max-w-[420px] px-8 py-10 rounded-[2rem] border border-white/50 dark:border-slate-700/50 relative z-10 animate-slideUp bg-white/30 dark:bg-slate-900/40 backdrop-blur-md shadow-2xl">
         {/* Logo & Title */}
         <div className="flex flex-col items-center mb-8">
-          <div className="flex items-center gap-2 text-blue-600 dark:text-cyan-400 font-bold text-2xl mb-4">
+          <div className="flex items-center gap-2 text-slate-900 dark:text-cyan-400 font-bold text-2xl mb-4 drop-shadow-md">
             <img 
-      src="https://res.cloudinary.com/dkrrib3mb/image/upload/v1775490962/logo_remove_background_fl6k7i.png" 
-      alt="Unemployed Team Logo" 
-      className="w-10 h-10 object-contain" 
-    /> Unemployed Team
+              src="https://res.cloudinary.com/dkrrib3mb/image/upload/v1775490962/logo_remove_background_fl6k7i.png" 
+              alt="Unemployed Team Logo" 
+              className="w-10 h-10 object-contain drop-shadow-md" 
+            /> Unemployed Team
           </div>
-          <h2 className="text-base font-semibold text-slate-600 dark:text-slate-300">
+          <h2 className="text-base font-semibold text-slate-700 dark:text-slate-300 drop-shadow-sm">
             Sign in to continue
           </h2>
         </div>
@@ -142,7 +156,7 @@ export default function LoginPage() {
               placeholder="your@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:border-blue-600 dark:focus:border-cyan-500/50 focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-500 text-sm transition-all"
+              className="w-full px-5 py-3.5 bg-white/60 dark:bg-slate-900/50 backdrop-blur-sm border border-white/50 dark:border-slate-700/50 rounded-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 text-sm transition-all shadow-sm"
               required
               autoFocus
             />
@@ -155,7 +169,7 @@ export default function LoginPage() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 pr-10 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:border-blue-600 dark:focus:border-cyan-500/50 focus:ring-2 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-500 text-sm transition-all"
+              className="w-full px-5 py-3.5 pr-12 bg-white/60 dark:bg-slate-900/50 backdrop-blur-sm border border-white/50 dark:border-slate-700/50 rounded-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 text-sm transition-all shadow-sm"
               required
             />
             <button
@@ -181,10 +195,10 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full text-white font-semibold py-2.5 rounded-lg transition-all mt-6 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500/50 ${
+            className={`w-full text-white font-semibold py-3.5 rounded-full transition-all mt-6 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg ${
               isLoading
-                ? "bg-blue-400/70 dark:bg-cyan-600/50 cursor-not-allowed opacity-70"
-                : "bg-blue-600 hover:bg-blue-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 shadow-md dark:shadow-cyan-500/25"
+                ? "bg-blue-400/70 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700 hover:scale-[1.02]"
             }`}
           >
             {isLoading ? "Signing in..." : "Sign in"}
@@ -192,53 +206,45 @@ export default function LoginPage() {
         </form>
 
         {/* Divider */}
-        <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-200 dark:border-slate-700/40"></div>
-          </div>
-          <span className="relative bg-white dark:bg-slate-900 px-2 text-xs text-slate-500 dark:text-slate-500">
-            Or continue with
-          </span>
+        <div className="flex items-center my-6">
+          <div className="flex-grow border-t border-slate-300 dark:border-slate-700/60"></div>
+          <span className="px-3 text-xs text-slate-500 dark:text-slate-400 font-medium">Or continue with</span>
+          <div className="flex-grow border-t border-slate-300 dark:border-slate-700/60"></div>
         </div>
 
         {/* Social Buttons */}
         <div className="space-y-2">
           <SocialButton
             icon={<span className="text-lg">G</span>}
-            text="Google"
+            text="Continue with Google"
             onClick={handleGoogleLogin}
-          />
-          <SocialButton
-            icon={<span className="text-lg">⊞</span>}
-            text="Microsoft"
-            disabled
-            title="Microsoft login is not available yet."
-            className="opacity-50 cursor-not-allowed pointer-events-none"
           />
         </div>
 
         {/* Footer Links */}
-        <div className="border-t border-slate-200 dark:border-slate-700/40 mt-6 pt-4 text-center text-sm text-slate-600 dark:text-slate-400 space-x-1">
+        <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/20 text-sm">
           <Link
             to="/forgot-password"
-            className="text-blue-600 dark:text-cyan-400 hover:text-blue-700 dark:hover:text-cyan-300 transition-colors"
+            className="text-white/80 hover:text-white font-medium transition-all hover:underline underline-offset-4"
           >
             Forgot password?
           </Link>
-          <span>•</span>
-          <Link
-            to="/"
-            className="text-blue-600 dark:text-cyan-400 hover:text-blue-700 dark:hover:text-cyan-300 transition-colors"
-          >
-            Sign up
-          </Link>
+          <div className="text-white/70">
+            New here?{" "}
+            <Link
+              to="/"
+              className="text-white hover:text-cyan-400 font-bold transition-all underline decoration-white/30 hover:decoration-cyan-400 underline-offset-4"
+            >
+              Sign up
+            </Link>
+          </div>
         </div>
       </div>
 
       {/* Footer */}
       <footer className="mt-12 text-center relative z-10">
-        <div className="text-slate-500 dark:text-slate-600 font-semibold text-sm">
-          <span className="tracking-tighter">TaskMgmt © 2026</span>
+        <div className="text-white/50 font-semibold text-sm">
+          <span className="tracking-tighter">PirA © 2026</span>
         </div>
       </footer>
     </div>

@@ -66,82 +66,67 @@ export default function AuthForm() {
   };
 
   return (
-    <div className="max-w-lg w-full">
+    <div className="w-full">
       {/* Hero Headline */}
-      <h1 className="text-5xl md:text-6xl font-bold text-slate-900 dark:text-slate-100 leading-tight mb-4">
+      <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 leading-tight mb-4">
         Connect, collaborate, and manage{" "}
         <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-cyan-400 dark:to-blue-400 bg-clip-text text-transparent">
           everything
         </span>
       </h1>
-      <p className="text-lg text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
-        Bring your team together with TaskMgmt. Organize tasks, boost
+      <p className="text-lg text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">
+        Bring your team together with PirA. Organize tasks, boost
         productivity, and ship better work.
       </p>
 
       {/* Email Signup Form */}
-      <div className="space-y-4 mb-6">
-        <div>
-          <label className="block text-xs font-semibold text-slate-500 dark:text-slate-500 mb-2 uppercase tracking-wider">
-            Email Address
-          </label>
+      <div className="space-y-4 mb-8">
+        <div className="flex flex-col sm:flex-row gap-3">
           <input
             type="email"
-            placeholder="you@company.com"
+            placeholder="Enter your email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
-            className={`w-full px-4 py-3 bg-white dark:bg-slate-900 border rounded-lg outline-none transition-all text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-500 text-sm focus:ring-2 ${
+            className={`flex-1 px-6 py-3.5 bg-white/60 dark:bg-slate-900/50 backdrop-blur-sm border rounded-full outline-none transition-all text-slate-900 dark:text-slate-100 placeholder:text-slate-500 text-sm focus:ring-2 shadow-sm ${
               errorMsg
-                ? "border-red-400 dark:border-red-500/50 focus:border-red-500 dark:focus:border-red-500/70 focus:ring-red-500/20"
-                : "border-slate-300 dark:border-slate-700 focus:border-blue-600 dark:focus:border-cyan-500/50 focus:ring-blue-500/30 dark:focus:ring-cyan-500/30"
+                ? "border-red-400 dark:border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
+                : "border-white/50 dark:border-slate-700/50 focus:border-blue-500 focus:ring-blue-500/30"
             }`}
           />
-          {errorMsg && (
-            <p className="text-red-600 dark:text-red-400 text-sm mt-2">{errorMsg}</p>
-          )}
+          <button
+            type="button"
+            onClick={handleSignUpClick}
+            disabled={isLoading}
+            className={`px-8 py-3.5 font-semibold rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg whitespace-nowrap flex items-center justify-center gap-2 ${
+              isLoading
+                ? "bg-blue-400/70 text-white cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700 text-white hover:scale-[1.02]"
+            }`}
+          >
+            {isLoading ? "Wait..." : "Get Started"}
+          </button>
         </div>
-
-        <button
-          type="button"
-          onClick={handleSignUpClick}
-          disabled={isLoading}
-          className={`w-full text-white font-semibold py-3 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500/50 ${
-            isLoading
-              ? "bg-blue-400/70 dark:bg-cyan-600/50 cursor-not-allowed opacity-70"
-              : "bg-blue-600 hover:bg-blue-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 shadow-md dark:shadow-cyan-500/25"
-          }`}
-        >
-          {isLoading ? "Creating account..." : "Get Started"}
-        </button>
+        {errorMsg && (
+          <p className="text-red-500 dark:text-red-400 text-sm pl-4">{errorMsg}</p>
+        )}
       </div>
 
       {/* Divider */}
-      <div className="relative my-8">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-200 dark:border-slate-700/40"></div>
-        </div>
-        <span className="relative bg-slate-50 dark:bg-slate-950 px-2 text-xs text-slate-500 dark:text-slate-500">
-          Or continue with
-        </span>
+      <div className="flex items-center my-8">
+        <div className="flex-grow border-t border-slate-300 dark:border-slate-700/60"></div>
+        <span className="px-3 text-xs text-slate-500 dark:text-slate-400 font-medium">Or continue with</span>
+        <div className="flex-grow border-t border-slate-300 dark:border-slate-700/60"></div>
       </div>
 
       {/* Social Login */}
-      <div className="grid grid-cols-2 gap-3 mb-8">
+      <div className="flex flex-col sm:flex-row gap-4 mb-8">
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="py-2.5 px-4 bg-white dark:bg-slate-800/40 border border-slate-300 dark:border-slate-700 rounded-lg font-semibold text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-cyan-400 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-center justify-center gap-2 text-sm transition-all"
+          className="flex-1 py-3 px-6 bg-white/70 dark:bg-slate-800/60 backdrop-blur-sm border border-white/40 dark:border-slate-700 rounded-full font-semibold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 flex items-center justify-center gap-3 text-sm transition-all shadow-sm hover:shadow-md"
         >
-          <span className="text-lg">G</span> Google
-        </button>
-        <button
-          type="button"
-          disabled
-          title="Microsoft login is not available yet."
-          className="py-2.5 px-4 bg-slate-100 dark:bg-slate-800/40 border border-slate-300 dark:border-slate-700 rounded-lg font-semibold text-slate-400 dark:text-slate-500 cursor-not-allowed opacity-60 flex items-center justify-center gap-2 text-sm transition-all"
-        >
-          <span className="text-lg">⊞</span> Microsoft
+          <span className="text-lg">G</span> Continue with Google
         </button>
       </div>
 
