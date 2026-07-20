@@ -3,11 +3,13 @@ import AuthForm from "../components/landing/AuthForm";
 import MockBoard from "../components/landing/MockBoard";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGoogleAuth } from "../hooks/useGoogleAuth";
+import { useToast } from "../../../contexts/ToastContext";
 
 export default function LandingPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { loginWithGoogle, isProcessingGoogle } = useGoogleAuth();
+  const toast = useToast();
 
   const hasFetched = useRef(false);
 
@@ -59,10 +61,10 @@ export default function LandingPage() {
       if (result.isExisted) {
         navigate("/projects", { replace: true });
       } else {
-        navigate("/create-site", { replace: true });
+        navigate("/create-project", { replace: true });
       }
     } else {
-      alert(result.message);
+      toast.error(result.message);
       navigate("/", { replace: true });
     }
   };

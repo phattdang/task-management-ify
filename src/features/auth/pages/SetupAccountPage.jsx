@@ -3,11 +3,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../../store/authSlice";
 import authApi from "../api/authApi";
+import { useToast } from "../../../contexts/ToastContext";
 
 export default function SetupAccountPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+  const toast = useToast();
   // Lấy email từ trang trước, nếu mất state thì fallback (hoặc redirect về login)
   const email = location.state?.email;
   const validToken = location.state?.validToken;
@@ -97,10 +99,10 @@ export default function SetupAccountPage() {
           setErrors(newErrors);
         } else {
           // Lỗi chung chung khác
-          alert(data.message || "Có lỗi xảy ra, vui lòng thử lại.");
+          toast.error(data.message || "Có lỗi xảy ra, vui lòng thử lại.");
         }
       } else {
-        alert("Lỗi kết nối đến server.");
+        toast.error("Lỗi kết nối đến server.");
       }
     } finally {
       setIsLoading(false);

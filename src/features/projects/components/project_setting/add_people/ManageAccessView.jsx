@@ -1,11 +1,13 @@
 // features/projects/components/project_setting/add_people/ManageAccessView.jsx
-import React from "react";
+import React, { useState, useCallback } from "react";
+import { useToast } from "../../../../../contexts/ToastContext";
 
 export default function ManageAccessView({
   invitations,
   isLoading,
   onSwitchToAddView,
 }) {
+  const toast = useToast();
   // Helper: Lấy chữ cái đầu làm Avatar
   const getInitials = (name) => {
     if (!name) return "U";
@@ -152,13 +154,7 @@ export default function ManageAccessView({
                     className="text-slate-500 dark:text-slate-600 hover:text-red-600 dark:hover:text-red-400 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
                     title="Remove member"
                     onClick={() => {
-                      if (
-                        window.confirm(
-                          "Remove this member from the project?"
-                        )
-                      ) {
-                        console.log("Remove invitation ID:", item.id);
-                      }
+                      toast.info("Removing invitations is coming soon.");
                     }}
                   >
                     🗑️

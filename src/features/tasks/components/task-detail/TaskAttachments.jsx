@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import attachmentApi from "../../api/attachmentApi";
 import { useToast } from "../../../../contexts/ToastContext";
+import ConfirmDialog from "../../../../components/common/ConfirmDialog";
 
 const formatFileSize = (bytes) => {
   if (!bytes) return "0 B";
@@ -36,6 +37,8 @@ export default function TaskAttachments({ taskId, attachRef }) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(null); // { fileName, step }
   const [downloadingId, setDownloadingId] = useState(null);
+  const [attachmentToDelete, setAttachmentToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const fileInputRef = useRef(null);
   const toast = useToast();
 
@@ -118,6 +121,22 @@ export default function TaskAttachments({ taskId, attachRef }) {
       toast.error("Cannot get download link.");
     } finally {
       setDownloadingId(null);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!attachmentToDelete) return;
+    setIsDeleting(true);
+    try {
+      await attachmentApi.deleteAttachment(taskId, attachmentToDelete.id);
+      toast.success("Attachment deleted.");
+      await fetchAttachments();
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message || "Cannot delete attachment.";
+      toast.error(msg);
+    } finally {
+      setIsDeleting(false);
+      setAttachmentToDelete(null);
     }
   };
 
@@ -239,22 +258,34 @@ export default function TaskAttachments({ taskId, attachRef }) {
                 </p>
               </div>
 
-              {/* Download button */}
-              <button
-                type="button"
-                onClick={() => handleDownload(att)}
-                disabled={downloadingId === att.id}
-                className="shrink-0 p-2 rounded-lg text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-slate-100 dark:hover:bg-slate-700/40 opacity-0 group-hover:opacity-100 transition-all disabled:cursor-wait"
-                title="Download"
-              >
-                {downloadingId === att.id ? (
-                  <div className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
-                ) : (
+              {/* Download & Delete buttons */}
+              <div className="flex items-center">
+                <button
+                  type="button"
+                  onClick={() => handleDownload(att)}
+                  disabled={downloadingId === att.id}
+                  className="shrink-0 p-2 rounded-lg text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-slate-100 dark:hover:bg-slate-700/40 opacity-0 group-hover:opacity-100 transition-all disabled:cursor-wait"
+                  title="Download"
+                >
+                  {downloadingId === att.id ? (
+                    <div className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAttachmentToDelete(att)}
+                  className="shrink-0 p-2 rounded-lg text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all"
+                  title="Delete"
+                >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
-                )}
-              </button>
+                </button>
+              </div>
             </div>
           ))}
 
@@ -269,6 +300,16 @@ export default function TaskAttachments({ taskId, attachRef }) {
           </div>
         </div>
       )}
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        isOpen={!!attachmentToDelete}
+        title="Delete Attachment"
+        message={`Are you sure you want to delete "${attachmentToDelete?.fileName}"? This action cannot be undone.`}
+        confirmText="Delete"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setAttachmentToDelete(null)}
+        isLoading={isDeleting}
+      />
     </div>
   );
 }

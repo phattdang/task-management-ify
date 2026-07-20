@@ -14,6 +14,10 @@ const projectApi = {
     axiosClient.put(`${URL}/${projectId}`, request),
   getProjectSummary: (projectId) =>
     axiosClient.get(`${URL}/${projectId}/summary`),
+  getProjectMembers: (projectId) =>
+    axiosClient.get(`${URL}/${projectId}/members`),
+  removeProjectMember: (projectId, memberId) =>
+    axiosClient.delete(`${URL}/${projectId}/members/${memberId}`),
 };
 
 export default projectApi;

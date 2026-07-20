@@ -13,17 +13,10 @@ export default function ProjectActionsMenu({
   const menuGroups = [
     [
       {
-        icon: "⭐",
-        label: "Add to starred",
-        onClick: () => console.log("Starred"),
-      },
-      {
         icon: "👤",
         label: "Add people",
         onClick: onAddPeopleClick,
       },
-      { icon: "📋", label: "Save as template", badge: "ENTERPRISE" },
-      { icon: "🖼️", label: "Set space background", hasSubmenu: true },
       {
         icon: "⚙️",
         label: "Space settings",
@@ -31,7 +24,6 @@ export default function ProjectActionsMenu({
       },
     ],
     [
-      { icon: "📥", label: "Archive space", badge: "PREMIUM" },
       {
         icon: "🗑️",
         label: "Delete space",
@@ -39,7 +31,6 @@ export default function ProjectActionsMenu({
         onClick: onDeleteClick, // Gán trực tiếp callback từ props
       },
     ],
-    [{ icon: "🚀", label: "Software space", description: "Team-managed" }],
   ];
 
   return (

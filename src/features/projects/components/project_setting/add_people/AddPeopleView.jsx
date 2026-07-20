@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import projectInvitationsApi from "../../../../project_invitations/apis/projectInvitationApi";
+import { useToast } from "../../../../../contexts/ToastContext";
 
 export default function AddPeopleView({
   projectName,
@@ -8,10 +9,11 @@ export default function AddPeopleView({
 }) {
   const [email, setEmail] = useState("");
   const [isInviting, setIsInviting] = useState(false);
+  const toast = useToast();
 
   const handleInvite = async () => {
     if (!email.trim()) {
-      alert("Vui lòng nhập email!");
+      toast.warning("Vui lòng nhập email!");
       return;
     }
 
@@ -27,11 +29,11 @@ export default function AddPeopleView({
       // Trường hợp 1: Backend trả về HTTP 200 OK nhưng logic nghiệp vụ có thể lỗi
       // (Tùy cách bạn cấu hình backend, đôi khi lỗi vẫn trả về 200 kèm code lỗi trong body)
       if (res.data && res.data.code === 200) {
-        alert("Gửi lời mời thành công!");
+        toast.success("Gửi lời mời thành công!");
         onBackToList();
       } else {
         // Nếu HTTP 200 mà code != 200 (ví dụ code 400 nằm trong body success)
-        alert(res.data?.message || "Có lỗi xảy ra.");
+        toast.error(res.data?.message || "Có lỗi xảy ra.");
       }
     } catch (error) {
       console.error("Invite error:", error);
@@ -42,13 +44,13 @@ export default function AddPeopleView({
         const backendMessage = error.response.data.message;
 
         if (backendMessage) {
-          alert(backendMessage); // Hiển thị: "User already in project!"
+          toast.error(backendMessage); // Hiển thị: "User already in project!"
         } else {
-          alert("Gửi lời mời thất bại (Lỗi Server).");
+          toast.error("Gửi lời mời thất bại (Lỗi Server).");
         }
       } else {
         // Lỗi mạng hoặc không kết nối được server
-        alert("Không thể kết nối đến server hoặc lỗi mạng.");
+        toast.error("Không thể kết nối đến server hoặc lỗi mạng.");
       }
     } finally {
       setIsInviting(false);

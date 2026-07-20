@@ -34,6 +34,10 @@ const attachmentApi = {
   // 5. Get download URL
   getDownloadUrl: (taskId, attachmentId) =>
     axiosClient.get(`${BASE(taskId)}/${attachmentId}/download-url`),
+
+  // 6. Delete attachment
+  deleteAttachment: (taskId, attachmentId) =>
+    axiosClient.delete(`${BASE(taskId)}/${attachmentId}`),
 };
 
 export default attachmentApi;

@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ProjectActionsMenu from "./project_setting/ProjectActionsMenu";
 import DeleteProjectModal from "./project_setting/delete_project/DeleteProjectModal";
-import ConfirmDialog from "./project_setting/delete_project/ConfirmDialog";
+import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import projectApi from "../apis/projectApi";
 import AddPeopleModal from "./project_setting/add_people/AddPeopleModal";
+import { useToast } from "../../../contexts/ToastContext";
 
 export default function ProjectHeader({ projectInfo }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,6 +14,7 @@ export default function ProjectHeader({ projectInfo }) {
   const [confirmProjectName, setConfirmProjectName] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [showAddPeopleModal, setShowAddPeopleModal] = useState(false);
+  const toast = useToast();
 
   // State mới: Lưu quyền quản lý
   const [isManager, setIsManager] = useState(false);
@@ -69,16 +71,16 @@ export default function ProjectHeader({ projectInfo }) {
 
       if (res.data?.code === 200 && res.data?.body?.isDeleted) {
         setShowFinalConfirm(false);
-        alert("Dự án đã được xóa thành công!");
+        toast.success("Dự án đã được xóa thành công!");
         navigate("/projects");
       } else {
-        alert(
+        toast.error(
           "Xóa dự án thất bại: " + (res.data?.message || "Lỗi không xác định")
         );
       }
     } catch (error) {
       console.error("Lỗi khi xóa dự án:", error);
-      alert("Đã có lỗi xảy ra khi gọi API xóa.");
+      toast.error("Đã có lỗi xảy ra khi gọi API xóa.");
     } finally {
       setIsDeleting(false);
     }

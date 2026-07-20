@@ -68,20 +68,10 @@ export default function UserDropdown({ isOpen, userInfo }) {
         <div className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/40 cursor-pointer flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
           <span className="text-lg">⚙️</span> Account Settings
         </div>
-        <div className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/40 cursor-pointer flex items-center justify-between text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
-          <div className="flex items-center gap-3">
-            <span className="text-lg">◑</span> Theme
-          </div>
-          <span className="text-xs text-slate-400 dark:text-slate-500">›</span>
-        </div>
       </div>
 
       {/* Menu List 2 */}
       <div className="py-1">
-        <div className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/40 cursor-pointer flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
-          <span className="text-lg">👥</span> Switch Account
-        </div>
-
         <div
           onClick={handleLogout}
           className="px-4 py-2 hover:bg-red-500/10 cursor-pointer flex items-center gap-3 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors"

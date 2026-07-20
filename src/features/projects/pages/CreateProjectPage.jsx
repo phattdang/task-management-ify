@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import projectApi from "../apis/projectApi";
+import { useToast } from "../../../contexts/ToastContext";
 
 export default function CreateProjectPage() {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ export default function CreateProjectPage() {
   const [projectName, setProjectName] = useState("");
   const [projectKey, setProjectKey] = useState("KEY");
   const [isLoading, setIsLoading] = useState(false); // Thêm loading state
+  const toast = useToast();
 
   // Logic tự động sinh Key
   useEffect(() => {
@@ -37,12 +39,12 @@ export default function CreateProjectPage() {
     try {
       const res = await projectApi.createProject({ name: projectName });
       if (res.data && res.data.code === 201) {
-        // Tạo xong thì về trang danh sách dự án
+        toast.success("Dự án đã được tạo thành công!");
         navigate("/projects");
       }
     } catch (error) {
       console.error("Failed to create project:", error);
-      alert("Lỗi khi tạo dự án.");
+      toast.error("Lỗi khi tạo dự án.");
     } finally {
       setIsLoading(false);
     }
@@ -93,9 +95,9 @@ export default function CreateProjectPage() {
                 <div className="flex-1">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-bold text-sm text-slate-900 dark:text-slate-100">
-                      Kanban
+                      Kanban (Fixed Template)
                     </span>
-                    <span className="text-blue-600 dark:text-cyan-400 text-xs font-semibold hover:underline">
+                    <span className="text-slate-400 dark:text-slate-500 text-xs font-semibold cursor-not-allowed" title="Template selection is currently unavailable">
                       Change template
                     </span>
                   </div>
@@ -107,12 +109,11 @@ export default function CreateProjectPage() {
               </div>
             </div>
 
-            {/* Type Selection (UI Only) */}
             <div className="mb-8">
               <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 Type
               </label>
-              <div className="p-2 border border-slate-300 dark:border-slate-700 rounded bg-slate-100 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-sm cursor-not-allowed flex justify-between items-center">
+              <div className="p-2 border border-slate-300 dark:border-slate-700 rounded bg-slate-100 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-sm cursor-not-allowed flex justify-between items-center opacity-70" title="Project type is fixed for now">
                 <span>Team-managed</span>
                 <span className="text-xs">▼</span>
               </div>

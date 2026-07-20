@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import projectApi from "../features/projects/apis/projectApi"; // Sửa lại path nếu cần
+import projectApi from "../features/projects/apis/projectApi";
 
 // Import các components con
 import TopNavbar from "./components/TopNavbar";
@@ -9,51 +9,62 @@ import authApi from "../features/auth/api/authApi";
 
 export default function DashboardLayout({ children }) {
   const [projects, setProjects] = useState([]);
-  const [userInfo, setUserInfo] = useState(null); // State lưu thông tin user
+  const [userInfo, setUserInfo] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const { projectId } = useParams();
   const location = useLocation();
+  const hasFetched = useRef(false);
+  const initialPathRef = useRef(location.pathname);
 
-  // 1. Fetch thông tin User & Projects
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Gọi song song 2 API để tiết kiệm thời gian
-        const [projectRes, userRes] = await Promise.all([
-          projectApi.getAll(),
-          authApi.getInformation(), // API lấy info user
-        ]);
+  // Fetch data once on mount, not on every pathname change
+  const fetchData = useCallback(async () => {
+    try {
+      const [projectRes, userRes] = await Promise.all([
+        projectApi.getAll(),
+        authApi.getInformation(),
+      ]);
 
-        // Xử lý Projects
-        const projectList = projectRes.data.body || [];
-        setProjects(projectList);
+      const projectList = projectRes.data.body || [];
+      setProjects(projectList);
 
-        // Xử lý User Info
-        if (userRes.data && userRes.data.body) {
-          setUserInfo(userRes.data.body); // Lưu { id, fullName, email } vào state
-        }
-
-        // Logic Auto Redirect
-        if (location.pathname === "/projects" && projectList.length > 0) {
-          const firstProjectId = projectList[0].id;
-          navigate(`/projects/${firstProjectId}`, { replace: true });
-        }
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-        // Nếu lỗi 401 (hết hạn token), có thể đá về login ở đây
+      if (userRes.data && userRes.data.body) {
+        setUserInfo(userRes.data.body);
       }
-    };
-    fetchData();
-  }, [location.pathname, navigate]);
+
+      // Auto-redirect only on initial load when at bare /projects
+      if (initialPathRef.current === "/projects" && projectList.length > 0) {
+        const firstProjectId = projectList[0].id;
+        navigate(`/projects/${firstProjectId}`, { replace: true });
+      }
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      fetchData();
+    }
+  }, [fetchData]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col font-sans transition-colors duration-200">
       {/* 1. Navbar */}
-      <TopNavbar userInfo={userInfo} />
+      <TopNavbar
+        userInfo={userInfo}
+        onToggleSidebar={() => setIsSidebarOpen(true)}
+      />
 
       <div className="flex flex-1 overflow-hidden bg-slate-50 dark:bg-gradient-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors duration-200">
         {/* 2. Sidebar */}
-        <LeftSidebar projects={projects} currentProjectId={projectId} />
+        <LeftSidebar
+          projects={projects}
+          currentProjectId={projectId}
+          isMobileOpen={isSidebarOpen}
+          onMobileClose={() => setIsSidebarOpen(false)}
+        />
 
         {/* 3. Main Content */}
         <main className="flex-1 min-w-0 overflow-y-auto h-[calc(100vh-56px)] bg-slate-50 dark:bg-slate-950 transition-colors duration-200">

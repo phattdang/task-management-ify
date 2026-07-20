@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import projectInvitationsApi from "../apis/projectInvitationApi";
+import { useToast } from "../../../contexts/ToastContext";
 
 export default function InvitationConfirmPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
+  const toast = useToast();
 
   // State lưu dữ liệu lời mời từ API
   const [invitationData, setInvitationData] = useState(null);
@@ -57,23 +59,23 @@ export default function InvitationConfirmPage() {
 
       if (res.data && res.data.code === 200) {
         if (answer) {
-          alert("Đã tham gia dự án thành công!");
+          toast.success("Đã tham gia dự án thành công!");
           // Lấy ID dự án từ data đã fetch từ trước (hoặc từ response accept nếu có)
           const projectId = invitationData?.project?.id;
           navigate(`/projects/${projectId}`);
         } else {
-          alert("Đã từ chối lời mời.");
+          toast.info("Đã từ chối lời mời.");
           navigate("/projects");
         }
       } else {
-        alert("Thao tác thất bại: " + (res.data?.message || "Lỗi server"));
+        toast.error("Thao tác thất bại: " + (res.data?.message || "Lỗi server"));
       }
     } catch (err) {
       console.error("Answer error:", err);
       if (err.response && err.response.data) {
-        alert(err.response.data.message || "Có lỗi xảy ra.");
+        toast.error(err.response.data.message || "Có lỗi xảy ra.");
       } else {
-        alert("Lỗi kết nối.");
+        toast.error("Lỗi kết nối.");
       }
     } finally {
       setIsProcessing(false);

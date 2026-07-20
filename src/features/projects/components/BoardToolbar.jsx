@@ -111,7 +111,7 @@ export default function BoardToolbar({ members = [], filters = {}, onApplyFilter
   };
 
   return (
-    <div className="relative z-50 px-6 py-4 flex items-center justify-between bg-white/90 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700/40 backdrop-blur-md transition-colors duration-200">
+    <div className="relative z-10 px-6 py-4 flex items-center justify-between bg-white/90 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700/40 backdrop-blur-md transition-colors duration-200">
       {/* Left: Search, Avatars, Filter */}
       <div className="flex items-center gap-3">
         <div className="relative group">
@@ -304,37 +304,7 @@ export default function BoardToolbar({ members = [], filters = {}, onApplyFilter
         </div>
       </div>
 
-      {/* Right: Group, View Mode, Menu */}
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/40 transition-all"
-        >
-          Group ⌄
-        </button>
 
-        <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-0.5 flex border border-slate-200 dark:border-slate-700/40">
-          <button
-            type="button"
-            className="p-1.5 bg-white dark:bg-slate-700/60 rounded-md text-blue-600 dark:text-cyan-400 shadow-sm border border-slate-200/80 dark:border-transparent"
-          >
-            📈
-          </button>
-          <button
-            type="button"
-            className="p-1.5 hover:bg-white/80 dark:hover:bg-slate-700/60 rounded-md text-slate-500 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 transition-colors"
-          >
-            📋
-          </button>
-        </div>
-
-        <button
-          type="button"
-          className="p-1.5 rounded-lg text-slate-500 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/40 transition-all"
-        >
-          •••
-        </button>
-      </div>
     </div>
   );
 }

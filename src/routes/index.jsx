@@ -2,10 +2,8 @@ import { Routes, Route } from "react-router-dom";
 import {
   LandingPage,
   LoginPage,
-  RegisterPage,
   VerifyEmailPage,
   SetupAccountPage,
-  CreateSitePage,
   ForgotPasswordPage,
   VerifyForgotPasswordOtpPage,
   ResetPasswordPage,
@@ -15,6 +13,7 @@ import SpaceSettingsPage from "../features/projects/pages/SpaceSettingsPage";
 import TaskListPage from "../features/tasks/pages/TaskListPage";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import InvitationConfirmPage from "./../features/project_invitations/pages/InvitationConfirmPage";
+import { Navigate } from "react-router-dom";
 
 export default function AppRoutes() {
   return (
@@ -22,7 +21,6 @@ export default function AppRoutes() {
       {/* ... Public Routes cũ ... */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
       <Route path="/setup-account" element={<SetupAccountPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -33,8 +31,14 @@ export default function AppRoutes() {
       <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       {/* Protected Routes */}
-      <Route path="/create-site" element={<CreateSitePage />} />
-      <Route path="/create-project" element={<CreateProjectPage />} />
+      <Route
+        path="/create-project"
+        element={
+          <ProtectedRoute>
+            <CreateProjectPage />
+          </ProtectedRoute>
+        }
+      />
 
       {/* CORE ROUTES */}
       <Route
@@ -70,6 +74,9 @@ export default function AppRoutes() {
         path="/projects/:projectId/invitations/confirm"
         element={<InvitationConfirmPage />}
       />
+
+      {/* Catch-all 404 Route */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

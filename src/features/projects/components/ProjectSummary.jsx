@@ -6,6 +6,7 @@ export default function ProjectSummary({ tasks = [], projectId }) {
   const [apiSummary, setApiSummary] = useState(null);
   const [activityLogs, setActivityLogs] = useState([]);
   const [loadingSummary, setLoadingSummary] = useState(false);
+  const [activityLogsError, setActivityLogsError] = useState(false);
 
   useEffect(() => {
     if (!projectId) return;
@@ -24,6 +25,7 @@ export default function ProjectSummary({ tasks = [], projectId }) {
         }
       } catch (error) {
         console.error("Failed to fetch project summary data", error);
+        setActivityLogsError(true);
       } finally {
         setLoadingSummary(false);
       }
@@ -268,7 +270,26 @@ export default function ProjectSummary({ tasks = [], projectId }) {
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 shadow-sm flex flex-col min-h-[300px]">
           <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Recent Activity</h3>
           
-          {activityLogs.length === 0 ? (
+          {loadingSummary ? (
+            <div className="flex-1 flex flex-col justify-center gap-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex gap-3">
+                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 animate-pulse shrink-0"></div>
+                  <div className="flex-1 space-y-2 py-1">
+                    <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded animate-pulse w-3/4"></div>
+                    <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded animate-pulse w-1/4"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : activityLogsError ? (
+            <div className="flex-1 flex flex-col items-center justify-center text-center text-red-500">
+              <svg className="w-8 h-8 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <p>Failed to load activity logs.</p>
+            </div>
+          ) : activityLogs.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center text-center">
               <div className="mb-4">
                 <svg width="120" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -286,11 +307,21 @@ export default function ProjectSummary({ tasks = [], projectId }) {
           ) : (
             <div className="flex-1 overflow-y-auto pr-2 space-y-4 max-h-[250px]">
               {activityLogs.map((log) => {
-                const date = new Date(log.timestamp);
+                const date = new Date(log.timestamp || new Date());
                 const timeStr = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
                 const dateStr = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-                const actionLabel = log.actionType.replace("_", " ").toLowerCase();
-                const entityName = log.payload?.current?.taskName || log.entityId.substring(0, 8);
+                const actionLabel = log.actionType ? log.actionType.replace(/_/g, " ").toLowerCase() : "did something";
+                
+                let entityName = log.entityId?.substring(0, 8) || "item";
+                if (log.payload) {
+                  if (log.entityType === "PROJECT" && log.payload.name) entityName = log.payload.name;
+                  else if (log.entityType === "TASK_ATTACHMENT" && log.payload.fileName) entityName = log.payload.fileName;
+                  else if (log.entityType === "PROJECT_INVITATION" && log.payload.status) entityName = `invitation (${log.payload.status})`;
+                  else if (log.entityType === "TASK" && (log.payload.taskName || log.payload.current?.taskName)) {
+                    entityName = log.payload.taskName || log.payload.current?.taskName;
+                  }
+                }
+                
                 const initials = log.actorEmail ? log.actorEmail.substring(0, 2).toUpperCase() : "U";
 
                 return (

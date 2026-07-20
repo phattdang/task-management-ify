@@ -6,20 +6,24 @@ import taskApi from "../api/taskApi";
 import projectApi from "../../projects/apis/projectApi";
 import ProjectHeader from "../../projects/components/ProjectHeader";
 import NavigationTabs from "../../projects/components/NavigationTabs";
+import { useToast } from "../../../contexts/ToastContext";
 import LoadingPulse from "../components/LoadingPulse";
 import BoardToolbar from "./../../projects/components/BoardToolbar";
 import TaskDetailModal from "../components/task-detail/TaskDetailModal";
 import ProjectSummary from "../../projects/components/ProjectSummary";
 import ProjectListView from "../../projects/components/ProjectListView";
 import ProjectChatView from "../../projects/components/ProjectChatView";
+import ProjectTimelineView from "../../projects/components/ProjectTimelineView";
 
 export default function TaskListPage() {
   const { projectId } = useParams();
   const [tasks, setTasks] = useState([]);
   const [projectInfo, setProjectInfo] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [currentTab, setCurrentTab] = useState("BOARD");
   const [searchParams, setSearchParams] = useSearchParams();
+  const toast = useToast();
 
   // Pagination and Filter state
   const [filters, setFilters] = useState({
@@ -57,6 +61,7 @@ export default function TaskListPage() {
 
   const fetchTasks = useCallback(async () => {
     if (!projectId) return;
+    setHasError(false);
     try {
       const taskRes = await taskApi.filterTasksByProjectId(projectId, filters);
       const resBody = taskRes.data.body;
@@ -69,8 +74,10 @@ export default function TaskListPage() {
       });
     } catch (error) {
       console.error("Error fetching tasks:", error);
+      setHasError(true);
+      toast.error("Lỗi khi tải danh sách công việc");
     }
-  }, [projectId, filters]);
+  }, [projectId, filters, toast]);
 
   // Re-fetch tasks whenever filters change
   useEffect(() => {
@@ -154,6 +161,19 @@ export default function TaskListPage() {
           <div className="relative z-0 flex-1 overflow-x-auto overflow-y-hidden bg-slate-50 dark:bg-slate-950 px-8 pb-4 transition-colors duration-200">
             {loading ? (
               <LoadingPulse />
+            ) : hasError ? (
+              <div className="flex items-center justify-center h-full text-red-500 dark:text-red-400">
+                Failed to load tasks. Please try again later.
+              </div>
+            ) : tasks.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-slate-500 dark:text-slate-400">
+                <div className="text-4xl mb-4">📭</div>
+                <h3 className="text-lg font-semibold mb-2">No tasks found</h3>
+                <p className="text-sm">Create a new task to get started.</p>
+                <div className="mt-8 w-full opacity-30 pointer-events-none">
+                  <KanbanBoard tasks={[]} projectId={projectId} onTaskCreated={() => {}} />
+                </div>
+              </div>
             ) : (
               <KanbanBoard
                 tasks={tasks}
@@ -181,8 +201,8 @@ export default function TaskListPage() {
           </div>
         )}
         {currentTab === "TIMELINE" && (
-          <div className="p-8 text-slate-600 dark:text-slate-400">
-            Chức năng đang phát triển...
+          <div className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
+            <ProjectTimelineView tasks={tasks} />
           </div>
         )}
         {currentTab === "CHAT" && (

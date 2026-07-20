@@ -4,24 +4,30 @@ import taskApi from "../../api/taskApi";
 import TaskDetailHeader from "./TaskDetailHeader";
 import TaskDetailContent from "./TaskDetailContent";
 import TaskDetailSidebar from "./TaskDetailSidebar";
+import { useToast } from "../../../../contexts/ToastContext";
 
 export default function TaskDetailModal({ taskId, onClose, onUpdated }) {
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const toast = useToast();
 
   // Hàm fetch data được bọc useCallback để truyền xuống con
   const fetchDetail = useCallback(async () => {
     if (!taskId) return;
     setLoading(true);
+    setHasError(false);
     try {
       const res = await taskApi.getTaskDetail(taskId);
       setTask(res.data.body);
     } catch (err) {
       console.error("Error fetching task detail:", err);
+      setHasError(true);
+      toast.error("Lỗi khi tải chi tiết công việc");
     } finally {
       setLoading(false);
     }
-  }, [taskId]);
+  }, [taskId, toast]);
 
   useEffect(() => {
     fetchDetail();
@@ -52,6 +58,12 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }) {
                 Loading task details...
               </p>
             </div>
+          </div>
+        ) : hasError || !task ? (
+          <div className="flex flex-col items-center justify-center h-full gap-4">
+            <div className="text-4xl">⚠️</div>
+            <p className="text-slate-500 dark:text-slate-400">Failed to load task details.</p>
+            <button onClick={onClose} className="text-blue-600 hover:underline text-sm font-medium">Close</button>
           </div>
         ) : (
           <>

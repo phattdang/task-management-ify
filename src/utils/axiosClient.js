@@ -1,4 +1,5 @@
 import axios from "axios";
+import authEvents from "./authEvents";
 
 const baseURL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
@@ -51,8 +52,19 @@ axiosClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Nếu không có response (lỗi mạng) hoặc không phải 401 thì reject luôn
-    if (!error.response || error.response.status !== 401) {
+    // Nếu không có response (lỗi mạng) thì reject luôn
+    if (!error.response) {
+      return Promise.reject(error);
+    }
+
+    // Nếu gặp 403 Forbidden, emit event để hiển thị toast
+    if (error.response.status === 403) {
+      authEvents.emit("forbidden");
+      return Promise.reject(error);
+    }
+
+    // Nếu không phải 401 thì reject luôn
+    if (error.response.status !== 401) {
       return Promise.reject(error);
     }
 
@@ -105,9 +117,12 @@ axiosClient.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError, null);
 
-        // Chỉ logout nếu thật sự refresh thất bại (400, 403, 500)
-        localStorage.clear();
-        window.location.href = "/login";
+        // Emit event so the React tree can handle this gracefully
+        // (toast + soft navigate) instead of a hard page reload
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("user_info");
+        authEvents.emit("session-expired");
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
